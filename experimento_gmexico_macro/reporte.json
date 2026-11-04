@@ -1,0 +1,549 @@
+{
+  "protocolo": {
+    "version": "GMEXICO_2_FACTORES_V1",
+    "naturaleza": "EXPLORATORIO_TEST_PREVIAMENTE_INSPECCIONADO",
+    "modelo": "Logistica L2 sin ponderacion de clases; escalado dentro de cada ajuste",
+    "variantes": {
+      "PPP_8": [
+        "ret_1",
+        "ret_5",
+        "ret_10",
+        "ret_20",
+        "volatilidad_5",
+        "volatilidad_20",
+        "distancia_media_5",
+        "distancia_media_20"
+      ],
+      "PPP_10": [
+        "ret_1",
+        "ret_5",
+        "ret_10",
+        "ret_20",
+        "volatilidad_5",
+        "volatilidad_20",
+        "distancia_media_5",
+        "distancia_media_20",
+        "usd_mxn_logret_5_lag1",
+        "cobre_logret_5_lag1"
+      ]
+    },
+    "C_candidatos": [
+      0.01,
+      0.1,
+      1.0,
+      10.0
+    ],
+    "folds_validacion_train": [
+      [
+        "2019-01-01",
+        "2020-12-31"
+      ],
+      [
+        "2021-01-01",
+        "2022-12-31"
+      ],
+      [
+        "2023-01-01",
+        "2023-12-31"
+      ],
+      [
+        "2024-01-01",
+        "2025-04-29"
+      ]
+    ],
+    "seleccion": "Menor C dentro de 1 SE del menor Brier medio entre folds; misma busqueda en ambas variantes",
+    "variables_externas": "Log(valor_t-1 / valor_t-6) sobre sesiones BMV; seis observaciones reales exigidas; sin arrastre",
+    "disponibilidad": "HIPOTESIS_CONSERVADORA_REZAGO_1_SESION_BMV; NO_HAY_VINTAGES_HISTORICAS_VERIFICADAS",
+    "cobre": "Precio diario BCCh USD/libra, difundido redondeado a dos decimales; no futuros continuos",
+    "metrica_primaria": "Brier ampliada menos base sobre las mismas fechas",
+    "bootstrap": {
+      "bloque_sesiones_bmv": 20,
+      "replicas": 5000,
+      "semilla": 20261029
+    },
+    "criterio_evidencia": "Delta Brier <= -0.001, IC95 superior < 0, mejora en ambos subperiodos de Test; confirmacion prospectiva posterior requerida",
+    "emision_prospectiva": false
+  },
+  "timestamp_ejecucion_utc": "2026-10-29T17:35:31.624777+00:00",
+  "cobertura": {
+    "train_ppp": 1167,
+    "train_pareado": 968,
+    "test_ppp": 290,
+    "test_pareado": 215,
+    "exclusiones_train": {
+      "cobre_usd_libra_VENTANA_INCOMPLETA": 199
+    },
+    "exclusiones_test": {
+      "cobre_usd_libra_VENTANA_INCOMPLETA": 75
+    }
+  },
+  "modelos": {
+    "PPP_8": {
+      "C_seleccionado": 0.01,
+      "cv_train": [
+        {
+          "C": 0.01,
+          "brier_cv": 0.24993192767949474,
+          "se_folds": 0.008727360919192484,
+          "folds": [
+            {
+              "n_train": 287,
+              "n_val": 175,
+              "fin_etiquetas_train": "2018-12-11",
+              "inicio_val": "2019-01-11",
+              "fin_etiquetas_val": "2020-12-31",
+              "brier": 0.2683374618652947
+            },
+            {
+              "n_train": 462,
+              "n_val": 320,
+              "fin_etiquetas_train": "2020-12-31",
+              "inicio_val": "2021-01-12",
+              "fin_etiquetas_val": "2022-12-30",
+              "brier": 0.2610295106331367
+            },
+            {
+              "n_train": 787,
+              "n_val": 35,
+              "fin_etiquetas_train": "2022-12-30",
+              "inicio_val": "2023-01-02",
+              "fin_etiquetas_val": "2023-11-06",
+              "brier": 0.23227649696927344
+            },
+            {
+              "n_train": 827,
+              "n_val": 141,
+              "fin_etiquetas_train": "2023-11-06",
+              "inicio_val": "2024-04-15",
+              "fin_etiquetas_val": "2025-04-11",
+              "brier": 0.23808424125027414
+            }
+          ]
+        },
+        {
+          "C": 0.1,
+          "brier_cv": 0.2545058403289652,
+          "se_folds": 0.01509241383670373,
+          "folds": [
+            {
+              "n_train": 287,
+              "n_val": 175,
+              "fin_etiquetas_train": "2018-12-11",
+              "inicio_val": "2019-01-11",
+              "fin_etiquetas_val": "2020-12-31",
+              "brier": 0.28403617975904555
+            },
+            {
+              "n_train": 462,
+              "n_val": 320,
+              "fin_etiquetas_train": "2020-12-31",
+              "inicio_val": "2021-01-12",
+              "fin_etiquetas_val": "2022-12-30",
+              "brier": 0.2752200771554686
+            },
+            {
+              "n_train": 787,
+              "n_val": 35,
+              "fin_etiquetas_train": "2022-12-30",
+              "inicio_val": "2023-01-02",
+              "fin_etiquetas_val": "2023-11-06",
+              "brier": 0.22016421954429685
+            },
+            {
+              "n_train": 827,
+              "n_val": 141,
+              "fin_etiquetas_train": "2023-11-06",
+              "inicio_val": "2024-04-15",
+              "fin_etiquetas_val": "2025-04-11",
+              "brier": 0.23860288485704986
+            }
+          ]
+        },
+        {
+          "C": 1.0,
+          "brier_cv": 0.25771278666974695,
+          "se_folds": 0.018662433936188057,
+          "folds": [
+            {
+              "n_train": 287,
+              "n_val": 175,
+              "fin_etiquetas_train": "2018-12-11",
+              "inicio_val": "2019-01-11",
+              "fin_etiquetas_val": "2020-12-31",
+              "brier": 0.29624759043502846
+            },
+            {
+              "n_train": 462,
+              "n_val": 320,
+              "fin_etiquetas_train": "2020-12-31",
+              "inicio_val": "2021-01-12",
+              "fin_etiquetas_val": "2022-12-30",
+              "brier": 0.2802144697037431
+            },
+            {
+              "n_train": 787,
+              "n_val": 35,
+              "fin_etiquetas_train": "2022-12-30",
+              "inicio_val": "2023-01-02",
+              "fin_etiquetas_val": "2023-11-06",
+              "brier": 0.2144380922730513
+            },
+            {
+              "n_train": 827,
+              "n_val": 141,
+              "fin_etiquetas_train": "2023-11-06",
+              "inicio_val": "2024-04-15",
+              "fin_etiquetas_val": "2025-04-11",
+              "brier": 0.239950994267165
+            }
+          ]
+        },
+        {
+          "C": 10.0,
+          "brier_cv": 0.2582261170720233,
+          "se_folds": 0.019311083846842873,
+          "folds": [
+            {
+              "n_train": 287,
+              "n_val": 175,
+              "fin_etiquetas_train": "2018-12-11",
+              "inicio_val": "2019-01-11",
+              "fin_etiquetas_val": "2020-12-31",
+              "brier": 0.29844533734122897
+            },
+            {
+              "n_train": 462,
+              "n_val": 320,
+              "fin_etiquetas_train": "2020-12-31",
+              "inicio_val": "2021-01-12",
+              "fin_etiquetas_val": "2022-12-30",
+              "brier": 0.2809242634407319
+            },
+            {
+              "n_train": 787,
+              "n_val": 35,
+              "fin_etiquetas_train": "2022-12-30",
+              "inicio_val": "2023-01-02",
+              "fin_etiquetas_val": "2023-11-06",
+              "brier": 0.2132966046747488
+            },
+            {
+              "n_train": 827,
+              "n_val": 141,
+              "fin_etiquetas_train": "2023-11-06",
+              "inicio_val": "2024-04-15",
+              "fin_etiquetas_val": "2025-04-11",
+              "brier": 0.2402382628313835
+            }
+          ]
+        }
+      ],
+      "metricas_test": {
+        "brier_score": 0.248033,
+        "brier_dummy": 0.254925,
+        "supera_dummy_brier": true,
+        "log_loss": 0.688793,
+        "accuracy": 52.09,
+        "balanced_accuracy": 57.95,
+        "roc_auc": 0.657,
+        "tasa_predicha_positiva": 33.02
+      },
+      "parametros_congelados": {
+        "features": [
+          "ret_1",
+          "ret_5",
+          "ret_10",
+          "ret_20",
+          "volatilidad_5",
+          "volatilidad_20",
+          "distancia_media_5",
+          "distancia_media_20"
+        ],
+        "coeficientes_con_intercepto": [
+          -0.06507576256959399,
+          -0.04827851865544066,
+          -0.13954526078605936,
+          -0.15281886126042582,
+          0.022052209783321588,
+          0.13822979287745385,
+          -0.14070971215487024,
+          -0.030145156699355437,
+          -0.023906735795665292
+        ],
+        "media_train": [
+          0.0004998687000189569,
+          0.0022694436529705846,
+          0.004498246444345799,
+          0.016601180963355937,
+          0.019737693858805663,
+          0.021522559981900384,
+          0.0006513841985832461,
+          0.003876513945975666
+        ],
+        "escala_train": [
+          0.022172776525996456,
+          0.04982893934297958,
+          0.0664250698133639,
+          0.09640081559654322,
+          0.009449094398748458,
+          0.00670915477856164,
+          0.024936067986160142,
+          0.051371413314140156
+        ],
+        "ultima_etiqueta_train": "2025-04-11"
+      }
+    },
+    "PPP_10": {
+      "C_seleccionado": 0.01,
+      "cv_train": [
+        {
+          "C": 0.01,
+          "brier_cv": 0.2523914868521263,
+          "se_folds": 0.008314967181081982,
+          "folds": [
+            {
+              "n_train": 287,
+              "n_val": 175,
+              "fin_etiquetas_train": "2018-12-11",
+              "inicio_val": "2019-01-11",
+              "fin_etiquetas_val": "2020-12-31",
+              "brier": 0.26925383255386187
+            },
+            {
+              "n_train": 462,
+              "n_val": 320,
+              "fin_etiquetas_train": "2020-12-31",
+              "inicio_val": "2021-01-12",
+              "fin_etiquetas_val": "2022-12-30",
+              "brier": 0.2640621724673795
+            },
+            {
+              "n_train": 787,
+              "n_val": 35,
+              "fin_etiquetas_train": "2022-12-30",
+              "inicio_val": "2023-01-02",
+              "fin_etiquetas_val": "2023-11-06",
+              "brier": 0.23711165798770842
+            },
+            {
+              "n_train": 827,
+              "n_val": 141,
+              "fin_etiquetas_train": "2023-11-06",
+              "inicio_val": "2024-04-15",
+              "fin_etiquetas_val": "2025-04-11",
+              "brier": 0.23913828439955548
+            }
+          ]
+        },
+        {
+          "C": 0.1,
+          "brier_cv": 0.25810564485771254,
+          "se_folds": 0.014719637573825564,
+          "folds": [
+            {
+              "n_train": 287,
+              "n_val": 175,
+              "fin_etiquetas_train": "2018-12-11",
+              "inicio_val": "2019-01-11",
+              "fin_etiquetas_val": "2020-12-31",
+              "brier": 0.2864236674627323
+            },
+            {
+              "n_train": 462,
+              "n_val": 320,
+              "fin_etiquetas_train": "2020-12-31",
+              "inicio_val": "2021-01-12",
+              "fin_etiquetas_val": "2022-12-30",
+              "brier": 0.27958192345276844
+            },
+            {
+              "n_train": 787,
+              "n_val": 35,
+              "fin_etiquetas_train": "2022-12-30",
+              "inicio_val": "2023-01-02",
+              "fin_etiquetas_val": "2023-11-06",
+              "brier": 0.2262394340231619
+            },
+            {
+              "n_train": 827,
+              "n_val": 141,
+              "fin_etiquetas_train": "2023-11-06",
+              "inicio_val": "2024-04-15",
+              "fin_etiquetas_val": "2025-04-11",
+              "brier": 0.24017755449218756
+            }
+          ]
+        },
+        {
+          "C": 1.0,
+          "brier_cv": 0.2614302574193822,
+          "se_folds": 0.018371342314607055,
+          "folds": [
+            {
+              "n_train": 287,
+              "n_val": 175,
+              "fin_etiquetas_train": "2018-12-11",
+              "inicio_val": "2019-01-11",
+              "fin_etiquetas_val": "2020-12-31",
+              "brier": 0.29975192556448876
+            },
+            {
+              "n_train": 462,
+              "n_val": 320,
+              "fin_etiquetas_train": "2020-12-31",
+              "inicio_val": "2021-01-12",
+              "fin_etiquetas_val": "2022-12-30",
+              "brier": 0.28397717140898077
+            },
+            {
+              "n_train": 787,
+              "n_val": 35,
+              "fin_etiquetas_train": "2022-12-30",
+              "inicio_val": "2023-01-02",
+              "fin_etiquetas_val": "2023-11-06",
+              "brier": 0.22049194579171671
+            },
+            {
+              "n_train": 827,
+              "n_val": 141,
+              "fin_etiquetas_train": "2023-11-06",
+              "inicio_val": "2024-04-15",
+              "fin_etiquetas_val": "2025-04-11",
+              "brier": 0.24149998691234245
+            }
+          ]
+        },
+        {
+          "C": 10.0,
+          "brier_cv": 0.26196990754332283,
+          "se_folds": 0.01905032342813435,
+          "folds": [
+            {
+              "n_train": 287,
+              "n_val": 175,
+              "fin_etiquetas_train": "2018-12-11",
+              "inicio_val": "2019-01-11",
+              "fin_etiquetas_val": "2020-12-31",
+              "brier": 0.3022386933689433
+            },
+            {
+              "n_train": 462,
+              "n_val": 320,
+              "fin_etiquetas_train": "2020-12-31",
+              "inicio_val": "2021-01-12",
+              "fin_etiquetas_val": "2022-12-30",
+              "brier": 0.2845236899461076
+            },
+            {
+              "n_train": 787,
+              "n_val": 35,
+              "fin_etiquetas_train": "2022-12-30",
+              "inicio_val": "2023-01-02",
+              "fin_etiquetas_val": "2023-11-06",
+              "brier": 0.21934719799231436
+            },
+            {
+              "n_train": 827,
+              "n_val": 141,
+              "fin_etiquetas_train": "2023-11-06",
+              "inicio_val": "2024-04-15",
+              "fin_etiquetas_val": "2025-04-11",
+              "brier": 0.24177004886592593
+            }
+          ]
+        }
+      ],
+      "metricas_test": {
+        "brier_score": 0.247689,
+        "brier_dummy": 0.254925,
+        "supera_dummy_brier": true,
+        "log_loss": 0.688087,
+        "accuracy": 52.09,
+        "balanced_accuracy": 57.95,
+        "roc_auc": 0.6597,
+        "tasa_predicha_positiva": 33.02
+      },
+      "parametros_congelados": {
+        "features": [
+          "ret_1",
+          "ret_5",
+          "ret_10",
+          "ret_20",
+          "volatilidad_5",
+          "volatilidad_20",
+          "distancia_media_5",
+          "distancia_media_20",
+          "usd_mxn_logret_5_lag1",
+          "cobre_logret_5_lag1"
+        ],
+        "coeficientes_con_intercepto": [
+          -0.06504399528732564,
+          -0.049282246685540744,
+          -0.13807812423675378,
+          -0.15046265101788475,
+          0.023581728971073655,
+          0.13892217885065322,
+          -0.14230598223041468,
+          -0.03174395674195823,
+          -0.021611463737658848,
+          0.012117643931902426,
+          -0.009003552009105104
+        ],
+        "media_train": [
+          0.0004998687000189569,
+          0.0022694436529705846,
+          0.004498246444345799,
+          0.016601180963355937,
+          0.019737693858805663,
+          0.021522559981900384,
+          0.0006513841985832461,
+          0.003876513945975666,
+          -0.00048439334062119294,
+          0.0017656617054185057
+        ],
+        "escala_train": [
+          0.022172776525996456,
+          0.04982893934297958,
+          0.0664250698133639,
+          0.09640081559654322,
+          0.009449094398748458,
+          0.00670915477856164,
+          0.024936067986160142,
+          0.051371413314140156,
+          0.017516430269309963,
+          0.02903806170658429
+        ],
+        "ultima_etiqueta_train": "2025-04-11"
+      }
+    }
+  },
+  "comparacion_pareada": {
+    "delta_brier_10_menos_8": -0.0003437863633480262,
+    "IC95_bloques": [
+      -0.0009811619695358326,
+      0.00021057116881974085
+    ],
+    "replicas": 5000,
+    "longitud_bloque": 20
+  },
+  "subperiodos_test": {
+    "2025": {
+      "n": 102,
+      "delta_brier": 1.275106330997897e-05
+    },
+    "2026": {
+      "n": 113,
+      "delta_brier": -0.0006656166068800309
+    }
+  },
+  "cumple_criterio_exploratorio": false,
+  "promocion_a_produccion": false,
+  "decision": "CONSERVAR_BENCHMARK_PPP_NO_PROMOVER_FACTORES",
+  "limitacion_disponibilidad": "Rezago conservador aplicado; las tablas actuales no acreditan vintages ni todas las horas historicas de publicacion. Resultado condicionado a esa hipotesis, no validacion point-in-time certificada.",
+  "archivos_protegidos_sha256": {
+    "serie_ppp_historica_15_emisoras_bmv.csv": "92201443e18dfe92f27038b232d038c6314d5e9029b523c55c089e900f665067",
+    "dataset_panel_15_emisoras_features.csv": "e6c8a2c4d48fa56382a104e9e595ede5438253c2fde2b5d03083d165865eabed",
+    "registro_senales_prospectivas_walmex.csv": "3c0b14086b12c83a0f9669038881f2efe83a6a6b639ecf58180867b6febcc4f7",
+    "registro_senales_prospectivas_gmexico.csv": "f7d407c836b3d3ca758e9e537e85ef9467d6ace8833a7573c0192948ba8ef2c1"
+  }
+}

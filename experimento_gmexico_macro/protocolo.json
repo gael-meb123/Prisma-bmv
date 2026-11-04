@@ -1,0 +1,68 @@
+{
+  "timestamp_registro_utc": "2026-10-29T17:28:32.789605+00:00",
+  "protocolo": {
+    "version": "GMEXICO_2_FACTORES_V1",
+    "naturaleza": "EXPLORATORIO_TEST_PREVIAMENTE_INSPECCIONADO",
+    "modelo": "Logistica L2 sin ponderacion de clases; escalado dentro de cada ajuste",
+    "variantes": {
+      "PPP_8": [
+        "ret_1",
+        "ret_5",
+        "ret_10",
+        "ret_20",
+        "volatilidad_5",
+        "volatilidad_20",
+        "distancia_media_5",
+        "distancia_media_20"
+      ],
+      "PPP_10": [
+        "ret_1",
+        "ret_5",
+        "ret_10",
+        "ret_20",
+        "volatilidad_5",
+        "volatilidad_20",
+        "distancia_media_5",
+        "distancia_media_20",
+        "usd_mxn_logret_5_lag1",
+        "cobre_logret_5_lag1"
+      ]
+    },
+    "C_candidatos": [
+      0.01,
+      0.1,
+      1.0,
+      10.0
+    ],
+    "folds_validacion_train": [
+      [
+        "2019-01-01",
+        "2020-12-31"
+      ],
+      [
+        "2021-01-01",
+        "2022-12-31"
+      ],
+      [
+        "2023-01-01",
+        "2023-12-31"
+      ],
+      [
+        "2024-01-01",
+        "2025-04-29"
+      ]
+    ],
+    "seleccion": "Menor C dentro de 1 SE del menor Brier medio entre folds; misma busqueda en ambas variantes",
+    "variables_externas": "Log(valor_t-1 / valor_t-6) sobre sesiones BMV; seis observaciones reales exigidas; sin arrastre",
+    "disponibilidad": "HIPOTESIS_CONSERVADORA_REZAGO_1_SESION_BMV; NO_HAY_VINTAGES_HISTORICAS_VERIFICADAS",
+    "cobre": "Precio diario BCCh USD/libra, difundido redondeado a dos decimales; no futuros continuos",
+    "metrica_primaria": "Brier ampliada menos base sobre las mismas fechas",
+    "bootstrap": {
+      "bloque_sesiones_bmv": 20,
+      "replicas": 5000,
+      "semilla": 20261029
+    },
+    "criterio_evidencia": "Delta Brier <= -0.001, IC95 superior < 0, mejora en ambos subperiodos de Test; confirmacion prospectiva posterior requerida",
+    "emision_prospectiva": false
+  }
+}

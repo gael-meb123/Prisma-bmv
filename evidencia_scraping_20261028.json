@@ -1,0 +1,54 @@
+[
+  {
+    "fuente": "BMV_EVENTOS_RELEVANTES_OFICIAL",
+    "url": "https://www.bmv.com.mx/es/emisoras/eventosrelevantes/WALMEX-6153-CGEN_CAPIT",
+    "timestamp_captura_utc": "2026-10-30T22:09:41.164013+00:00",
+    "http_status": 200,
+    "bytes_descargados": 60596,
+    "sha256_payload": "5f7033f17b1562dda2dd728be68920b8afc58ba1575983295669484891cd2a67",
+    "documentos_oficiales_detectados": 3,
+    "muestra_documentos": [
+      "/docs-pub/GRUPOBMV/deceroabolsa.pdf",
+      "/docs-pub/GRUPOBMV/codigodeeticayconductagrupobmv.pdf",
+      "/docs-pub/GRUPOBMV/politicacontracorrupcionylavadodedinero.pdf"
+    ]
+  },
+  {
+    "fuente": "BMV_INFO_FINANCIERA_OFICIAL",
+    "url": "https://www.bmv.com.mx/es/emisoras/informacionfinanciera/WALMEX-6153-CGEN_CAPIT",
+    "timestamp_captura_utc": "2026-10-30T22:09:41.164013+00:00",
+    "http_status": 200,
+    "bytes_descargados": 60832,
+    "sha256_payload": "45d07592443b8a3279325872becf5420618ec979070f482c5c54c4a2d4054ec9",
+    "documentos_oficiales_detectados": 3,
+    "muestra_documentos": [
+      "/docs-pub/GRUPOBMV/deceroabolsa.pdf",
+      "/docs-pub/GRUPOBMV/codigodeeticayconductagrupobmv.pdf",
+      "/docs-pub/GRUPOBMV/politicacontracorrupcionylavadodedinero.pdf"
+    ]
+  },
+  {
+    "fuente": "BMV_PERFIL_EMISORA_OFICIAL",
+    "url": "https://www.bmv.com.mx/es/emisoras/perfil/WALMEX-6153",
+    "timestamp_captura_utc": "2026-10-30T22:09:41.164013+00:00",
+    "http_status": 200,
+    "bytes_descargados": 62927,
+    "sha256_payload": "590b2cb4a42e00345ab9cfcdb3133b2244621e947fef1ae428238612ef4bcb4d",
+    "documentos_oficiales_detectados": 3,
+    "muestra_documentos": [
+      "/docs-pub/GRUPOBMV/deceroabolsa.pdf",
+      "/docs-pub/GRUPOBMV/codigodeeticayconductagrupobmv.pdf",
+      "/docs-pub/GRUPOBMV/politicacontracorrupcionylavadodedinero.pdf"
+    ]
+  },
+  {
+    "fuente": "GOOGLE_NEWS_RSS_PROSPECTIVO_WALMEX",
+    "url": "https://news.google.com/rss/search?q=WALMEX+OR+%22Walmart+de+Mexico%22&hl=es-419&gl=MX&ceid=MX:es-419",
+    "timestamp_captura_utc": "2026-10-30T22:09:41.164013+00:00",
+    "http_status": 200,
+    "bytes_descargados": 75891,
+    "sha256_payload": "37d940f3013cfc673a9809dbeb4beac852fdaf3e675955e9bbf8a74da49ee6ef",
+    "documentos_oficiales_detectados": 0,
+    "muestra_documentos": []
+  }
+]

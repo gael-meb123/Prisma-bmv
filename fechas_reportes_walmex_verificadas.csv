@@ -1,0 +1,5 @@
+trimestre,fecha_publicacion,estado,evidencia,url_evidencia,sha256_documento
+3T26,2026-10-27,VERIFICADA,"Cabecera HTTP Last-Modified del PDF oficial: Tue 27 Oct 2026 20:52:14 GMT (14:52 CDMX); prensa con sello 27-oct-2026 22:34-23:37 GMT; resumen de busqueda cita calendario WALMEX (reporte martes 27-oct-2026). Last-Modified es hora de carga al servidor, no prueba de difusion en EMISNET: se aplica siempre rezago t+1.",https://files.walmex.mx/upload/files/2026/ES/Trimestral/3T26/WALMEX_3T26_BMV.pdf,69456a0ba022d6a33db4d6c5c5508142f05c39d1cc919935c99a79efe3e048d7
+2T26,2026-07-22,NO_CONFIRMADA_PRIMARIA,"Solo resumen de busqueda web; el PDF con el patron de URL del 3T26 no respondio. No se usa en calculos.",,
+1T26,2026-04-28,NO_CONFIRMADA_PRIMARIA,"Solo resumen de busqueda web; el PDF con el patron de URL del 3T26 no respondio. No se usa en calculos.",,
+2016-2025,,PENDIENTE,"Las 40 fechas historicas que figuraban en experimento_integral_ia_boletines_noticias.py fueron escritas sin fuente y se retiraron. Reponer desde las 43 publicaciones documentadas del proyecto o desde BMV/EMISNET.",,

@@ -1,0 +1,32 @@
+{
+  "version_protocolo": "EXPERIMENTOS_ENTRENAMIENTO_DESARROLLO_V1",
+  "timestamp_registro_utc": "2026-10-30T17:55:03.619900+00:00",
+  "alcance": "Exclusivamente TRAIN (<= 2025-04-29); cero uso de TEST o PROSPECTIVA.",
+  "experimento_1": {
+    "nombre": "Ponderacion por Magnitud de Retorno + Escalado Robusto (RobustScaler)",
+    "series": [
+      "E1_A_BENCHMARK_8VARS_STD_UNIF",
+      "E1_C_BASE_2VARS_STD_UNIF",
+      "E1_R_2VARS_ROBUST_UNIF",
+      "E1_M_2VARS_STD_MAGWEIGHT",
+      "E1_RM_2VARS_ROBUST_MAGWEIGHT",
+      "E1_RMC_2VARS_ROBUST_MAG_CONTR05"
+    ],
+    "regla_pesos": "w_i proporcional a |PPP_{t+5}/PPP_t - 1| acotado en [P10, P95] de Train y normalizado a media 1.0.",
+    "regla_scaler_robusto": "Winsorizing [P1, P99] de Train + centrado por mediana y escala por IQR normalizado de Train."
+  },
+  "experimento_2": {
+    "nombre": "Entrenamiento en Panel Mancomunado (Pooled Panel) + Retorno Relativo Intrapanel",
+    "series": [
+      "E2_P1_INDIV_REL2_STD_UNIF",
+      "E2_P2_INDIV_REL3_STD_UNIF",
+      "E2_P3_POOLED_2VARS_STD_UNIF",
+      "E2_P4_POOLED_REL3_STD_UNIF",
+      "E2_P5_POOLED_REL3_ROBUST_MAG",
+      "E2_P6_POOLED_REL3_CONTR05"
+    ],
+    "regla_retorno_relativo": "ret_10_rel_panel = ret_10_{i,t} - media_transversal(ret_10_{panel,t}) usando solo emisoras publicadas en la misma fecha t.",
+    "regla_purga_panel": "Toda observacion del panel en Train cumple fecha < inicio_val y fecha_objetivo_h5 < inicio_val.",
+    "regla_estandarizacion_panel": "Estandarizacion por emisora dentro de cada ventana de Train (con respaldo global si n_emisora < 30)."
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "timestamp_registro_utc": "2026-10-29T17:46:27.685851+00:00",
+  "protocolo": {
+    "version": "ESTABILIDAD_DESARROLLO_GMEXICO_V1",
+    "corte_desarrollo": "2025-04-29",
+    "alcance": "Solo TRAIN; ni ajuste ni evaluacion sobre TEST o PROSPECTIVA",
+    "validacion_externa": "Semestres calendario 2019-H1 a 2025-H1 parcial, etiquetas dentro de cada bloque",
+    "regimenes": [
+      "EXPANSIVA",
+      "MOVIL_3_ANIOS"
+    ],
+    "modelos": {
+      "PPP_COMPLETO": [
+        "ret_1",
+        "ret_5",
+        "ret_10",
+        "ret_20",
+        "volatilidad_5",
+        "volatilidad_20",
+        "distancia_media_5",
+        "distancia_media_20"
+      ],
+      "PPP_PAREADO": [
+        "ret_1",
+        "ret_5",
+        "ret_10",
+        "ret_20",
+        "volatilidad_5",
+        "volatilidad_20",
+        "distancia_media_5",
+        "distancia_media_20"
+      ],
+      "PPP_MAS_FACTORES": [
+        "ret_1",
+        "ret_5",
+        "ret_10",
+        "ret_20",
+        "volatilidad_5",
+        "volatilidad_20",
+        "distancia_media_5",
+        "distancia_media_20",
+        "usd_mxn_logret_5_lag1",
+        "cobre_logret_5_lag1"
+      ]
+    },
+    "min_train": 100,
+    "min_validacion": 20,
+    "seleccion_C": {
+      "candidatos": [
+        0.01,
+        0.1,
+        1.0,
+        10.0
+      ],
+      "validacion_interna": "Semestres anteriores, purgados, contenidos en el Train externo",
+      "min_folds_internos": 2,
+      "regla": "Menor C dentro de 1 SE del menor Brier medio interno"
+    },
+    "ponderacion_clases": false,
+    "regularizacion": "L2; scaler ajustado exclusivamente en cada Train interno/externo",
+    "comparacion_factores": "PPP_PAREADO y PPP_MAS_FACTORES utilizan exactamente las mismas fechas Train y validacion",
+    "bootstrap": {
+      "replicas": 5000,
+      "bloque_sesiones": 20,
+      "semilla": 20261029,
+      "global": "Estratificado por fold externo, pesos fijos proporcionales a n; sin cruzar fronteras de reentrenamiento"
+    },
+    "periodos_insuficientes": "Se reportan sin metricas ni imputacion; la exclusion depende de tamano y elegibilidad, no del resultado",
+    "disponibilidad_externa": "Hipotesis de rezago 1 sesion; vintages historicos no certificados",
+    "naturaleza": "Diagnostico exploratorio interno; no nueva evidencia prospectiva ni seleccion de ganador en TEST"
+  }
+}

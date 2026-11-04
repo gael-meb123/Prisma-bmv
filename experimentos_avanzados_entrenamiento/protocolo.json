@@ -1,0 +1,38 @@
+{
+  "version_protocolo": "EXPERIMENTOS_AVANZADOS_ENTRENAMIENTO_V1",
+  "timestamp_registro_utc": "2026-10-30T18:20:03.063834+00:00",
+  "alcance": "Exclusivamente TRAIN (<= 2025-04-29); cero uso de TEST o PROSPECTIVA.",
+  "experimento_3_zona_neutral": {
+    "tau_grid": [
+      0.0,
+      0.0015,
+      0.0025,
+      0.005
+    ],
+    "regla": "Excluir de Train sesiones con |PPP_{t+5}/PPP_t - 1| < tau manteniendo pesos uniformes w_i=1 y evaluando el 100% de la validacion."
+  },
+  "experimento_4_jerarquico": {
+    "gamma_grid": [
+      0.0,
+      0.25,
+      0.5,
+      0.75,
+      1.0
+    ],
+    "regla": "p_mix = gamma * p_indiv + (1 - gamma) * p_panel seleccionado en validacion interna anidada."
+  },
+  "experimento_5_regularizacion_y_balanceo": {
+    "cs_fino": [
+      0.001,
+      0.002,
+      0.005,
+      0.01,
+      0.02,
+      0.05,
+      0.1,
+      1.0,
+      10.0
+    ],
+    "regla": "Desbloquear C < 0.01 mediante regla 1-SE interna y auditar la penalizacion en Brier de class_weight='balanced'."
+  }
+}

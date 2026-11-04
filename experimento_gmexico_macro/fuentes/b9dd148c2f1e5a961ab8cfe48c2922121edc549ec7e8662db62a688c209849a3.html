@@ -1,0 +1,900 @@
+
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head1">
+
+<!-- Google Tag Manager -->
+<script>(function (w, d, s, l, i) {
+        w[l] = w[l] || []; w[l].push({
+            'gtm.start':
+                new Date().getTime(), event: 'gtm.js'
+        }); var f = d.getElementsByTagName(s)[0],
+            j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', 'GTM-5HBCFKV');</script>
+<!-- End Google Tag Manager -->
+
+    <link id="favicon1" rel="shortcut icon" href="../favicon.ico" type="image/x-icon" /><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /><title>
+	Indicadores del día
+</title><meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0" />
+
+    <!--<script type="text/javascript" src="../styles/respon_beha/res.js"></script>-->
+
+    <!-- Estilos stage 1 -->
+
+    <link rel="stylesheet" type="text/css" href="../styles/OcultarDatePicker.css" />
+    <script type="text/javascript" src="../styles/estilo/jquery-3.4.1.js"></script>
+    <script type="text/javascript" src="../styles/oboutCalendar2.js"></script>
+    <script type="text/javascript" src="../styles/jQuery/jquery-ui.js"></script>
+    <script type="text/javascript" src="../resources/FuncionesGlobales/functions.js"></script>
+    <link type="text/css" href="../styles/estilo/bootstrap.css" rel="stylesheet" /><link type="text/css" href="../styles/estilo/bundle.css" rel="stylesheet" /> 
+    <script type="text/javascript" src="../resources/js/app.js"></script>
+    
+   <script type="text/javascript">
+
+            // Esta función controla el rango de responsividad
+            //
+            function responsividad() {
+                if (window.innerWidth < 960) {
+                
+                    document.getElementById("tabla_datos").setAttribute("style","display: none");
+                    document.getElementById("re").setAttribute("style","display: inline");
+
+                } else {
+
+                    document.getElementById("tabla_datos").setAttribute("style","display: inline");
+                    document.getElementById("re").setAttribute("style","display: none");
+                }
+
+            }
+            //
+            // Termina función de responsividad
+            //
+
+
+            function iniciar() {
+
+                var table = document.getElementById("gr");
+                for (var meses=0; meses < table.rows[0].cells.length; meses++) {
+                    for (var dias=0;dias <table.rows.length; dias++) {
+                        table.rows[dias].cells[meses].setAttribute("style", "font-size: 13px; padding: 0px; text-align: center; vertical-align:middle;");
+                    }
+            
+                }
+
+                // Esta función es la responsable de controlar si es día mes trimestre etc
+                if  (table.rows[0].cells[0].innerText == "Día" || table.rows[0].cells[0].innerText == "Day") {
+                    ejecutar_fcn_diarias();
+                    document.getElementById("tabla_datos").setAttribute("style","display: none");
+                    document.getElementById("re").setAttribute("style","display: none");
+                    responsividad();
+
+                }
+
+
+                if ((table.rows[0].cells[0].innerText == "Año" || table.rows[0].cells[0].innerText == "Year") && table.rows[0].cells.length == 5) {
+                    ejecutar_fcn_trim();
+                    document.getElementById("tabla_datos").setAttribute("style","display: none");
+                    document.getElementById("re").setAttribute("style","display: none");
+                    responsividad();
+
+                }
+
+
+                if ((table.rows[0].cells[0].innerText == "Año" || table.rows[0].cells[0].innerText == "Year") && table.rows[0].cells.length == 13) {
+                    ejecutar_fcn_men();
+                    document.getElementById("tabla_datos").setAttribute("style","display: none");
+                    document.getElementById("re").setAttribute("style","display: none");
+                    responsividad();
+
+                }
+
+            }
+
+            function encontrar_mes_datos() {
+                var ind = [0,0,0,0,0,0,0,0,0,0,0,0];
+                var table = document.getElementById("gr");
+                for (var meses=1; meses < table.rows[0].cells.length; meses++) {
+                    for (var dias=1;dias <table.rows.length; dias++) {
+                        if (table.rows[dias].cells[meses].innerText != "") {
+                            ind[meses-1] = 1;
+                        }
+                    }
+                }
+
+                return(ind);
+            }
+
+            function crear_table_meses() {
+                for (var i=1; i<13;i++) {
+
+                    var fil_1 = document.createElement("TABLE");
+                    var div_row = document.createElement("DIV");
+                    var div_class_m12 = document.createElement("DIV");
+                    div_row.setAttribute("class","row");
+                    div_class_m12.setAttribute("class","col-md-12");
+                
+                    fil_1.setAttribute("id","tbl_" + (13-i).toString());
+                    fil_1.setAttribute("style","font-size: 12px;border-spacing:0px");
+                    fil_1.setAttribute("class","table table-sm");
+                    div_row.setAttribute("id","div_mes_" + (13-i).toString());
+
+                    div_class_m12.appendChild(fil_1);
+                    div_row.appendChild(div_class_m12);
+
+                    document.getElementById("re").appendChild(div_row); 
+                }
+
+                var ind = encontrar_mes_datos();
+
+                for (var i=0;i<ind.length;i++) {
+
+
+
+                    if (ind[i] == 1) {
+                        //document.getElementById("div_mes_"+(i+1).toString()).setAttribute("style", "display:inline;");
+
+                    } else {
+                        document.getElementById("div_mes_"+(i+1).toString()).setAttribute("style", "display:none;");
+
+                    }
+                }
+
+
+            }
+   
+
+            function crear_tabla_data_diaria(mes) {
+                var table = document.getElementById("gr");
+                var fil_1 = document.createElement("TR");
+                var col_1 = document.createElement("TD");
+                col_1.appendChild(document.createTextNode(table.rows[0].cells[mes].innerText));
+                //--cambio --
+                col_1.setAttribute("style","font-size: 13px;");
+                //cambio
+                col_1.setAttribute("colspan","6");
+
+                fil_1.appendChild(col_1);
+                fil_1.setAttribute("style","color: rgb(255,255,255); background-color: rgb(24,45,79);");
+                document.getElementById("tbl_"+mes.toString()).appendChild(fil_1); 
+
+                for (var dias = 1; dias < 11; dias++) {
+                    var fila = document.createElement("TR");
+                    var col_dia_1 = document.createElement("TD");
+                    var col_dato_1 = document.createElement("TD");
+                    var col_dia_2 = document.createElement("TD");
+                    var col_dato_2 = document.createElement("TD");
+                    var col_dia_3 = document.createElement("TD");
+                    var col_dato_3 = document.createElement("TD");
+             
+                    col_dia_1.appendChild(document.createTextNode(dias.toString()));
+                    col_dia_1.setAttribute("style","font-weight: bold;");
+                    col_dato_1.appendChild(document.createTextNode(table.rows[dias].cells[mes].innerText));
+
+                    //col2
+                    // empieza modificación
+                    col_dia_2.appendChild(document.createTextNode((dias + 10).toString()));
+                    col_dia_2.setAttribute("style","font-weight: bold;");
+                    col_dato_2.appendChild(document.createTextNode(table.rows[dias+10].cells[mes].innerText));
+
+                    //col3
+
+                    col_dia_3.appendChild(document.createTextNode((dias + 20).toString()));
+                    col_dia_3.setAttribute("style","font-weight: bold;");
+                    col_dato_3.appendChild(document.createTextNode(table.rows[dias+20].cells[mes].innerText));
+
+                    fila.appendChild(col_dia_1);
+                    fila.appendChild(col_dato_1);
+                    fila.appendChild(col_dia_2);
+                    fila.appendChild(col_dato_2);
+                    fila.appendChild(col_dia_3);
+                    fila.appendChild(col_dato_3);
+
+                    fila.setAttribute("style","background-color: rgb(241,241,241)");
+                    document.getElementById("tbl_"+mes.toString()).appendChild(fila); 
+
+                    if (dias == 10) {
+                        var fila = document.createElement("TR");
+                        var col_dia_1 = document.createElement("TD");
+                        var col_dato_1 = document.createElement("TD");
+                        var col_dia_2 = document.createElement("TD");
+                        var col_dato_2 = document.createElement("TD");
+                        var col_dia_3 = document.createElement("TD");
+                        var col_dato_3 = document.createElement("TD");
+
+                        col_dia_1.appendChild(document.createTextNode(""));
+                        col_dato_1.appendChild(document.createTextNode(""));
+
+                        //col2
+
+                        col_dia_2.appendChild(document.createTextNode(""));
+                        col_dato_2.appendChild(document.createTextNode(""));
+
+                        //col3
+
+                        col_dia_3.appendChild(document.createTextNode((11 + 20).toString()));
+                        col_dia_3.setAttribute("style","font-weight: bold;");
+                        col_dato_3.appendChild(document.createTextNode(table.rows[11+20].cells[mes].innerText));
+
+                        fila.appendChild(col_dia_1);
+                        fila.appendChild(col_dato_1);
+                        fila.appendChild(col_dia_2);
+                        fila.appendChild(col_dato_2);
+                        fila.appendChild(col_dia_3);
+                        fila.appendChild(col_dato_3);
+                        fila.setAttribute("style","background-color: rgb(241,241,241)");
+
+                        document.getElementById("tbl_"+mes.toString()).appendChild(fila); 
+
+                    }
+                }
+
+            }
+
+            function ejecutar_fcn_diarias() {
+                crear_table_meses();
+                for (var i=1;i< 13;i++){
+                    crear_tabla_data_diaria(i);
+                }
+
+            }
+
+            function ejecutar_fcn_trim() {
+                var table = document.getElementById("gr");
+                var div_padre = document.getElementById("re");
+
+                for (var yr1=1 ;yr1 < table.rows.length; yr1++) {
+                    var yr = table.rows.length-yr1;
+                    var tabla_yr = document.createElement("TABLE");
+                    tabla_yr.setAttribute("class","table  table-sm");
+                    var fila_yr_trim = document.createElement("TR");
+                    var col1_yr_trim = document.createElement("TD");
+                    var col2_yr_trim = document.createElement("TD");
+                    fila_yr_trim.setAttribute("style","color: rgb(255,255,255); background-color: rgb(24,45,79);");
+                    col1_yr_trim.setAttribute("colspan","2");
+                    col1_yr_trim.appendChild(document.createTextNode(table.rows[yr].cells[0].innerText));
+                    fila_yr_trim.appendChild(col1_yr_trim);
+                    tabla_yr.appendChild(fila_yr_trim);
+
+                    for (var trim=1;trim < 5 ;trim++) {
+                        var fila_yr_trim = document.createElement("TR");
+                        var col1_yr_trim = document.createElement("TD");
+                        var col2_yr_trim = document.createElement("TD");
+                        col1_yr_trim.setAttribute("style","font-weight: bold;");
+                        fila_yr_trim.setAttribute("style","background-color: rgb(241,241,241)");
+
+                        if (trim == 1) {
+                            col1_yr_trim.appendChild(document.createTextNode("I"));
+                        }
+                        if (trim == 2) {
+                            col1_yr_trim.appendChild(document.createTextNode("II"));
+                        }
+                        if (trim == 3) {
+                            col1_yr_trim.appendChild(document.createTextNode("III"));
+                        }
+                        if (trim == 4) {
+                            col1_yr_trim.appendChild(document.createTextNode("IV"));
+                        }
+                        col2_yr_trim.appendChild(document.createTextNode(table.rows[yr].cells[trim].innerText));
+
+                        fila_yr_trim.appendChild(col1_yr_trim);
+                        fila_yr_trim.appendChild(col2_yr_trim);
+
+                        tabla_yr.appendChild(fila_yr_trim);
+                    }
+                    div_padre.appendChild(tabla_yr);
+
+                    var div_row = document.createElement("DIV");
+                    var div_class_12 = document.createElement("DIV");
+                    div_class_12.setAttribute("class","col-md-12");
+                    div_class_12.appendChild(document.createTextNode(" "));
+                    div_row.appendChild(div_class_12);
+                    div_row.setAttribute("class","row");
+                    div_padre.appendChild(div_row);
+                
+                
+                }
+            
+
+            }
+
+
+
+            function ejecutar_fcn_men() {
+                var table = document.getElementById("gr");
+                var div_padre = document.getElementById("re");
+                for (var yr1=1 ;yr1 < table.rows.length; yr1++) {
+                    var yr = table.rows.length-yr1;
+                    var tabla_yr = document.createElement("TABLE");
+                    tabla_yr.setAttribute("class","table  table-sm");
+                    var fila_yr_mes = document.createElement("TR");
+                    var col1_yr_mes = document.createElement("TD");
+                    var col2_yr_mes = document.createElement("TD");
+                    fila_yr_mes.setAttribute("style","color: rgb(255,255,255); background-color: rgb(24,45,79);");
+                    col1_yr_mes.setAttribute("colspan","4");
+                    col1_yr_mes.appendChild(document.createTextNode(table.rows[yr].cells[0].innerText));
+                    fila_yr_mes.appendChild(col1_yr_mes);
+                    tabla_yr.appendChild(fila_yr_mes);
+                
+
+                    for (var mes=1; mes < 7 ;mes++) {
+                        var fila_yr_mes = document.createElement("TR");
+                        var col1_yr_mes = document.createElement("TD");
+                        var col2_yr_mes = document.createElement("TD");
+                        var col3_yr_mes = document.createElement("TD");
+                        var col4_yr_mes = document.createElement("TD");
+                        col1_yr_mes.setAttribute("style","font-weight: bold; text-align:left;font-size:12px;");
+                        col3_yr_mes.setAttribute("style","font-weight: bold; text-align:left;font-size:12px;");
+                        fila_yr_mes.setAttribute("style","background-color: rgb(241,241,241)");
+
+
+                        col1_yr_mes.appendChild(document.createTextNode(table.rows[0].cells[mes].innerText));
+                        col3_yr_mes.appendChild(document.createTextNode(table.rows[0].cells[mes+6].innerText));
+                        col2_yr_mes.appendChild(document.createTextNode(table.rows[yr].cells[mes].innerText));
+                        col4_yr_mes.appendChild(document.createTextNode(table.rows[yr].cells[mes+6].innerText));
+
+                        fila_yr_mes.appendChild(col1_yr_mes);
+                        fila_yr_mes.appendChild(col2_yr_mes);
+                        fila_yr_mes.appendChild(col3_yr_mes);
+                        fila_yr_mes.appendChild(col4_yr_mes);
+
+                        tabla_yr.appendChild(fila_yr_mes);
+                    }
+                    div_padre.appendChild(tabla_yr);
+
+                    var div_row = document.createElement("DIV");
+                    var div_class_12 = document.createElement("DIV");
+                    div_class_12.setAttribute("class","col-md-12");
+                    div_class_12.appendChild(document.createTextNode(" "));
+                    div_row.appendChild(div_class_12);
+                    div_row.setAttribute("class","row");
+                    div_padre.appendChild(div_row);                
+                }
+           
+            }
+
+            window.addEventListener("load", iniciar);
+            window.addEventListener("resize", responsividad);
+       
+    </script>
+
+    <!-- acceso remoto para la comunicación entre el cliente y servidor-->
+
+    <div id="status"> </div>
+
+    <script type="text/javascript" src="../resources/FuncionesGlobales/rs.js"></script>
+    <script type="text/javascript" src="../resources/FuncionesGlobales/net.js"></script>
+
+    
+    <script type="text/javascript">
+        function call_refresca_ticket() {
+            var time_out = 180000;
+            setInterval('refresca_ticket()', time_out);
+        }
+    </script>
+
+    <!-- -->
+
+    <style>
+        a:not([href]) {
+            cursor: pointer;
+        }
+        /* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            padding-top: 100px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        /* The Close Button */
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+            .close:hover,
+            .close:focus {
+                color: #000;
+                text-decoration: none;
+                cursor: pointer;
+            }
+    </style>
+</head>
+<body onload="javascript:call_refresca_ticket();">
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5HBCFKV"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+    <form method="post" action="./Serie.aspx?gcode=LIBRA_COBRE&amp;param=cgBnAE8AOQBlAGcAIwBiAFUALQBsAEcAYgBOAEkASQBCAEcAegBFAFkAeABkADgASAA2AG8AdgB2AFMAUgBYADIAQwBzAEEAMQBJAG8ATwBzAEgATABGAE4AagB1AFcAYgB2AFAAZwBhADIAbABWAHcAXwBXAGgATAAkAFIAVAB1AEIAbAB3AFoAdQBRAFgAZwA5AHgAdgAwACQATwBZADcAMwAuAGIARwBFAFIASwAuAHQA" id="form1">
+<div class="aspNetHidden">
+<input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="" />
+<input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="" />
+<input type="hidden" name="__LASTFOCUS" id="__LASTFOCUS" value="" />
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUKMTY5NTgxNTk2Nw9kFgICAQ9kFi4CAQ8WBB4EaHJlZgUkSW5kaWNhZG9yZXNEaWFyaW9zLmFzcHg/SWRpb21hPWVuLVVTHglpbm5lcmh0bWwFB0VuZ2xpc2hkAgMPFgQfAAUaaHR0cHM6Ly93d3cuYmNlbnRyYWwuY2wvZXMeBXRpdGxlBRZCYW5jbyBDZW50cmFsIGRlIENoaWxlZAIFDxYCHwAFGmh0dHBzOi8vd3d3LmJjZW50cmFsLmNsL2VzFgICAQ8WAh8BBRZCYW5jbyBDZW50cmFsIGRlIENoaWxlZAIHDxYCHwAFIGh0dHBzOi8vc2kzLmJjZW50cmFsLmNsL3NpZXRlL2VzFgICAQ8WAh8BBR9CYXNlIGRlIERhdG9zIEVzdGFkJiMyMzc7c3RpY29zZAIJDxYCHwAFU2h0dHBzOi8vc2kzLmJjZW50cmFsLmNsL2VzdGFkaXN0aWNhcy9QcmluY2lwYWwxL2VubGFjZXMvYXBsaWNhY2lvbmVzL0JERV9tb3ZpbC5odG1sFgICAQ8WAh8BBQ5CREUgTSYjMjQzO3ZpbGQCCw8WAh8ABTVodHRwczovL3NpMy5iY2VudHJhbC5jbC9TaWV0ZS9lcy9TaWV0ZS9BUEk/cmVzcHVlc3RhPRYCAgEPFgIfAQUHQVBJIEJERWQCDQ8WAh8ABSRodHRwczovL2NvbnRhY3RvY2VudHJhbC5iY2VudHJhbC5jbC8WAgIBDxYCHwEFEENvbnQmIzIyNTtjdGVub3NkAg8PFgIfAQUTSW5kaWNhZG9yZXMgZGlhcmlvc2QCEQ8WAh8ABRpodHRwczovL3d3dy5iY2VudHJhbC5jbC9lcxYCAgEPFgIfAQUGSW5pY2lvZAITDxYCHwAFPGh0dHBzOi8vd3d3LmJjZW50cmFsLmNsL3dlYi9iYW5jby1jZW50cmFsL2FyZWFzL2VzdGFkaXN0aWNhcxYCAgEPFgIfAQURRXN0YWQmIzIzNztzdGljYXNkAhUPDxYEHgtOYXZpZ2F0ZVVybAUXSW5kaWNhZG9yZXNEaWFyaW9zLmFzcHgeBFRleHQFE0luZGljYWRvcmVzIGRpYXJpb3NkZAIXD2QWBAIBDxYCHwEFD1NlbGVjY2lvbmUgYcOxb2QCAw8QZBAVDwQyMDEyBDIwMTMEMjAxNAQyMDE1BDIwMTYEMjAxNwQyMDE4BDIwMTkEMjAyMAQyMDIxBDIwMjIEMjAyMwQyMDI0BDIwMjUEMjAyNhUPBDIwMTIEMjAxMwQyMDE0BDIwMTUEMjAxNgQyMDE3BDIwMTgEMjAxOQQyMDIwBDIwMjEEMjAyMgQyMDIzBDIwMjQEMjAyNQQyMDI2FCsDD2dnZ2dnZ2dnZ2dnZ2dnZxYBAg5kAhkPFgIfAQUoUHJlY2lvIGRlbCBDb2JyZSwgZCYjMjQzO2xhcmVzIHBvciBsaWJyYWQCGw8WAh8BBQwoRCYjMjQzO2xhcilkAh0PFgIeBXN0eWxlBSd2aXNpYmlsaXR5OmhpZGRlbjtkaXNwbGF5OmlubGluZS1ibG9jaztkAh8PFgIfAQUEQcOxb2QCIQ8WAh8BBQQyMDI2ZAIjDw8WAh4HVG9vbFRpcAUGSW5pY2lvZGQCJQ8PZBYCHwIFCEdyYWZpY2FyZAInDw8WAh8GBRBFeHBvcnRhciBhIEV4Y2VsZGQCKQ8PZBYCHwIFCEltcHJpbWlyZAIrDzwrAAsBAA8WCB4IRGF0YUtleXMWAB4LXyFJdGVtQ291bnQCHx4VXyFEYXRhU291cmNlSXRlbUNvdW50Ah8eCVBhZ2VDb3VudAIBZGQCLQ8WAh8BZWQYAQUeX19Db250cm9sc1JlcXVpcmVQb3N0QmFja0tleV9fFgQFDGltZ0J1dEluaWNpbwUNaW1nQnV0R3JhZmljbwUMaW1nQnV0RXhwb3J0BQ5pbWdCdXRJbXByaW1pcr04SamncS3rTvQ0qsMEQomA1Hlp0QAr5R/ZNF0z2uQa" />
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+var theForm = document.forms['form1'];
+if (!theForm) {
+    theForm = document.form1;
+}
+function __doPostBack(eventTarget, eventArgument) {
+    if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+        theForm.__EVENTTARGET.value = eventTarget;
+        theForm.__EVENTARGUMENT.value = eventArgument;
+        theForm.submit();
+    }
+}
+//]]>
+</script>
+
+
+<script language=javascript>
+				
+					 function FreezeGridColumns(dgTbl, colNo) 
+					 {                        
+                        						
+					 	var tbl = document.getElementById(dgTbl);
+
+                        if (tbl != null)
+                        {
+					 	    for ( var i=0; i<tbl.rows.length; i++)
+    					 	{
+	    				 		for ( var j=0; j<colNo; j++) 
+		    			 		{ 
+                                    if (tbl.rows[i].cells[j] != null)
+                                    {
+					     			    tbl.rows[i].cells[j].className = 'locked'; 
+                                    }
+					 		    } 
+					 	    } 	
+                        }			
+					 } 
+				
+</script>
+					  <style TYPE='text/css'> 
+					/* Locks table header */
+					th 
+					{ 					
+						/* border-right: 1px solid silver; */ 
+						position:relative;
+						cursor: default;
+						/*IE5+ only*/ 
+						top: expression(this.parentElement.parentElement.parentElement.parentElement.scrollTop -2);
+						z-index: 10;	
+					}
+					TR.GridNormal TH, TR.GridAlternate TH
+					{
+						text-align:left;
+					}
+					TR.GridHeader TH
+					{
+						
+					}					
+						
+					/* Locks the left column */ 
+					td.locked, th.locked 
+					{ 					
+						/* border-right: 1px solid silver; */ 
+						position:relative; 
+						cursor: default; 
+						/*IE5+ only*/	
+						left: expression(this.parentElement.parentElement.parentElement.parentElement.scrollLeft-2);	
+					} 
+					
+					/* Keeps the header as the top most item. Important for top left item*/ 
+					th.locked {z-index: 99;} 
+					</style> 
+					<style>
+					/*Overriding Grid Styles*/
+					.Grid
+					{
+						border:0;						
+					}
+					.GridHeader
+					{					
+						
+						padding : 1px 0px 1px 0px;						
+					}
+					.GridHeader TD A, TH A
+					{
+						text-decoration:none;						
+					}
+					.GridNormal
+					{
+						
+						font-weight: normal;						
+					}
+					.GridAlternate
+					{
+						
+						font-weight: normal;						
+					}
+					.GridSelected
+					{
+						
+						font-weight: normal;						
+					}
+					.GridPager
+					{
+											
+					}
+					</style>
+					
+<div class="aspNetHidden">
+
+	<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="1F2BBC68" />
+	<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEdABZOwT+y0OXr3aZywOdRz3cxKRxekrlRQLiD5cB1DvfSuIzBrmOkVpNN/ThFKqNhN3lbGLg3DFiRgBhQuSrxTbLLEc0/0zvuSQMyG3jbwkkWZMeWw33UEYrypwR5Sv7kcQrQVIlD69VWmuS+G5iXcVKHGC2aZd9r//hcut5iQE2ClDHnLflQISLJYUC4q9OYD10M0sDFmrFHut3gc4mvNRbyNsj7VqU7GbcU50TcZGeKDWm+VjqjYYgRpZrI+q6ec+XWoPa/X+HvWygdkXJaM4Tfi6Pm8X2jvnJ18MJRLoMt9AX/XsptuH98a59oYmWgrDO0d/+8LIhx6zAkBvd9ToOiMiXKLcDp8LoZwE2iZdHfowFH6egR/tDqYy0JTPMnSz1kZRPweN4Hr1N9+O0YlJN3zjyVC7BTu3LlGS4zZDVzu28HNLPObkw4QzE8SRLIAuzqvcaZPBCFisaRH8ehkbyGUvLoEJtZZj4PBFrCOgw6F43cPyOdpR7nk+YxAQ7BWos=" />
+</div>
+        <!-- CABECERA -->
+
+        <!-- contenido nuevo-->
+        <div class="container-fluid" id="wrapper">
+            <header id="banner" role="banner">
+                <div class="n-header__minibar">
+                    <div class="container">
+                        <div class="n-minibar" style="text-align: right; color: rgb(255,255,255);">
+                            <a href="IndicadoresDiarios.aspx?Idioma=en-US" id="HtmlIdioma" class="text-white">English</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-main">
+                    <div class="header-main-inner container-corp">
+                        <div id="heading" class="logo custom-logo">
+                            <h1 class="site-title">
+                                <a href="https://www.bcentral.cl/es" id="ir_a_banco_central" class="logo main-logo" title="Banco Central de Chile">
+                                    <img alt="" height="83.5" src="../Images/layout_set_logo.png" width="auto">
+                                </a>
+                            </h1>
+                        </div>
+                        <!--<button class="c-hamburger c-hamburger--htx"> <span></span> </button> -->
+                        <nav class="sort-pages modify-pages" id="navigation" role="navigation">
+                            <ul aria-label="Páginas del sitio web" role="menubar" class="header-menubar-corp">
+                                <li class=" first-menu-list" id="layout_02" role="presentation">
+                                    <a href="https://www.bcentral.cl/es" id="ser_3" aria-labelledby="layout_02" role="menuitem" class="first-item-menu">
+                                        <span>
+                                            <label id="b3">Banco Central de Chile</label>
+                                        </span>
+                                    </a>
+                                    <span class="down-submenu-mobile">
+                                        <i class="la la-chevron-circle-down"></i>
+                                    </span>
+                                </li>
+                                <li class=" first-menu-list" id="layout_01" role="presentation">
+                                    <a href="https://si3.bcentral.cl/siete/es" id="ser_1" aria-labelledby="layout_01" role="menuitem" class="first-item-menu">
+                                        <span>
+                                            <label id="b1">Base de Datos Estad&#237;sticos</label>
+                                        </span>
+                                    </a>
+                                    <span class="down-submenu-mobile">
+                                        <i class="la la-chevron-circle-down"></i>
+                                    </span>
+                                </li>
+                                <li class=" first-menu-list" id="layout_01" role="presentation">
+                                    <a href="https://si3.bcentral.cl/estadisticas/Principal1/enlaces/aplicaciones/BDE_movil.html" id="S1_link" aria-labelledby="layout_01" role="menuitem" class="first-item-menu">
+                                        <span>
+                                            <label id="S1_text">BDE M&#243;vil</label>
+                                        </span>
+                                    </a>
+                                    <span class="down-submenu-mobile">
+                                        <i class="la la-chevron-circle-down"></i>
+                                    </span>
+                                </li>
+                                <li class=" first-menu-list" id="layout_01" role="presentation">
+                                    <a href="https://si3.bcentral.cl/Siete/es/Siete/API?respuesta=" id="ser_2" aria-labelledby="layout_01" role="menuitem" class="first-item-menu">
+                                        <span>
+                                            <label id="lbl_webservice">API BDE</label>
+                                        </span>
+                                    </a>
+                                    <span class="down-submenu-mobile">
+                                        <i class="la la-chevron-circle-down"></i>
+                                    </span>
+                                </li>
+                                <li class=" first-menu-list" id="layout_01" role="presentation">
+                                    <a href="https://contactocentral.bcentral.cl/" id="link_contacto" aria-labelledby="layout_01" role="menuitem" class="first-item-menu">
+                                        <span>
+                                            <label id="contacto_banner">Cont&#225;ctenos</label>
+                                        </span>
+                                    </a>
+                                    <span class="down-submenu-mobile">
+                                        <i class="la la-chevron-circle-down"></i>
+                                    </span>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+
+<!--CONTENIDO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+
+            <div class="container">
+                <div class="n-separate__15"></div>
+                <div class="tab-content__title" style="text-align: center;">
+                    <h4 class="content__title">
+                        <label id="b4">Indicadores diarios</label></h4>
+                    <p />
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="https://www.bcentral.cl/es" id="ser_4">
+                                <label id="b5" style="margin-bottom: 0px;">Inicio</label></a></li>
+                            <li class="breadcrumb-item"><a href="https://www.bcentral.cl/web/banco-central/areas/estadisticas" id="ser_5">
+                                <label id="b6" style="margin-bottom: 0px;">Estad&#237;sticas</label></a></li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                                <a id="hypLnk1_ss" href="IndicadoresDiarios.aspx">Indicadores diarios</a></li>
+                        </ol>
+                    </nav>
+                    <div style="text-align: left;">
+                        <label style="margin-bottom: 0px;">&nbsp;</label></a>
+                    </div>
+                </div>
+                <div class="row" id="tblSeleccionFecha">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-12 rounded-top" style="color: rgb(255,255,255); background-color: rgb(24,45,79); text-align: center">
+                                <div id="tblSeleccionFecha">
+                                    <label id="lblSeleccioneFecha" style="vertical-align: middle;">Seleccione año</label>
+                                    <select name="DrDwnFechas" onchange="javascript:setTimeout(&#39;__doPostBack(\&#39;DrDwnFechas\&#39;,\&#39;\&#39;)&#39;, 0)" id="DrDwnFechas" title="Selecionar año" class="dropDownListAnios" style="vertical-align: middle;">
+	<option value="2012">2012</option>
+	<option value="2013">2013</option>
+	<option value="2014">2014</option>
+	<option value="2015">2015</option>
+	<option value="2016">2016</option>
+	<option value="2017">2017</option>
+	<option value="2018">2018</option>
+	<option value="2019">2019</option>
+	<option value="2020">2020</option>
+	<option value="2021">2021</option>
+	<option value="2022">2022</option>
+	<option value="2023">2023</option>
+	<option value="2024">2024</option>
+	<option value="2025">2025</option>
+	<option selected="selected" value="2026">2026</option>
+
+</select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="background-color: rgb(241,241,241); text-align: center">
+                            <div class="col-md-12">
+                                <label id="lblNombreSerie">Precio del Cobre, d&#243;lares por libra</label>
+                                <label id="lblUnidadMedida" class="tipo_letra">(D&#243;lar)</label>
+                                <div id="btn_metadata" style="visibility:hidden;display:inline-block;">
+                                    <a id="myBtn">
+                                        <img src="../Images/lens.gif">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="background-color: rgb(241,241,241); text-align: center">
+                            <div class="col-md-12">
+                                <label id="lblAnio">Año</label>
+                                <label id="lblAnioValor">2026</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3"></div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6" style="text-align: right; background-color: rgb(241,241,241)">
+                        <div style="max-width: 200px; max-height: 25px; display: inline-block; background-color: rgb(241,241,241);">
+                            <input type="image" name="imgButInicio" id="imgButInicio" title="Inicio" src="../Images/Botonera/back_2.png" style="height:25px;width:25px;" />
+                            <a onclick="javascript:window.showGrafico();event.preventDefault();">
+                                <input type="image" name="imgButGrafico" id="imgButGrafico" title="Graficar" src="../Images/cart_graficar.png" style="height:25px;width:25px;" />
+                            </a>
+                            <input type="image" name="imgButExport" id="imgButExport" title="Exportar a Excel" src="../Images/cart_excel.png" src="" style="height:25px;width:25px;" />
+                            <a onclick="javascript:window.print();event.preventDefault();">
+                                <input type="image" name="imgButImprimir" id="imgButImprimir" title="Imprimir" src="../Images/Botonera/imp_2.png" style="height:25px;width:25px;" />
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-3"></div>
+                </div>
+                <div class="n-separate__15"></div>
+
+<!--Contenedor serie !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+                <div class="row">
+
+                    <div class="col-md-12">
+                        <div class="table-responsive" id="tabla_datos" style="display: none;">
+                            <table id="contenedor_serie" cellpadding="0" cellspacing="0" align="center" class="table" style="font-size: 10px">
+                                <tr style="font-size: 10px">
+                                    <td valign="top" style="font-size: 10px">
+                                        <div id="content_grid">
+                                            <div id='div_gr' style=' HEIGHT:100%;  OVERFLOW:auto; ' ></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- contenedor serie-->
+
+                <!-- Responsivo -->
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="re" style="display: none;">
+                        </div>
+                    </div>
+                </div>
+                <!-- Responsivo -->
+
+<!--Contenedor serie !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+
+
+                <!-- The Modal -->
+                <div id="myModal" class="modal">
+
+                    <!-- Modal content -->
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <p id="escribir"></p>
+                    </div>
+
+                </div>
+
+
+                <script>
+                    // Get the modal
+                    var modal = document.getElementById("myModal");
+
+                    // Get the button that opens the modal
+                    var btn = document.getElementById("myBtn");
+
+                    // Get the <span> element that closes the modal
+                    var span = document.getElementsByClassName("close")[0];
+
+                    // When the user clicks the button, open the modal 
+                    btn.onclick = function () {
+                        modal.style.display = "block";
+                        responsividad();
+                        event.preventDefault();
+                    }
+
+                    // When the user clicks on <span> (x), close the modal
+                    span.onclick = function () {
+                        modal.style.display = "none";
+                    }
+
+                    // When the user clicks anywhere outside of the modal, close it
+                    window.onclick = function (event) {
+                        if (event.target == modal) {
+                            modal.style.display = "none";
+                        }
+                    }
+                </script>
+
+                <!--CONTENIDO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+            </div>
+
+        </div>
+
+        <div class="n-separate__30"></div>
+
+        <footer>
+            <div class="container-corp position-relative">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-3 col-12 d-none">
+                            <div class="footer-section">
+                                <ul class="footer-links">
+                                    <li class="footer-item"><a class="footer-link" href="https://www.centralentuvida.cl/" target="_blank" title="Central en tu vida">Central en tu vida</a></li>
+                                    <li class="footer-item"><a class="footer-link" href="https://www.billetesymonedas.cl" target="_blank" title="Billetes y monedas">Billetes y monedas</a></li>
+                                    <li class="footer-item"><a class="footer-link" href="https://www.museobancocentral.cl" target="_blank" title="Museo Numismático">Museo Numismático</a></li>
+                                    <li class="footer-item"><a class="footer-link" href="https://si3.bcentral.cl/siete/secure/cuadros/home.aspx" target="_blank" title="Base de Datos Estadísticos">Base de Datos Estadísticos</a></li>
+                                    <li class="footer-item"><a class="footer-link" href="#" target="" title="Visitas guidas">Visitas guidas</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-12 d-none">
+                            <div class="footer-section">
+                                <ul class="footer-links">
+                                    <li class="footer-item"><a class="footer-link" href="/web/banco-central-publico/transparencia-activa" target="" title="Transparencia Activa">Transparencia Activa</a></li>
+                                    <li class="footer-item"><a class="footer-link line-height-normal d-inline-block" href="/web/banco-central-publico/acceso-a-la-información" target="" title="Solicitud de Acceso a la Información">Solicitud de Acceso a la Información</a></li>
+                                    <li class="footer-item"><a class="footer-link" href="#" target="" title="Ley de Lobby">Ley de Lobby</a></li>
+                                    <li class="footer-item"><a class="footer-link" href="/web/banco-central-publico/oportunidades-de-trabajo" target="" title="Oportunidades de Trabajo">Oportunidades de Trabajo</a></li>
+                                    <li class="footer-item"><a class="footer-link" href="/web/banco-central-publico/licitaciones-y-compras" target="" title="Licitaciones y compras">Licitaciones y compras</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-12 d-none">
+                            <div class="footer-section">
+                                <ul class="footer-links">
+                                    <li class="footer-item"><a class="footer-link" href="/web/banco-central-publico/contacto" target="" title="Contacto">Contacto</a></li>
+                                    <li class="footer-item"><a class="footer-link" href="/web/banco-central-publico/suscripciones" target="" title="Suscripción">Suscripción</a></li>
+                                    <li class="footer-item"><a class="footer-link" href="#" target="" title="Preguntas frecuentes">Preguntas frecuentes</a></li>
+                                    <li class="footer-item"><a class="footer-link" href="#" target="" title="Condiciones de uso">Condiciones de uso</a></li>
+                                    <li class="footer-item"><a class="footer-link" href="#" target="" title="Mapa web">Mapa web</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-12 d-none">
+                            <div class="footer-rrss">
+                                <ul>
+                                    <li class="social-item"><a class="social-link " href="https://www.youtube.com/user/BancoCentralChile" target="_blank">
+                                        <img alt="youtube" disablewebedit="True" src="../../images/youtube.png" />
+                                    </a></li>
+                                    <li class="social-item"><a class="social-link " href="https://www.flickr.com/photos/bancocentraldechile/" target="_blank">
+                                        <img alt="flickr" disablewebedit="True" src="../../images/flickr.png" />
+                                    </a></li>
+                                    <li class="social-item"><a class="social-link " href="https://twitter.com/bcentralchile" target="_blank">
+                                        <img alt="twitter" disablewebedit="True" src="../../images/twitter.png" />
+                                    </a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="mb-4 mt-8">
+                            <a class="footer-logo" href="#" target="">
+                                <img alt="Banco Central de Chile" class="visible-desk" disablewebedit="True" src="../Images/logoFooter.png" height="83.5" />
+                            </a>
+                            <p class="footer-direction">Agustinas 1180, Santiago, Chile.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+
+
+        <!--CONTENIDO -->
+
+
+
+        <div style="display: none">
+            
+            <input name="hdnFrecuencia" type="hidden" id="hdnFrecuencia" value="DAILY" />
+
+        </div>
+        <!--CONTENIDO -->
+
+    
+<script language=javascript>
+
+				// trims the height of the div surrounding the results table
+				// so that if a not a lot of results are returned,
+				// you dont have a lot of blank space between the results and
+				// the last buttons on the page
+				var divTbl = document.getElementById('div_gr');
+				var resultsTable = divTbl.children[0];
+				if ( typeof(resultsTable) != 'undefined' )
+				{
+				//alert( 'div ' + divTbl.offsetHeight + ' results: ' +  resultsTable.offsetHeight );
+				if( divTbl.offsetHeight + 3 > resultsTable.offsetHeight ) 
+					divTbl.style.height = resultsTable.offsetHeight + 50;
+				}
+               
+				
+</script></form>
+<script type="text/javascript" src="/_Incapsula_Resource?SWJIYLWA=719d34d31c8e3a6e6fffd425f7e032f3&ns=12&cb=861694619" async></script></body>
+</html>

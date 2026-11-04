@@ -1,0 +1,127 @@
+{
+  "ticker": "GMEXICO",
+  "serie": "B",
+  "sector": "Mineria y materiales",
+  "anillo": "Plata",
+  "muestras": {
+    "train_sesiones": 1167,
+    "test_sesiones": 291,
+    "tasa_positiva_train": 0.4944301628106255,
+    "tasa_positiva_test": 0.6323024054982818
+  },
+  "correlaciones_variables": {
+    "ret_1": -0.0558520594540421,
+    "ret_5": -0.11937501999511962,
+    "ret_10": -0.13938812663882927,
+    "ret_20": -0.09827155638263989,
+    "volatilidad_5": 0.035513714780589324,
+    "volatilidad_20": -0.05614617305161276,
+    "distancia_media_5": -0.08774081302243877,
+    "distancia_media_20": -0.11751087346493484
+  },
+  "evaluacion_modelos_test": {
+    "M1_Regresion_Logistica_Balanceada": {
+      "brier_score": 0.24932,
+      "brier_dummy": 0.251505,
+      "supera_dummy_brier": true,
+      "log_loss": 0.691805,
+      "accuracy": 54.64,
+      "balanced_accuracy": 55.92,
+      "roc_auc": 0.5739,
+      "tasa_predicha_positiva": 46.74
+    },
+    "M2_ElasticNet_Logistica": {
+      "brier_score": 0.25,
+      "brier_dummy": 0.251505,
+      "supera_dummy_brier": true,
+      "log_loss": 0.693147,
+      "accuracy": 63.23,
+      "balanced_accuracy": 50.0,
+      "roc_auc": 0.5,
+      "tasa_predicha_positiva": 100.0
+    },
+    "M3_Arbol_Decision_d3": {
+      "brier_score": 0.27824,
+      "brier_dummy": 0.251505,
+      "supera_dummy_brier": false,
+      "log_loss": 0.750843,
+      "accuracy": 47.42,
+      "balanced_accuracy": 45.71,
+      "roc_auc": 0.4609,
+      "tasa_predicha_positiva": 55.33
+    },
+    "M4_Random_Forest_60_arboles": {
+      "brier_score": 0.262424,
+      "brier_dummy": 0.251505,
+      "supera_dummy_brier": false,
+      "log_loss": 0.718299,
+      "accuracy": 45.36,
+      "balanced_accuracy": 54.45,
+      "roc_auc": 0.4783,
+      "tasa_predicha_positiva": 16.84
+    },
+    "M5_Gradient_Boosting_GBDT": {
+      "brier_score": 0.261249,
+      "brier_dummy": 0.251505,
+      "supera_dummy_brier": false,
+      "log_loss": 0.715779,
+      "accuracy": 43.3,
+      "balanced_accuracy": 52.03,
+      "roc_auc": 0.447,
+      "tasa_predicha_positiva": 17.53
+    },
+    "M6_Red_Neuronal_MLP": {
+      "brier_score": 0.248955,
+      "brier_dummy": 0.251505,
+      "supera_dummy_brier": true,
+      "log_loss": 0.690843,
+      "accuracy": 50.17,
+      "balanced_accuracy": 56.49,
+      "roc_auc": 0.6256,
+      "tasa_predicha_positiva": 27.84
+    },
+    "M7_Dummy_Prior_Referencia": {
+      "brier_score": 0.251505,
+      "brier_dummy": 0.251505,
+      "supera_dummy_brier": false,
+      "log_loss": 0.696157,
+      "accuracy": 36.77,
+      "balanced_accuracy": 50.0,
+      "roc_auc": 0.5,
+      "tasa_predicha_positiva": 0.0
+    }
+  },
+  "senal_prospectiva_20261028": {
+    "fecha_senal": "2026-10-28",
+    "fecha_objetivo_h5": "2026-11-05",
+    "ppp_senal_mxn": 235.31,
+    "M1_Regresion_Logistica_Balanceada": {
+      "probabilidad_subida": 0.6098,
+      "clase_predicha": "SUBIDA"
+    },
+    "M2_ElasticNet": {
+      "probabilidad_subida": 0.5,
+      "clase_predicha": "SUBIDA"
+    },
+    "M3_Arbol_Decision": {
+      "probabilidad_subida": 0.527,
+      "clase_predicha": "SUBIDA"
+    },
+    "M4_Random_Forest": {
+      "probabilidad_subida": 0.5275,
+      "clase_predicha": "SUBIDA"
+    },
+    "M5_GBDT": {
+      "probabilidad_subida": 0.5304,
+      "clase_predicha": "SUBIDA"
+    },
+    "M6_MLP": {
+      "probabilidad_subida": 0.4937,
+      "clase_predicha": "NO_SUBIDA"
+    },
+    "Ensamble_Consenso_Mejores": {
+      "probabilidad_subida": 0.5559,
+      "clase_predicha": "SUBIDA"
+    }
+  }
+}

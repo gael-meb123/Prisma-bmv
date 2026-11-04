@@ -1,0 +1,134 @@
+{
+  "version_metodologia": "PPP_EVALUACION_V2",
+  "version_features": "PPP_V2_MEDIA20",
+  "timestamp_recalculo_utc": "2026-10-29T17:16:09.971376+00:00",
+  "naturaleza_evaluacion": "EXPLORATORIA_TEST_PREVIAMENTE_INSPECCIONADO",
+  "corte_etiquetas_train": "2025-04-29",
+  "corte_etiquetas_test": "2026-10-27",
+  "ticker": "GMEXICO",
+  "serie": "B",
+  "sector": "Mineria y materiales",
+  "anillo": "Plata",
+  "muestras": {
+    "train_sesiones": 1167,
+    "test_sesiones": 290,
+    "tasa_positiva_train": 0.4944301628106255,
+    "tasa_positiva_test": 0.6344827586206897
+  },
+  "correlaciones_variables": {
+    "ret_1": -0.0558520594540421,
+    "ret_5": -0.11937501999511962,
+    "ret_10": -0.13938812663882927,
+    "ret_20": -0.09827155638263989,
+    "volatilidad_5": 0.035513714780589324,
+    "volatilidad_20": -0.05614617305161276,
+    "distancia_media_5": -0.08774081302243877,
+    "distancia_media_20": -0.11765984171548577
+  },
+  "evaluacion_modelos_test": {
+    "M1_Regresion_Logistica_Balanceada": {
+      "brier_score": 0.249589,
+      "brier_dummy": 0.251529,
+      "supera_dummy_brier": true,
+      "log_loss": 0.692357,
+      "accuracy": 54.83,
+      "balanced_accuracy": 56.0,
+      "roc_auc": 0.5715,
+      "tasa_predicha_positiva": 47.24
+    },
+    "M2_ElasticNet_Logistica": {
+      "brier_score": 0.249292,
+      "brier_dummy": 0.251529,
+      "supera_dummy_brier": true,
+      "log_loss": 0.6917,
+      "accuracy": 54.83,
+      "balanced_accuracy": 56.6,
+      "roc_auc": 0.5742,
+      "tasa_predicha_positiva": 45.17
+    },
+    "M3_Arbol_Decision_d3": {
+      "brier_score": 0.278777,
+      "brier_dummy": 0.251529,
+      "supera_dummy_brier": false,
+      "log_loss": 0.751945,
+      "accuracy": 47.24,
+      "balanced_accuracy": 45.43,
+      "roc_auc": 0.4581,
+      "tasa_predicha_positiva": 55.52
+    },
+    "M4_Random_Forest_60_arboles": {
+      "brier_score": 0.262652,
+      "brier_dummy": 0.251529,
+      "supera_dummy_brier": false,
+      "log_loss": 0.718714,
+      "accuracy": 45.17,
+      "balanced_accuracy": 54.39,
+      "roc_auc": 0.4808,
+      "tasa_predicha_positiva": 16.9
+    },
+    "M5_Gradient_Boosting_GBDT": {
+      "brier_score": 0.25641,
+      "brier_dummy": 0.251529,
+      "supera_dummy_brier": false,
+      "log_loss": 0.705997,
+      "accuracy": 43.45,
+      "balanced_accuracy": 52.24,
+      "roc_auc": 0.452,
+      "tasa_predicha_positiva": 17.93
+    },
+    "M6_Red_Neuronal_MLP": {
+      "brier_score": 0.249067,
+      "brier_dummy": 0.251529,
+      "supera_dummy_brier": true,
+      "log_loss": 0.691071,
+      "accuracy": 49.66,
+      "balanced_accuracy": 55.93,
+      "roc_auc": 0.625,
+      "tasa_predicha_positiva": 28.28
+    },
+    "M7_Dummy_Prior_Referencia": {
+      "brier_score": 0.251529,
+      "brier_dummy": 0.251529,
+      "supera_dummy_brier": false,
+      "log_loss": 0.696206,
+      "accuracy": 36.55,
+      "balanced_accuracy": 50.0,
+      "roc_auc": 0.5,
+      "tasa_predicha_positiva": 0.0
+    }
+  },
+  "recalculo_retroactivo_20261028": {
+    "fecha_senal": "2026-10-28",
+    "fecha_objetivo_h5": "2026-11-05",
+    "naturaleza_resultado": "RECALCULO_RETROACTIVO_NO_ES_SENAL_EMITIDA",
+    "ppp_senal_mxn": 235.31,
+    "M1_Regresion_Logistica_Balanceada": {
+      "probabilidad_subida": 0.6094,
+      "clase_predicha": "SUBIDA"
+    },
+    "M2_ElasticNet": {
+      "probabilidad_subida": 0.5998,
+      "clase_predicha": "SUBIDA"
+    },
+    "M3_Arbol_Decision": {
+      "probabilidad_subida": 0.527,
+      "clase_predicha": "SUBIDA"
+    },
+    "M4_Random_Forest": {
+      "probabilidad_subida": 0.526,
+      "clase_predicha": "SUBIDA"
+    },
+    "M5_GBDT": {
+      "probabilidad_subida": 0.5175,
+      "clase_predicha": "SUBIDA"
+    },
+    "M6_MLP": {
+      "probabilidad_subida": 0.4934,
+      "clase_predicha": "NO_SUBIDA"
+    },
+    "Ensamble_Promedio_Fijo_Exploratorio": {
+      "probabilidad_subida": 0.5509,
+      "clase_predicha": "SUBIDA"
+    }
+  }
+}

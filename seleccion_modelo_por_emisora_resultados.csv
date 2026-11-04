@@ -1,0 +1,16 @@
+﻿emisora,arquetipo_sectorial,algoritmo,n_train,n_val,val_aciertos,val_accuracy_pct,val_balanced_accuracy_pct,val_log_loss,val_brier,val_FP,n_test_historico,test_aciertos,test_accuracy_pct,test_balanced_accuracy_pct,test_log_loss,test_brier
+WALMEX,Consumo Defensivo / Minorista (Reversion a la media con filtro de volatilidad),Regresion Logistica L2 Balanceada (Lineal),1303,310,189,60.97,63.33,0.6587,0.2333,91,287,154,53.66,55.75,0.6948,0.2512
+WALMEX,Consumo Defensivo / Minorista (Reversion a la media con filtro de volatilidad),ElasticNet L1+L2 Balanceado (Lineal Disperso),1303,310,175,56.45,59.26,0.6634,0.2355,103,287,152,52.96,54.95,0.6885,0.248
+WALMEX,Consumo Defensivo / Minorista (Reversion a la media con filtro de volatilidad),"Random Forest Balanceado (max_depth=3, No Lineal Conservador)",1303,310,186,60.0,62.75,0.6707,0.239,96,287,157,54.7,56.22,0.6857,0.2463
+WALMEX,Consumo Defensivo / Minorista (Reversion a la media con filtro de volatilidad),"Gradient Boosting GBDT (max_depth=2, Boosting Suave)",1303,310,186,60.0,62.87,0.6752,0.2411,97,287,160,55.75,57.15,0.6917,0.2491
+WALMEX,Consumo Defensivo / Minorista (Reversion a la media con filtro de volatilidad),"Red Neuronal MLP (16x8, tanh + L2)",1303,310,176,56.77,59.65,0.6762,0.2416,103,287,155,54.01,55.79,0.6845,0.2458
+GMEXICO,Materiales / Mineria Cobre (Ciclico con tendencias persistentes),Regresion Logistica L2 Balanceada (Lineal),1144,226,125,55.31,55.67,0.6865,0.2467,60,230,129,56.09,62.25,0.7099,0.2562
+GMEXICO,Materiales / Mineria Cobre (Ciclico con tendencias persistentes),ElasticNet L1+L2 Balanceado (Lineal Disperso),1144,226,121,53.54,54.32,0.686,0.2464,66,230,119,51.74,60.67,0.6964,0.2513
+GMEXICO,Materiales / Mineria Cobre (Ciclico con tendencias persistentes),"Random Forest Balanceado (max_depth=3, No Lineal Conservador)",1144,226,108,47.79,48.42,0.695,0.2508,72,230,108,46.96,56.71,0.6976,0.2522
+GMEXICO,Materiales / Mineria Cobre (Ciclico con tendencias persistentes),"Gradient Boosting GBDT (max_depth=2, Boosting Suave)",1144,226,113,50.0,50.06,0.7165,0.2609,64,230,111,48.26,57.42,0.7138,0.26
+GMEXICO,Materiales / Mineria Cobre (Ciclico con tendencias persistentes),"Red Neuronal MLP (16x8, tanh + L2)",1144,226,99,43.81,50.0,0.6931,0.25,127,230,150,65.22,50.0,0.6931,0.25
+GFNORTE,Financiero / Banca (Sensible al ciclo monetario y tasas),Regresion Logistica L2 Balanceada (Lineal),1517,310,156,50.32,50.23,0.6987,0.2527,71,283,124,43.82,44.76,0.7098,0.2583
+GFNORTE,Financiero / Banca (Sensible al ciclo monetario y tasas),ElasticNet L1+L2 Balanceado (Lineal Disperso),1517,310,152,49.03,48.99,0.696,0.2514,77,283,128,45.23,46.12,0.7035,0.2551
+GFNORTE,Financiero / Banca (Sensible al ciclo monetario y tasas),"Random Forest Balanceado (max_depth=3, No Lineal Conservador)",1517,310,159,51.29,51.25,0.6904,0.2486,74,283,137,48.41,48.82,0.6981,0.2525
+GFNORTE,Financiero / Banca (Sensible al ciclo monetario y tasas),"Gradient Boosting GBDT (max_depth=2, Boosting Suave)",1517,310,162,52.26,52.25,0.7008,0.2536,75,283,135,47.7,48.04,0.7077,0.2571
+GFNORTE,Financiero / Banca (Sensible al ciclo monetario y tasas),"Red Neuronal MLP (16x8, tanh + L2)",1517,310,158,50.97,50.0,0.6931,0.25,0,283,128,45.23,50.0,0.6931,0.25

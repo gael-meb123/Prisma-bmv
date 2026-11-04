@@ -1,0 +1,4 @@
+﻿rol_modelo,senales_emitidas,senales_resueltas,senales_resueltas_por_precio,senales_pendientes,senales_no_resolubles,senales_sin_trazabilidad_prospectiva,version_metodologia,version_features,aciertos_acumulados,falsas_subidas_acumuladas,exactitud_prospectiva_pct,log_loss_prospectivo,brier_prospectivo,meta_revision_2027_04_30
+CONTROL_LINEAL_SECTORIAL,1,0,0,1,0,0,LEGADO_PRE_CORRECCION_V2,PPP_LEGADO_MEDIA21,0,0,,,,Minimo 60 resueltas y >=10 por clase
+RETADOR_DEEP_MLP_MEJOR_BRIER,1,0,0,1,0,0,LEGADO_PRE_CORRECCION_V2,PPP_LEGADO_MEDIA21,0,0,,,,Minimo 60 resueltas y >=10 por clase
+RETADOR_ENSAMBLE_NO_LINEAL,1,0,0,1,0,0,LEGADO_PRE_CORRECCION_V2,PPP_LEGADO_MEDIA21,0,0,,,,Minimo 60 resueltas y >=10 por clase

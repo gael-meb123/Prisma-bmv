@@ -1,0 +1,208 @@
+{
+  "version_metodologia": "PPP_EVALUACION_V2",
+  "timestamp_aplicacion_utc": "2026-10-29T17:16:10.566243+00:00",
+  "ppp_original_sha256": "92201443e18dfe92f27038b232d038c6314d5e9029b523c55c089e900f665067",
+  "ppp_original_preservado": true,
+  "predicciones_y_timestamps_originales_preservados": true,
+  "respaldo_antes": {
+    "dataset_panel_15_emisoras_features.csv": "e0c3658dfbacf08d52295701429005581ff87c9644320d1c124863617bff140a",
+    "metricas_panel_15_emisoras.json": "10dee31be424c85fb3cbf671d9fb572a57746a72a2e9b0a8a5f683bc78e883e6",
+    "reporte_investigacion_profunda_gmexico.json": "52515424d1781576a61f7db3cbb1496bd0e75ac70d30b1610a41b78e0d4c44e5",
+    "registro_senales_prospectivas_walmex.csv": "8c37e327c4c539db640c713c8246ce767468c771a449ccb1cda05de92b8eacd6",
+    "registro_senales_prospectivas_gmexico.csv": "15975e6bf1c2a38d90d2ce92480172a47201f7609092d7801b234f9c57b3398e",
+    "marcador_modelos_prospectivo.csv": "482cb4c2eba8ce16519ebc737eeafcfce6ef44a5409e2aeb44fc4657dafdfc20"
+  },
+  "salidas_despues": {
+    "dataset_panel_15_emisoras_features.csv": "e6c8a2c4d48fa56382a104e9e595ede5438253c2fde2b5d03083d165865eabed",
+    "metricas_panel_15_emisoras.json": "73998a7066b0c3241513ccc5d24e4ee741c086403a4ac6323a7423ccefeb0d4c",
+    "reporte_investigacion_profunda_gmexico.json": "36a83802e328d853f18c079b463b14334fd835aebccd9ff8352ad62f994579cb",
+    "registro_senales_prospectivas_walmex.csv": "3c0b14086b12c83a0f9669038881f2efe83a6a6b639ecf58180867b6febcc4f7",
+    "registro_senales_prospectivas_gmexico.csv": "f7d407c836b3d3ca758e9e537e85ef9467d6ace8833a7573c0192948ba8ef2c1",
+    "marcador_modelos_prospectivo.csv": "be630841f109ae3cbae25c147ae6845e61fc8e9bc139cfdde1f9870bff8453d8"
+  },
+  "max_cambio_absoluto_variables": {
+    "ret_1": 0.0,
+    "ret_5": 0.0,
+    "ret_10": 0.0,
+    "ret_20": 0.0,
+    "volatilidad_5": 0.0,
+    "volatilidad_20": 0.0,
+    "distancia_media_5": 0.0,
+    "distancia_media_20": 0.01344395472684791
+  },
+  "cortes": {
+    "train_etiquetas_hasta": "2025-04-29",
+    "test_etiquetas_hasta": "2026-10-27"
+  },
+  "metricas_panel_corregidas": {
+    "AC": {
+      "ticker": "AC",
+      "estado_evaluacion": "DATOS_INSUFICIENTES_POR_HUECOS_BOLETIN",
+      "n_train_elegible": 28,
+      "n_test_elegible": 3
+    },
+    "AMX": {
+      "ticker": "AMX",
+      "estado_evaluacion": "EVALUADO_CON_EXITO",
+      "version_metodologia": "PPP_EVALUACION_V2",
+      "version_features": "PPP_V2_MEDIA20",
+      "naturaleza_evaluacion": "EXPLORATORIA_TEST_PREVIAMENTE_INSPECCIONADO",
+      "n_train_purgado": 0,
+      "n_test_fuera_corte": 1,
+      "n_train_elegible": 1741,
+      "n_test_elegible": 290,
+      "tasa_positiva_train": 0.4974,
+      "tasa_positiva_test": 0.4931,
+      "brier_score_test": 0.257945,
+      "brier_score_dummy_referencia": 0.249971,
+      "supera_referencia_brier": false,
+      "log_loss_test": 0.709154,
+      "accuracy_test": 0.4207,
+      "balanced_accuracy_test": 0.4217
+    },
+    "ASUR": {
+      "ticker": "ASUR",
+      "estado_evaluacion": "SIN_VENTANAS_CONTINUAS_21_SESIONES",
+      "n_train_elegible": 0,
+      "n_test_elegible": 0
+    },
+    "BIMBO": {
+      "ticker": "BIMBO",
+      "estado_evaluacion": "SIN_VENTANAS_CONTINUAS_21_SESIONES",
+      "n_train_elegible": 0,
+      "n_test_elegible": 0
+    },
+    "CEMEX": {
+      "ticker": "CEMEX",
+      "estado_evaluacion": "EVALUADO_CON_EXITO",
+      "version_metodologia": "PPP_EVALUACION_V2",
+      "version_features": "PPP_V2_MEDIA20",
+      "naturaleza_evaluacion": "EXPLORATORIA_TEST_PREVIAMENTE_INSPECCIONADO",
+      "n_train_purgado": 0,
+      "n_test_fuera_corte": 0,
+      "n_train_elegible": 633,
+      "n_test_elegible": 244,
+      "tasa_positiva_train": 0.4471,
+      "tasa_positiva_test": 0.541,
+      "brier_score_test": 0.261982,
+      "brier_score_dummy_referencia": 0.257139,
+      "supera_referencia_brier": false,
+      "log_loss_test": 0.719357,
+      "accuracy_test": 0.5615,
+      "balanced_accuracy_test": 0.569
+    },
+    "FEMSA": {
+      "ticker": "FEMSA",
+      "estado_evaluacion": "EVALUADO_CON_EXITO",
+      "version_metodologia": "PPP_EVALUACION_V2",
+      "version_features": "PPP_V2_MEDIA20",
+      "naturaleza_evaluacion": "EXPLORATORIA_TEST_PREVIAMENTE_INSPECCIONADO",
+      "n_train_purgado": 0,
+      "n_test_fuera_corte": 0,
+      "n_train_elegible": 956,
+      "n_test_elegible": 88,
+      "tasa_positiva_train": 0.5262,
+      "tasa_positiva_test": 0.2841,
+      "brier_score_test": 0.278992,
+      "brier_score_dummy_referencia": 0.261976,
+      "supera_referencia_brier": false,
+      "log_loss_test": 0.753275,
+      "accuracy_test": 0.4091,
+      "balanced_accuracy_test": 0.4667
+    },
+    "GAP": {
+      "ticker": "GAP",
+      "estado_evaluacion": "DATOS_INSUFICIENTES_POR_HUECOS_BOLETIN",
+      "n_train_elegible": 28,
+      "n_test_elegible": 31
+    },
+    "GFINBUR": {
+      "ticker": "GFINBUR",
+      "estado_evaluacion": "SIN_VENTANAS_CONTINUAS_21_SESIONES",
+      "n_train_elegible": 0,
+      "n_test_elegible": 0
+    },
+    "GFNORTE": {
+      "ticker": "GFNORTE",
+      "estado_evaluacion": "EVALUADO_CON_EXITO",
+      "version_metodologia": "PPP_EVALUACION_V2",
+      "version_features": "PPP_V2_MEDIA20",
+      "naturaleza_evaluacion": "EXPLORATORIA_TEST_PREVIAMENTE_INSPECCIONADO",
+      "n_train_purgado": 0,
+      "n_test_fuera_corte": 1,
+      "n_train_elegible": 1740,
+      "n_test_elegible": 290,
+      "tasa_positiva_train": 0.5132,
+      "tasa_positiva_test": 0.5241,
+      "brier_score_test": 0.254711,
+      "brier_score_dummy_referencia": 0.249537,
+      "supera_referencia_brier": false,
+      "log_loss_test": 0.702636,
+      "accuracy_test": 0.4724,
+      "balanced_accuracy_test": 0.475
+    },
+    "GMEXICO": {
+      "ticker": "GMEXICO",
+      "estado_evaluacion": "EVALUADO_CON_EXITO",
+      "version_metodologia": "PPP_EVALUACION_V2",
+      "version_features": "PPP_V2_MEDIA20",
+      "naturaleza_evaluacion": "EXPLORATORIA_TEST_PREVIAMENTE_INSPECCIONADO",
+      "n_train_purgado": 0,
+      "n_test_fuera_corte": 1,
+      "n_train_elegible": 1167,
+      "n_test_elegible": 290,
+      "tasa_positiva_train": 0.4944,
+      "tasa_positiva_test": 0.6345,
+      "brier_score_test": 0.249589,
+      "brier_score_dummy_referencia": 0.251529,
+      "supera_referencia_brier": true,
+      "log_loss_test": 0.692357,
+      "accuracy_test": 0.5483,
+      "balanced_accuracy_test": 0.56
+    },
+    "GRUMA": {
+      "ticker": "GRUMA",
+      "estado_evaluacion": "SIN_VENTANAS_CONTINUAS_21_SESIONES",
+      "n_train_elegible": 0,
+      "n_test_elegible": 0
+    },
+    "LIVEPOL": {
+      "ticker": "LIVEPOL",
+      "estado_evaluacion": "SIN_VENTANAS_CONTINUAS_21_SESIONES",
+      "n_train_elegible": 0,
+      "n_test_elegible": 0
+    },
+    "PE&OLES": {
+      "ticker": "PE&OLES",
+      "estado_evaluacion": "DATOS_INSUFICIENTES_POR_HUECOS_BOLETIN",
+      "n_train_elegible": 0,
+      "n_test_elegible": 48
+    },
+    "VESTA": {
+      "ticker": "VESTA",
+      "estado_evaluacion": "SIN_VENTANAS_CONTINUAS_21_SESIONES",
+      "n_train_elegible": 0,
+      "n_test_elegible": 0
+    },
+    "WALMEX": {
+      "ticker": "WALMEX",
+      "estado_evaluacion": "EVALUADO_CON_EXITO",
+      "version_metodologia": "PPP_EVALUACION_V2",
+      "version_features": "PPP_V2_MEDIA20",
+      "naturaleza_evaluacion": "EXPLORATORIA_TEST_PREVIAMENTE_INSPECCIONADO",
+      "n_train_purgado": 0,
+      "n_test_fuera_corte": 1,
+      "n_train_elegible": 1829,
+      "n_test_elegible": 268,
+      "tasa_positiva_train": 0.5063,
+      "tasa_positiva_test": 0.4403,
+      "brier_score_test": 0.253749,
+      "brier_score_dummy_referencia": 0.25079,
+      "supera_referencia_brier": false,
+      "log_loss_test": 0.700248,
+      "accuracy_test": 0.5075,
+      "balanced_accuracy_test": 0.5275
+    }
+  },
+  "nota": "Test previamente inspeccionado: resultados exploratorios. Recalculos v2 no sustituyen emisiones originales."
+}

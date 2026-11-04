@@ -1,0 +1,7 @@
+n,aciertos,errores,accuracy_pct,balanced_accuracy_pct,log_loss,brier,TN,FP,FN,TP,FP_caida_ge_2pct,mean_fold_bacc_pct,variante,mode
+495,258,237,52.12,52.01,0.6989,0.2528,147,131,106,111,74,54.76,"1. Modelo Base Actual (8 vars, sin ajuste, 495 fechas)",base
+495,252,243,50.91,51.34,0.7032,0.2549,133,145,98,119,81,53.58,"2. Misma muestra + ex_div_inminente_5d (9 vars, 495 fechas)",ind_only_same_sample
+495,268,227,54.14,54.37,0.6841,0.2459,146,132,95,122,68,57.65,"3. Train con ajuste retroactivo (8 vars), evaluado en 495 fechas",adj_train_8vars_eval_495
+495,263,232,53.13,53.52,0.6847,0.2461,140,138,94,123,71,56.83,"4. Experimento Completo: Train con ajuste retroactivo + indicador (9 vars), evaluado en 495 fechas",adj_train_9vars_eval_495
+658,358,300,54.41,54.54,0.6951,0.2508,181,166,134,177,76,56.54,"5. Train y Eval expandidos con ajuste retroactivo (8 vars, 616 fechas)",adj_both_8vars_eval_expanded
+658,348,310,52.89,53.08,0.6973,0.2518,172,175,135,176,81,54.79,"6. Train y Eval expandidos con ajuste retroactivo + indicador (9 vars, 616 fechas)",adj_both_9vars_eval_expanded

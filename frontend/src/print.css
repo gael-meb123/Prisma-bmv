@@ -1,0 +1,197 @@
+/* La ficha conserva sus tres secciones y pagina sin recortar contenido. */
+@media print {
+  .guide {
+    display: none;
+  }
+  @page {
+    margin: 10mm;
+  }
+  .report-page {
+    min-height: 0;
+    padding-bottom: 0;
+  }
+  .report-head {
+    margin-bottom: 3mm;
+    padding-bottom: 2mm;
+  }
+  .report-head .brand-wordmark {
+    width: 50mm;
+  }
+  .report-head .brand-mark {
+    width: 9mm;
+    height: 9mm;
+  }
+  .report-head > div {
+    padding: 2.5mm;
+  }
+  .report-page h1 {
+    font-size: 19pt;
+    margin-bottom: 2mm;
+  }
+  .report-page > .eyebrow {
+    margin-bottom: 2mm;
+  }
+  .report-subtitle {
+    font-size: 10pt;
+    margin-bottom: 3mm;
+  }
+  .report-section {
+    margin-top: 3mm;
+    padding: 2.5mm;
+  }
+  .report-section h2 {
+    font-size: 11pt;
+    margin-bottom: 2mm;
+  }
+  .report-identification {
+    font-size: 8.5pt;
+    line-height: 1.5;
+  }
+  .report-identification dt,
+  .report-identification dd {
+    padding: 1mm;
+  }
+  .report-small-note {
+    font-size: 7pt;
+    margin-top: 2mm;
+    line-height: 1.5;
+  }
+  .report-executive {
+    padding: 3mm;
+    margin-top: 4mm;
+  }
+  .report-executive h2 {
+    font-size: 11pt;
+    margin-bottom: 2mm;
+  }
+  .report-executive p {
+    font-size: 8.5pt;
+    line-height: 1.6;
+  }
+  .report-synthesis {
+    gap: 2mm;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .report-synthesis > div {
+    padding: 2mm;
+    gap: 1mm;
+  }
+  .report-synthesis strong {
+    font-size: 8pt;
+  }
+  .report-synthesis > div > span:not(.badge) {
+    font-size: 10pt;
+  }
+  .report-table {
+    font-size: 7.5pt;
+    line-height: 1.5;
+  }
+  .report-table th,
+  .report-table td {
+    padding: 1mm;
+  }
+  .report-table thead th:first-child {
+    width: 21%;
+  }
+  .report-table thead th:last-child {
+    width: 34%;
+  }
+  .report-table tbody th {
+    font-size: 7.5pt;
+  }
+  .report-table small {
+    font-size: 6.7pt;
+    line-height: 1.5;
+    margin-top: 1mm;
+  }
+  .source-report-table {
+    font-size: 7pt;
+  }
+  .source-report-table td strong {
+    font-size: 7pt;
+  }
+  .source-report-table small {
+    font-size: 6.5pt;
+  }
+  .report-review li,
+  .report-section > ul > li {
+    font-size: 7.5pt;
+    line-height: 1.45;
+    margin-bottom: 1mm;
+  }
+  .report-section > ul {
+    margin-block: 1mm;
+  }
+  .report-synthesis .badge,
+  .report-table td .badge {
+    font-size: 6pt;
+    line-height: 1.35;
+    padding: 1mm;
+    margin-top: 1mm;
+  }
+  .report-page .coverage-block {
+    padding: 3mm;
+    margin: 4mm 0;
+  }
+  .report-page .coverage-block .block-heading {
+    margin-bottom: 2mm;
+  }
+  .report-page .coverage-cell {
+    padding: 2mm;
+    gap: 1.5mm;
+  }
+  .report-page .coverage-note {
+    margin-top: 2mm;
+    font-size: 6.5pt;
+  }
+  .report-page .notice {
+    padding: 2.5mm;
+    font-size: 7pt;
+    margin: 3mm 0;
+  }
+  .report-page-footer {
+    margin-top: 4mm;
+    padding: 3mm;
+  }
+  .report-page-detail h1 br {
+    display: none;
+  }
+  .report-core-table thead th:first-child {
+    width: 23%;
+  }
+  .report-core-table thead th:last-child {
+    width: 48%;
+  }
+  .source-report-table thead th:first-child {
+    width: 37%;
+  }
+  .source-report-table thead th:last-child {
+    width: 37%;
+  }
+  .report-page-detail .report-head {
+    padding-bottom: 1mm;
+    margin-bottom: 2mm;
+  }
+  .report-page-detail .report-section {
+    margin-top: 2mm;
+    padding: 1.5mm;
+  }
+  .report-page-detail .report-page-footer {
+    margin-top: 2mm;
+    padding: 2mm;
+  }
+  .report-page-detail .coverage-cell strong {
+    font-size: 16pt;
+    line-height: 1;
+  }
+  .report-page-detail .coverage-note {
+    margin-top: 1mm;
+  }
+  .report-page-detail .coverage-block {
+    padding: 1.5mm;
+    margin: 2mm 0;
+  }
+  .report-page-detail .report-subtitle {
+    margin-bottom: 1mm;
+  }
+}

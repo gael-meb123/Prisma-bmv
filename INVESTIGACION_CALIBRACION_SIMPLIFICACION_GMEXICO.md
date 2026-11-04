@@ -1,0 +1,466 @@
+# Investigación Controlada de Calibración Conservadora de Probabilidades y Simplificación de Variables Predictoras para GMEXICO B (Prisma BMV)
+
+## 1. Resumen Ejecutivo y Hallazgos Principales
+
+- **Objetivo de la investigación:** Evaluar de manera controlada y auditable dos hipótesis de mejora metodológica sobre el pronóstico direccional a cinco sesiones bursátiles del Precio Promedio Ponderado (`PPP`) oficial de `GMEXICO B` ($Y_t = \mathbb{I}(\text{PPP}_{t+5} > \text{PPP}_t)$), exclusivamente dentro de la partición histórica de desarrollo (`TRAIN`, fecha de origen y fecha objetivo $\le \text{2025-04-29}$):
+  - **Investigación 1 (Contracción conservadora de probabilidades):** $p_{\text{final}} = \alpha p_{\text{modelo}} + (1 - \alpha) p_{\text{referencia}}$, con rejilla fija $\alpha \in \{0.0, 0.25, 0.50, 0.75, 1.0\}$, seleccionando $\alpha$ estrictamente mediante validación interna anidada hacia adelante sobre las probabilidades fuera de muestra interna generadas bajo el $C$ previamente seleccionado. Se evalúa como análisis principal $p_{\text{referencia}} = 0.5$ y como sensibilidad secundaria predefinida $p_{\text{referencia}} = \text{prevalencia\_train}$.
+  - **Investigación 2 (Simplificación de variables predictoras):** Reducción del conjunto canónico de ocho variables PPP (`ret_1`, `ret_5`, `ret_10`, `ret_20`, `volatilidad_5`, `volatilidad_20`, `distancia_media_5`, `distancia_media_20`) a las dos variables predefinidas con mayor respaldo estructural previo: `ret_10` y `volatilidad_20`.
+- **Cobertura y aislamiento experimental:**
+  - **Muestra de desarrollo elegible (`TRAIN`):** `1,167` observaciones válidas de `GMEXICO B` con esquema canónico `PPP_V2_MEDIA20` (`2016-11-28` a `2025-04-04`, con etiquetas que vencen hasta `2025-04-11`; `577` subidas = `49.4430%`, `590` no subidas = `50.5570%`).
+  - **Evaluación fuera de muestra interna por bloques semestrales:** `12` semestres evaluables entre `2019-H1` y `2025-H1` parcial, sumando `803` predicciones fuera de muestra (`395` subidas = `49.1905%`, `408` no subidas = `50.8095%`).
+  - **Documentación explícita de período insuficiente:** El bloque `2023-H2` cuenta únicamente con `n_val = 3` ejemplos elegibles (mínimo requerido `20`) debido al hueco real de boletines regulatorios de la BMV en 2023; se registra con estado `INSUFICIENTE_MUESTRA` sin comprimir el calendario ni eliminar filas silenciosamente.
+  - **Protección de particiones y artefactos:** Ningún registro de `TEST` ni de `PROSPECTIVA` intervino en el ajuste, selección o evaluación. Los archivos protegidos y las señales prospectivas (`registro_senales_prospectivas_gmexico.csv` y `registro_senales_prospectivas_walmex.csv`) conservaron intactos sus hashes SHA-256 antes y después de la ejecución.
+- **Conclusiones científicas centrales (régimen principal `EXPANSIVA`, $N = 803$):**
+  - **1. La simplificación a dos variables (`C_2VARS_ORIG`: `ret_10` y `volatilidad_20` sin contracción) obtiene el menor Brier y Log-loss global de todas las variantes evaluadas:**
+    - Brier global ponderado: `0.248705` frente a `0.250626` del benchmark de ocho variables `A_8VARS_ORIG` ($\Delta\text{Brier} = -0.001921$, IC 95% por bloques `[-0.007263, +0.001939]`), superando además tanto al `DUMMY_PREVALENCIA` (`0.251416`, $\Delta\text{Brier} = -0.002711$) como a la referencia constante `0.5` (`0.250000`, $\Delta\text{Brier} = -0.001295`).
+    - Log-loss global: `0.690554` frente a `0.694624` de `A_8VARS_ORIG`.
+    - ROC AUC global: `0.5456` frente a `0.5441` de `A_8VARS_ORIG`.
+    - Estabilidad y calibración natural: `C_2VARS_ORIG` mejora a `A_8VARS_ORIG` en `7 de 12` períodos semestrales, reduce la desviación estándar semestral del Brier de `0.010959` a `0.008524`, reduce el sesgo de probabilidad media de `+0.016931` a `+0.010290`, y reduce el error de calibración esperado (`ECE` ponderado en 5 bandas) de `0.052031` a `0.030742` sin necesidad de contracción post-hoc.
+    - Compromiso en clasificación dura en el corte `0.5`: su Balanced Accuracy global es `51.90%` frente a `55.16%` de `A_8VARS_ORIG`, porque al eliminar variables colineales las probabilidades quedan más concentradas alrededor de `0.5`, cruzando con menor frecuencia el umbral de decisión en semestres ruidosos (`2019-H1`, `2020-H1`, `2024-H2`), aunque mantiene mejor ordenamiento global (`ROC AUC 0.5456` vs `0.5441`).
+  - **2. La contracción hacia `p_referencia = 0.5` (`B_8VARS_CONTR_05` y `D_2VARS_CONTR_05`) actúa predominantemente como un apagado del modelo ($\alpha = 0$), no como una mejora genuina de la señal predictiva:**
+    - En `B_8VARS_CONTR_05`, la validación interna selecciona $\alpha = 0.0$ en `9 de 12` períodos (`2019-H1` a `2023-H1`) y $\alpha = 0.25$ en los `3` períodos finales (`2024-H1`, `2024-H2`, `2025-H1`). En `D_2VARS_CONTR_05`, selecciona $\alpha = 0.0$ en `10 de 12` períodos (`2019-H1` a `2024-H1`) y $\alpha = 0.25$ en `2 de 12` (`2024-H2`, `2025-H1`). En ningún período selecciona $\alpha = 1.0$.
+    - Mecanismo estadístico: en los cortes internos iniciales (`2017-H1` a `2022-H2`), las probabilidades crudas tienen Brier interno ligeramente superior a `0.25` (`~0.251` a `0.262`), mientras que la constante $p = 0.5$ garantiza determinísticamente un Brier exacto de `0.250000` sin importar el balance de clases. Por ello, al contraer hacia `0.5`, el optimizador interno apaga la señal ($\alpha = 0.0$) durante tres cuartas partes de la historia.
+    - Sobre dos variables, contraer hacia `0.5` (`D_2VARS_CONTR_05`) **deteriora** el Brier de `C_2VARS_ORIG` de `0.248705` a `0.249814` ($\Delta\text{Brier} = +0.001109$), porque el apagado $\alpha = 0.0$ destruye la habilidad predictiva positiva que `C_2VARS_ORIG` aporta en `2019-H2`, `2021-H1`, `2022-H2`, `2023-H1` y `2024-H1`.
+  - **3. Sensibilidad de referencia (`p_referencia = prevalencia_train`) y de ventana (`MOVIL_3_ANIOS`):**
+    - Cuando la referencia de contracción es la prevalencia histórica de entrenamiento (`B_SENS_8VARS_CONTR_PREV` y `D_SENS_2VARS_CONTR_PREV`), la validación interna **nunca selecciona $\alpha = 0.0$** en régimen expansivo (`0/12` en ambas), porque la prevalencia histórica arrastra varianza muestral entre bloques (Brier interno `~0.254` a `0.265`). Sin embargo, el ajuste resultante apenas modifica a `A_8VARS_ORIG` (`0.250522` vs `0.250626`) y sigue siendo superado por `C_2VARS_ORIG` sin contracción (`0.248705` vs `0.249191`).
+    - Bajo ventana móvil de tres años (`MOVIL_3_ANIOS`), todas las variantes presentan peor Brier global que en ventana expansiva, pero la simplificación de ocho a dos variables (`C_2VARS_ORIG` vs `A_8VARS_ORIG`) vuelve a reducir el Brier global de `0.253217` a `0.250596` ($\Delta\text{Brier} = -0.002621$, mejorando en `8 de 12` períodos).
+
+---
+
+## 2. Protocolo Experimental Predefinido y Controles Temporales
+
+- **Registro previo del protocolo:**
+  - Archivo de protocolo registrado antes del cálculo de métricas externas: [protocolo.json](file:///D:/Universidad/7mo%20Semestre/Big%20Data/Proyecto%20final/calibracion_simplificacion_gmexico_desarrollo/protocolo.json) (SHA-256: `f2cda084ed98756d4accfb4cae9dcab2809f61505c99d2fe248de3095a17571e`).
+  - Declaración metodológica: Investigación exploratoria controlada sobre la partición de desarrollo (`TRAIN`) previamente analizada en el estudio de estabilidad histórica de `GMEXICO B`.
+- **Reglas estrictas de datos y calendario PPP:**
+  - Fuente única: [dataset_panel_15_emisoras_features.csv](file:///D:/Universidad/7mo%20Semestre/Big%20Data/Proyecto%20final/dataset_panel_15_emisoras_features.csv) (SHA-256: `e6c8a2c4d48fa56382a104e9e595ede5438253c2fde2b5d03083d165865eabed`).
+  - Variable objetivo y predictores construidos exclusivamente sobre el Precio Promedio Ponderado (`PPP`) oficial de la BMV ($Y_t = \mathbb{I}(\text{PPP}_{t+5} > \text{PPP}_t)$), bajo la convención corregida `PPP_V2_MEDIA20` verificada en [metodologia_ppp.py](file:///D:/Universidad/7mo%20Semestre/Big%20Data/Proyecto%20final/metodologia_ppp.py).
+  - Prohibición absoluta de último precio, cierres de terceros, precios ajustados, precios sintéticos, forward-fill, interpolación o imputación con ceros.
+  - Ventanas calculadas sobre sesiones bursátiles reales sin comprimir el tiempo al filtrar registros.
+- **Aislamiento de la partición de desarrollo (`TRAIN`):**
+  - Condiciones simultáneas obligatorias en [`cargar_gmexico_train_elegible`](file:///D:/Universidad/7mo%20Semestre/Big%20Data/Proyecto%20final/estabilidad_historica_gmexico.py#L72-L108):
+    - `empresa == "GMEXICO"`
+    - `periodo_oficial == "TRAIN"`
+    - `version_definicion == "PPP_V2_MEDIA20"`
+    - `elegible_modelado == True` y `target_disponible == True`
+    - `fecha <= "2025-04-29"` y `fecha_objetivo_h5 <= "2025-04-29"`
+    - Sin valores faltantes en las ocho variables PPP ni en `target_subida_h5`.
+  - Total de registros elegibles: `1,167` filas (`SHA-256` del subconjunto canónico: `fa54e1b2334f7c1554661a81e5b41effb1dcb5d6e1aefaee74f0e447f4af87e`).
+- **Especificación de las variantes comparadas sobre las mismas fechas exactas:**
+  - **Variante A (`A_8VARS_ORIG`):** Ocho variables PPP (`ret_1`, `ret_5`, `ret_10`, `ret_20`, `volatilidad_5`, `volatilidad_20`, `distancia_media_5`, `distancia_media_20`), probabilidades originales ($\alpha = 1.0$).
+  - **Variante B (`B_8VARS_CONTR_05`):** Ocho variables PPP, probabilidades contraídas hacia $p_{\text{referencia}} = 0.5$, compartiendo exactamente el mismo modelo base y el mismo hiperparámetro $C$ seleccionado para `A_8VARS_ORIG` en cada semestre.
+  - **Variante C (`C_2VARS_ORIG`):** Dos variables predefinidas (`ret_10`, `volatilidad_20`), probabilidades originales ($\alpha = 1.0$).
+  - **Variante D (`D_2VARS_CONTR_05`):** Dos variables predefinidas (`ret_10`, `volatilidad_20`), probabilidades contraídas hacia $p_{\text{referencia}} = 0.5$, compartiendo exactamente el mismo modelo base y el mismo $C$ seleccionado para `C_2VARS_ORIG` en cada semestre.
+  - **Sensibilidad secundaria de referencia B_SENS (`B_SENS_8VARS_CONTR_PREV`):** Ocho variables PPP, probabilidades contraídas hacia $p_{\text{referencia}} = \text{prevalencia\_train}$ disponible en el entrenamiento de cada origen.
+  - **Sensibilidad secundaria de referencia D_SENS (`D_SENS_2VARS_CONTR_PREV`):** Dos variables predefinidas (`ret_10`, `volatilidad_20`), probabilidades contraídas hacia $p_{\text{referencia}} = \text{prevalencia\_train}$ disponible en el entrenamiento de cada origen.
+  - **Referencias nulas obligatorias:**
+    - `DUMMY_PREVALENCIA`: predice constantemente la prevalencia observada exclusivamente en el `Train` disponible de cada semestre ($\alpha = 0$ hacia `prevalencia_train`).
+    - `REFERENCIA_CONSTANTE_05`: predice constantemente $p = 0.5$ ($\alpha = 0$ hacia `0.5`).
+- **Procedimiento anidado sin fuga temporal para seleccionar $C$ y $\alpha$ en cada bloque semestral externo:**
+  - **Paso 1 (Purga temporal entre Train y Validación):** En cada bloque semestral `[inicio_bloque, fin_bloque]`, el conjunto `Train` externo incluye únicamente observaciones cuya etiqueta vence estrictamente antes del inicio del bloque validado (`fecha_objetivo_h5 < inicio_bloque` y `fecha_objetivo_h5 < inicio_val`). Al final del bloque validado se purgan las observaciones cuya etiqueta vence después de `fin_bloque` (`fecha_objetivo_h5 <= fin_bloque`).
+  - **Paso 2 (Particiones internas hacia adelante):** Exclusivamente dentro del `Train` externo disponible, se construyen bloques semestrales internos (`construir_cortes_internos`), exigiendo al menos `100` observaciones de sub-entrenamiento previo (con `fecha_objetivo_h5 < inicio_corte_interno`) y al menos `15` observaciones de validación interna.
+  - **Paso 3 (Selección de $C$):** Para cada $C \in \{0.01, 0.1, 1.0, 10.0\}$, se ajusta `StandardScaler` y `LogisticRegression(penalty="l2", solver="lbfgs", class_weight=None, random_state=42)` solo en cada sub-entrenamiento interno y se evalúa el Brier promedio ponderado sobre todas las predicciones de validación interna. En caso de empate (tolerancia $10^{-12}$), se elige el menor $C$ (mayor regularización L2).
+  - **Paso 4 (Obtención de probabilidades internas fuera de muestra):** Se recuperan las probabilidades de validación interna correspondientes al $C^*$ seleccionado, junto con sus etiquetas internas ya conocidas y la prevalencia de cada sub-entrenamiento interno.
+  - **Paso 5 (Selección de $\alpha$):** Sobre esas probabilidades internas fuera de muestra se evalúa la rejilla fija $\alpha \in \{0.0, 0.25, 0.50, 0.75, 1.0\}$ para la transformación $p_{\text{final}} = \alpha p_{\text{modelo}} + (1 - \alpha) p_{\text{referencia}}$. Se elige el $\alpha^*$ que minimiza el Brier interno ponderado por observaciones. Regla predefinida de desempate (tolerancia $10^{-12}$): se prefiere el menor $\alpha$ (ajuste más conservador).
+  - **Paso 6 (Reentrenamiento y aplicación ciega al bloque externo):** Se reentrena el escalador y la regresión logística con $C^*$ sobre el `Train` externo completo y se aplica $\alpha^*$ a las probabilidades del bloque semestral externo sin observar sus etiquetas.
+
+---
+
+## 3. Cobertura de Datos y Bloques Semestrales Evaluados
+
+- **Resumen de bloques semestrales (`2019-H1` a `2025-H1` parcial):**
+  - **Período `2019-H1` (EVALUADO):**
+    - Rango de validación efectiva: `2019-01-11` a `2019-06-21` (etiquetas hasta `2019-06-28`), `n_val = 53` (`31` subidas = `58.49%`, `22` no subidas), purga final de bloque = `1` fila.
+    - Entrenamiento previo (`EXPANSIVA` y `MOVIL_3_ANIOS`): `2016-11-28` a `2018-12-04` (etiquetas hasta `2018-12-11`), `n_train = 330`, prevalencia de entrenamiento = `0.475758`, cortes internos válidos = `3` (`163` observaciones internas).
+  - **Período `2019-H2` (EVALUADO):**
+    - Rango de validación efectiva: `2019-08-02` a `2019-11-27` (etiquetas hasta `2019-12-04`), `n_val = 40` (`19` subidas = `47.50%`, `21` no subidas), purga final de bloque = `0` filas.
+    - Entrenamiento previo (`EXPANSIVA` y `MOVIL_3_ANIOS`): `2016-11-28` a `2019-06-21` (etiquetas hasta `2019-06-28`), `n_train = 383`, prevalencia de entrenamiento = `0.490862`, cortes internos válidos = `4` (`216` observaciones internas).
+  - **Período `2020-H1` (EVALUADO):**
+    - Rango de validación efectiva: `2020-01-02` a `2020-06-23` (etiquetas hasta `2020-06-30`), `n_val = 58` (`36` subidas = `62.07%`, `22` no subidas), purga final de bloque = `5` filas.
+    - Entrenamiento `EXPANSIVA`: `n_train = 424` (`2016-11-28` a `2019-11-27`, prevalencia = `0.488208`, `5` cortes internos con `256` observaciones).
+    - Entrenamiento `MOVIL_3_ANIOS`: `n_train = 406` (`2017-01-24` a `2019-11-27`, prevalencia = `0.487685`, `5` cortes internos con `256` observaciones).
+  - **Período `2020-H2` (EVALUADO):**
+    - Rango de validación efectiva: `2020-07-01` a `2020-12-23` (etiquetas hasta `2020-12-31`), `n_val = 58` (`39` subidas = `67.24%`, `19` no subidas), purga final de bloque = `5` filas.
+    - Entrenamiento `EXPANSIVA`: `n_train = 482` (`2016-11-28` a `2020-06-23`, prevalencia = `0.504149`, `6` cortes internos con `314` observaciones).
+    - Entrenamiento `MOVIL_3_ANIOS`: `n_train = 355` (`2017-07-03` a `2020-06-23`, prevalencia = `0.526761`, `4` cortes internos con `197` observaciones).
+  - **Período `2021-H1` (EVALUADO):**
+    - Rango de validación efectiva: `2021-01-04` a `2021-06-23` (etiquetas hasta `2021-06-30`), `n_val = 75` (`36` subidas = `48.00%`, `39` no subidas), purga final de bloque = `5` filas.
+    - Entrenamiento `EXPANSIVA`: `n_train = 545` (`2016-11-28` a `2020-12-23`, prevalencia = `0.526606`, `7` cortes internos con `372` observaciones).
+    - Entrenamiento `MOVIL_3_ANIOS`: `n_train = 356` (`2018-01-11` a `2020-12-23`, prevalencia = `0.536517`, `4` cortes internos con `209` observaciones).
+  - **Período `2021-H2` (EVALUADO):**
+    - Rango de validación efectiva: `2021-07-01` a `2021-12-09` (etiquetas hasta `2021-12-16`), `n_val = 90` (`39` subidas = `43.33%`, `51` no subidas), purga final de bloque = `0` filas.
+    - Entrenamiento `EXPANSIVA`: `n_train = 625` (`2016-11-28` a `2021-06-23`, prevalencia = `0.524800`, `8` cortes internos con `447` observaciones).
+    - Entrenamiento `MOVIL_3_ANIOS`: `n_train = 319` (`2018-07-02` a `2021-06-23`, prevalencia = `0.586207`, `3` cortes internos con `191` observaciones).
+  - **Período `2022-H1` (EVALUADO):**
+    - Rango de validación efectiva: `2022-02-01` a `2022-06-23` (etiquetas hasta `2022-06-30`), `n_val = 99` (`42` subidas = `42.42%`, `57` no subidas), purga final de bloque = `5` filas.
+    - Entrenamiento `EXPANSIVA`: `n_train = 720` (`2016-11-28` a `2021-12-09`, prevalencia = `0.515278`, `9` cortes internos con `537` observaciones).
+    - Entrenamiento `MOVIL_3_ANIOS`: `n_train = 390` (`2019-01-11` a `2021-12-09`, prevalencia = `0.548718`, `4` cortes internos con `281` observaciones).
+  - **Período `2022-H2` (EVALUADO):**
+    - Rango de validación efectiva: `2022-07-01` a `2022-12-23` (etiquetas hasta `2022-12-30`), `n_val = 122` (`53` subidas = `43.44%`, `69` no subidas), purga final de bloque = `5` filas.
+    - Entrenamiento `EXPANSIVA`: `n_train = 819` (`2016-11-28` a `2022-06-23`, prevalencia = `0.504274`, `10` cortes internos con `636` observaciones).
+    - Entrenamiento `MOVIL_3_ANIOS`: `n_train = 435` (`2019-08-02` a `2022-06-23`, prevalencia = `0.517241`, `4` cortes internos con `322` observaciones).
+  - **Período `2023-H1` (EVALUADO):**
+    - Rango de validación efectiva: `2023-01-02` a `2023-05-02` (etiquetas hasta `2023-05-09`), `n_val = 39` (`23` subidas = `58.97%`, `16` no subidas), purga final de bloque = `0` filas.
+    - Entrenamiento `EXPANSIVA`: `n_train = 946` (`2016-11-28` a `2022-12-23`, prevalencia = `0.493658`, `11` cortes internos con `758` observaciones).
+    - Entrenamiento `MOVIL_3_ANIOS`: `n_train = 522` (`2020-01-02` a `2022-12-23`, prevalencia = `0.498084`, `5` cortes internos con `386` observaciones).
+  - **Período `2023-H2` (INSUFICIENTE_MUESTRA — Documentado explícitamente):**
+    - Bloque calendario `2023-07-01` a `2023-12-31`: `n_val = 3` observaciones elegibles (mínimo requerido = `20`), con `n_train = 990` en `EXPANSIVA` y `n_train = 503` en `MOVIL_3_ANIOS`.
+    - Causa: Hueco real en los boletines regulatorios de la BMV durante el segundo semestre de 2023. Se conserva en la serie y se reporta sin evaluación.
+  - **Período `2024-H1` (EVALUADO):**
+    - Rango de validación efectiva: `2024-04-15` a `2024-06-21` (etiquetas hasta `2024-06-28`), `n_val = 49` (`21` subidas = `42.86%`, `28` no subidas), purga final de bloque = `5` filas.
+    - Entrenamiento `EXPANSIVA`: `n_train = 993` (`2016-11-28` a `2023-10-31`, prevalencia = `0.498489`, `12` cortes internos con `797` observaciones).
+    - Entrenamiento `MOVIL_3_ANIOS`: `n_train = 443` (`2021-01-04` a `2023-10-31`, prevalencia = `0.458239`, `4` cortes internos con `250` observaciones).
+  - **Período `2024-H2` (EVALUADO):**
+    - Rango de validación efectiva: `2024-07-01` a `2024-11-19` (etiquetas hasta `2024-11-26`), `n_val = 70` (`33` subidas = `47.14%`, `37` no subidas), purga final de bloque = `0` filas.
+    - Entrenamiento `EXPANSIVA`: `n_train = 1,042` (`2016-11-28` a `2024-06-21`, prevalencia = `0.495202`, `13` cortes internos con `846` observaciones).
+    - Entrenamiento `MOVIL_3_ANIOS`: `n_train = 412` (`2021-07-01` a `2024-06-21`, prevalencia = `0.446602`, `4` cortes internos con `210` observaciones).
+  - **Período `2025-H1` parcial (EVALUADO hasta el corte de TRAIN `2025-04-29`):**
+    - Rango de validación efectiva: `2025-01-22` a `2025-04-04` (etiquetas hasta `2025-04-11`), `n_val = 50` (`23` subidas = `46.00%`, `27` no subidas), purga final de bloque = `0` filas.
+    - Entrenamiento `EXPANSIVA`: `n_train = 1,117` (`2016-11-28` a `2024-11-19`, prevalencia = `0.495971`, `14` cortes internos con `916` observaciones).
+    - Entrenamiento `MOVIL_3_ANIOS`: `n_train = 397` (`2022-02-01` a `2024-11-19`, prevalencia = `0.460957`, `4` cortes internos con `280` observaciones).
+
+---
+
+## 4. Selección Anidada de Hiperparámetros ($C$ y $\alpha$) y Estabilidad de Coeficientes
+
+- **Selección de regularización $C$ (detalle completo en [seleccion_hiperparametros.csv](file:///D:/Universidad/7mo%20Semestre/Big%20Data/Proyecto%20final/calibracion_simplificacion_gmexico_desarrollo/seleccion_hiperparametros.csv)):**
+  - En el régimen principal `EXPANSIVA`, la validación interna seleccionó de forma unánime $C = 0.01$ en los `12 de 12` períodos tanto para la especificación de ocho variables (`8VARS`) como para la especificación simplificada de dos variables (`2VARS`).
+  - En la sensibilidad secundaria `MOVIL_3_ANIOS`, la validación interna también seleccionó $C = 0.01$ en los `12 de 12` períodos para `8VARS` y `2VARS`.
+  - Esto confirma que, incluso al reducir la dimensionalidad de ocho a dos predictores, la relación señal-ruido en retornos a 5 sesiones exige una fuerte penalización L2 para evitar sobreajuste en las colas de probabilidad.
+- **Selección anidada de contracción $\alpha$ en régimen principal `EXPANSIVA` (detalle en [particiones_internas_alpha.csv](file:///D:/Universidad/7mo%20Semestre/Big%20Data/Proyecto%20final/calibracion_simplificacion_gmexico_desarrollo/particiones_internas_alpha.csv)):**
+  - **`B_8VARS_CONTR_05` (8 variables, contracción hacia $p_{\text{ref}} = 0.5$):**
+    - Frecuencia de $\alpha = 0.0$: `9 de 12` períodos (`75.00%`: `2019-H1`, `2019-H2`, `2020-H1`, `2020-H2`, `2021-H1`, `2021-H2`, `2022-H1`, `2022-H2`, `2023-H1`).
+    - Frecuencia de $\alpha = 0.25$: `3 de 12` períodos (`25.00%`: `2024-H1`, `2024-H2`, `2025-H1`).
+    - Frecuencia de $\alpha = 0.50$, $\alpha = 0.75$ y $\alpha = 1.0$: `0 de 12` períodos (`0.00%`).
+  - **`D_2VARS_CONTR_05` (2 variables, contracción hacia $p_{\text{ref}} = 0.5$):**
+    - Frecuencia de $\alpha = 0.0$: `10 de 12` períodos (`83.33%`: `2019-H1` a `2024-H1`).
+    - Frecuencia de $\alpha = 0.25$: `2 de 12` períodos (`16.67%`: `2024-H2`, `2025-H1`).
+    - Frecuencia de $\alpha = 0.50$, $\alpha = 0.75$ y $\alpha = 1.0$: `0 de 12` períodos (`0.00%`).
+  - **`B_SENS_8VARS_CONTR_PREV` (8 variables, contracción hacia $p_{\text{ref}} = \text{prevalencia\_train}$):**
+    - Frecuencia de $\alpha = 0.0$: `0 de 12` períodos (`0.00%`).
+    - Frecuencia de $\alpha = 0.25$: `5 de 12` períodos (`41.67%`: `2021-H1`, `2021-H2`, `2022-H1`, `2022-H2`, `2023-H1`).
+    - Frecuencia de $\alpha = 0.50$: `5 de 12` períodos (`41.67%`: `2020-H1`, `2020-H2`, `2024-H1`, `2024-H2`, `2025-H1`).
+    - Frecuencia de $\alpha = 0.75$: `1 de 12` períodos (`8.33%`: `2019-H2`).
+    - Frecuencia de $\alpha = 1.0$: `1 de 12` períodos (`8.33%`: `2019-H1`).
+  - **`D_SENS_2VARS_CONTR_PREV` (2 variables, contracción hacia $p_{\text{ref}} = \text{prevalencia\_train}$):**
+    - Frecuencia de $\alpha = 0.0$: `0 de 12` períodos (`0.00%`).
+    - Frecuencia de $\alpha = 0.25$: `0 de 12` períodos (`0.00%`).
+    - Frecuencia de $\alpha = 0.50$: `1 de 12` períodos (`8.33%`: `2021-H1`).
+    - Frecuencia de $\alpha = 0.75$: `4 de 12` períodos (`33.33%`: `2021-H2`, `2022-H1`, `2022-H2`, `2023-H1`).
+    - Frecuencia de $\alpha = 1.0$: `7 de 12` períodos (`58.33%`: `2019-H1`, `2019-H2`, `2020-H1`, `2020-H2`, `2024-H1`, `2024-H2`, `2025-H1`).
+- **Selección anidada de contracción $\alpha$ en sensibilidad `MOVIL_3_ANIOS`:**
+  - **`B_8VARS_CONTR_05`:** $\alpha = 0.0$ en `7/12` (`58.33%`), $\alpha = 0.50$ en `1/12` (`2024-H1`), $\alpha = 0.75$ en `4/12` (`2020-H2`, `2021-H2`, `2024-H2`, `2025-H1`), $\alpha = 1.0$ en `0/12`.
+  - **`D_2VARS_CONTR_05`:** $\alpha = 0.0$ en `6/12` (`50.00%`), $\alpha = 0.25$ en `1/12` (`2022-H1`), $\alpha = 0.75$ en `4/12` (`2021-H2`, `2024-H1`, `2024-H2`, `2025-H1`), $\alpha = 1.0$ en `1/12` (`2020-H2`).
+  - **`B_SENS_8VARS_CONTR_PREV`:** $\alpha = 0.0$ en `2/12` (`2022-H1`, `2022-H2`), $\alpha = 0.25$ en `2/12`, $\alpha = 0.50$ en `2/12`, $\alpha = 0.75$ en `2/12`, $\alpha = 1.0$ en `4/12`.
+  - **`D_SENS_2VARS_CONTR_PREV`:** $\alpha = 0.0$ en `1/12` (`2022-H1`), $\alpha = 0.25$ en `1/12` (`2022-H2`), $\alpha = 1.0$ en `10/12` (`83.33%`).
+- **Comportamiento de los coeficientes estandarizados ([coeficientes.csv](file:///D:/Universidad/7mo%20Semestre/Big%20Data/Proyecto%20final/calibracion_simplificacion_gmexico_desarrollo/coeficientes.csv)):**
+  - En la especificación simplificada `2VARS` bajo régimen `EXPANSIVA`:
+    - El coeficiente de `ret_10` mantiene signo **estrictamente negativo en los 12 de 12 períodos** (reversión a la media quincenal), con magnitud estable entre `-0.1144` (`2021-H1`) y `-0.1989` (`2024-H2`), absorbiendo de forma limpia la señal direccional que en el modelo de ocho variables se fragmentaba entre `ret_1`, `ret_5`, `ret_10`, `distancia_media_5` y `distancia_media_20`.
+    - El coeficiente de `volatilidad_20` muestra transición suave de régimen: ligeramente negativo en `2019-H1` a `2020-H1` (`-0.0087` a `-0.0007`), positivo durante la recuperación post-COVID `2020-H2` a `2022-H1` (`+0.0441` a `+0.0778`), y negativo desde `2022-H2` hasta `2025-H1` (`-0.0276` a `-0.0873`), sin la compensación opuesta e inestable que ocurría entre `volatilidad_5` (positiva) y `volatilidad_20` (negativa) en el modelo de ocho variables.
+
+---
+
+## 5. Resultados Globales Ponderados por Observaciones (`N = 803`, `12` Períodos Evaluables)
+
+- **Distribución global de clases fuera de muestra:** `803` predicciones totales, `395` subidas (`49.1905%`) y `408` no subidas (`50.8095%`).
+- **Régimen Principal `EXPANSIVA`:**
+  - **Variante A (`A_8VARS_ORIG` — Benchmark de 8 variables, probabilidades originales):**
+    - Brier global: `0.250626`
+    - Log-loss global: `0.694624`
+    - Balanced Accuracy global: `55.1610%`
+    - Accuracy global: `55.0436%`
+    - ROC AUC global: `0.544149`
+    - Probabilidad media predicha: `0.508837` (frente a prevalencia observada `0.491905`; sesgo `+0.016931`)
+    - Proporción que predice subida ($p > 0.5$): `58.9041%`
+    - Dispersión semestral del Brier: media simple `0.249885`, desviación estándar `0.010959`
+    - Mejor período por Brier: `2023-H1` (`0.230061`)
+    - Peor período por Brier: `2020-H1` (`0.262554`)
+    - Períodos que superan a `DUMMY_PREVALENCIA` por Brier: `7 de 12`
+    - Períodos que superan a `REFERENCIA_CONSTANTE_05` por Brier: `5 de 12`
+  - **Variante B (`B_8VARS_CONTR_05` — 8 variables, contracción hacia `0.5`):**
+    - Brier global: `0.249503` ($\Delta\text{Brier vs A} = -0.001123$)
+    - Log-loss global: `0.692152`
+    - Balanced Accuracy global: `53.4628%`
+    - Accuracy global: `52.8020%`
+    - ROC AUC global: `0.548291`
+    - Probabilidad media predicha: `0.500273` (sesgo `+0.008368`)
+    - Proporción que predice subida ($p > 0.5$): `11.4570%` (nota: en los 9 períodos con $\alpha = 0$, $p = 0.5$ exacto)
+    - Dispersión semestral del Brier: media simple `0.249359`, desviación estándar `0.001434`
+    - Mejor período por Brier: `2025-H1` (`0.245276`)
+    - Peor período por Brier: `2019-H1` (`0.250000`, empatado en los 9 semestres donde $\alpha = 0$)
+    - Períodos que mejoran a `A_8VARS_ORIG` por Brier: `8 de 12` (empeora en `4 de 12`: `2022-H2`, `2023-H1`, `2024-H1`, `2025-H1`)
+    - Períodos que superan a `DUMMY_PREVALENCIA` por Brier: `10 de 12`
+    - Períodos que superan estrictamente a `REFERENCIA_CONSTANTE_05` por Brier: `3 de 12` (empata en `9 de 12` por elegir $\alpha = 0$)
+  - **Variante C (`C_2VARS_ORIG` — 2 variables predefinidas `ret_10` y `volatilidad_20`, probabilidades originales):**
+    - Brier global: `0.248705` (**mejor Brier global de todo el estudio**, $\Delta\text{Brier vs A} = -0.001921$)
+    - Log-loss global: `0.690554` (**mejor Log-loss global de todo el estudio**)
+    - Balanced Accuracy global: `51.8960%`
+    - Accuracy global: `51.8057%`
+    - ROC AUC global: `0.545588`
+    - Probabilidad media predicha: `0.502195` (sesgo `+0.010290`)
+    - Proporción que predice subida ($p > 0.5$): `56.5380%`
+    - Dispersión semestral del Brier: media simple `0.248350`, desviación estándar `0.008524`
+    - Mejor período por Brier: `2024-H1` (`0.234428`)
+    - Peor período por Brier: `2020-H2` (`0.262836`)
+    - Períodos que mejoran a `A_8VARS_ORIG` por Brier: `7 de 12` (`2019-H1`, `2019-H2`, `2020-H1`, `2021-H1`, `2021-H2`, `2022-H1`, `2024-H1`; empeora en `5 de 12`: `2020-H2`, `2022-H2`, `2023-H1`, `2024-H2`, `2025-H1`)
+    - Períodos que superan a `DUMMY_PREVALENCIA` por Brier: `7 de 12`
+    - Períodos que superan a `REFERENCIA_CONSTANTE_05` por Brier: `6 de 12`
+  - **Variante D (`D_2VARS_CONTR_05` — 2 variables predefinidas, contracción hacia `0.5`):**
+    - Brier global: `0.249814` ($\Delta\text{Brier vs A} = -0.000812$, pero **empeora** frente a `C_2VARS_ORIG` en $\Delta\text{Brier vs C} = +0.001109$)
+    - Log-loss global: `0.692775`
+    - Balanced Accuracy global: `50.1502%`
+    - Accuracy global: `49.4396%`
+    - ROC AUC global: `0.497648`
+    - Probabilidad media predicha: `0.500017` (sesgo `+0.008112`)
+    - Dispersión semestral del Brier: media simple `0.249756`, desviación estándar `0.000802`
+    - Mejor período por Brier: `2025-H1` (`0.247212`)
+    - Peor período por Brier: `2019-H1` (`0.250000`, empatado en los 10 semestres donde $\alpha = 0$)
+    - Períodos que mejoran a `A_8VARS_ORIG` por Brier: `7 de 12` (empeora en `5 de 12`)
+    - Períodos que mejoran a `C_2VARS_ORIG` por Brier: `6 de 12` (empeora en `6 de 12`)
+    - Períodos que superan a `DUMMY_PREVALENCIA` por Brier: `8 de 12`
+    - Períodos que superan estrictamente a `REFERENCIA_CONSTANTE_05` por Brier: `2 de 12` (empata en `10 de 12` por elegir $\alpha = 0$)
+  - **Sensibilidad Secundaria de Referencia B_SENS (`B_SENS_8VARS_CONTR_PREV` — 8 variables, contracción hacia `prevalencia_train`):**
+    - Brier global: `0.250522` ($\Delta\text{Brier vs A} = -0.000104$)
+    - Log-loss global: `0.694213`
+    - Balanced Accuracy global: `52.8748%`
+    - Accuracy global: `51.6812%`
+    - ROC AUC global: `0.523244`
+    - Probabilidad media predicha: `0.503723` (sesgo `+0.011818`)
+    - Dispersión semestral del Brier: media simple `0.249380`, desviación estándar `0.004644`
+    - Mejor período por Brier: `2025-H1` (`0.240651`)
+    - Peor período por Brier: `2020-H1` (`0.255839`)
+    - Períodos que mejoran a `A_8VARS_ORIG` por Brier: `6 de 12` (empata `1/12`, empeora `5/12`)
+  - **Sensibilidad Secundaria de Referencia D_SENS (`D_SENS_2VARS_CONTR_PREV` — 2 variables, contracción hacia `prevalencia_train`):**
+    - Brier global: `0.249191` ($\Delta\text{Brier vs A} = -0.001435$, $\Delta\text{Brier vs C} = +0.000486$)
+    - Log-loss global: `0.691521`
+    - Balanced Accuracy global: `51.6716%`
+    - Accuracy global: `51.3076%`
+    - ROC AUC global: `0.538509`
+    - Probabilidad media predicha: `0.501190` (sesgo `+0.009285`)
+    - Dispersión semestral del Brier: media simple `0.248985`, desviación estándar `0.008088`
+    - Mejor período por Brier: `2024-H1` (`0.234428`)
+    - Peor período por Brier: `2020-H2` (`0.262836`)
+    - Períodos que mejoran a `A_8VARS_ORIG` por Brier: `7 de 12` (empeora `5/12`)
+  - **Referencias Nulas en `EXPANSIVA`:**
+    - `DUMMY_PREVALENCIA`: Brier global `0.251416`, Log-loss `0.695981`, Balanced Accuracy `47.6645%`, ROC AUC `0.450171`, probabilidad media `0.504121` (sesgo `+0.012215`), desviación estándar semestral `0.001932`, peor período `2019-H1` (`0.254704`).
+    - `REFERENCIA_CONSTANTE_05`: Brier global `0.250000`, Log-loss `0.693147`, Balanced Accuracy `50.0000%`, ROC AUC `0.500000`, probabilidad media `0.500000` (sesgo `+0.008095`), desviación estándar semestral `0.000000`.
+- **Sensibilidad Secundaria de Ventana `MOVIL_3_ANIOS` ($N = 803$):**
+  - `A_8VARS_ORIG`: Brier `0.253217`, Log-loss `0.699955`, Balanced Accuracy `53.8165%`, ROC AUC `0.525040`, probabilidad media `0.520023` (sesgo `+0.028118`), desviación estándar semestral `0.013978`, peor período `2021-H2` (`0.277937`).
+  - `B_8VARS_CONTR_05`: Brier `0.250848` ($\Delta\text{Brier vs A} = -0.002369$), Log-loss `0.694923`, Balanced Accuracy `51.8350%`, ROC AUC `0.517912`, probabilidad media `0.508190` (sesgo `+0.016285`), desviación estándar semestral `0.006753`, peor período `2021-H2` (`0.268545`).
+  - `C_2VARS_ORIG`: Brier `0.250596` (**mejor Brier en ventana móvil**, $\Delta\text{Brier vs A} = -0.002621$, mejora a `A` en `8 de 12` períodos), Log-loss `0.694464`, Balanced Accuracy `52.6776%`, ROC AUC `0.536139`, probabilidad media `0.517965` (sesgo `+0.026060`), desviación estándar semestral `0.010918`, peor período `2021-H2` (`0.270407`).
+  - `D_2VARS_CONTR_05`: Brier `0.250650` ($\Delta\text{Brier vs A} = -0.002566$), Log-loss `0.694545`, Balanced Accuracy `51.9083%`, ROC AUC `0.524510`, probabilidad media `0.507807` (sesgo `+0.015901`), desviación estándar semestral `0.005921`, peor período `2021-H2` (`0.263300`).
+  - `B_SENS_8VARS_CONTR_PREV`: Brier `0.253140`, Log-loss `0.699527`, Balanced Accuracy `51.2347%`, ROC AUC `0.489408`.
+  - `D_SENS_2VARS_CONTR_PREV`: Brier `0.251647`, Log-loss `0.696644`, Balanced Accuracy `50.2519%`, ROC AUC `0.521010`.
+  - `DUMMY_PREVALENCIA`: Brier `0.253519`, Log-loss `0.700328`, Balanced Accuracy `47.5304%`, ROC AUC `0.453031`.
+
+---
+
+## 6. Desempeño Semestral Detallado (Régimen Principal `EXPANSIVA`)
+
+- **Detalle semestre por semestre (fuente: [metricas_por_periodo.csv](file:///D:/Universidad/7mo%20Semestre/Big%20Data/Proyecto%20final/calibracion_simplificacion_gmexico_desarrollo/metricas_por_periodo.csv)):**
+  - **`2019-H1` (`n = 53`, prevalencia observada `0.5849`, `C = 0.01`):**
+    - `A_8VARS_ORIG`: $\alpha = 1.0$, Brier `0.254253`, Log-loss `0.701884`, Balanced Acc `53.81%`, ROC AUC `0.5968`, prob media `0.4502`.
+    - `B_8VARS_CONTR_05`: $\alpha = 0.0$, Brier `0.250000`, Log-loss `0.693147`, Balanced Acc `50.00%`, ROC AUC `0.5000`, prob media `0.5000`.
+    - `C_2VARS_ORIG`: $\alpha = 1.0$, Brier `0.253737`, Log-loss `0.700574`, Balanced Acc `45.38%`, ROC AUC `0.5865`, prob media `0.4647`.
+    - `D_2VARS_CONTR_05`: $\alpha = 0.0$, Brier `0.250000`, Log-loss `0.693147`, Balanced Acc `50.00%`, ROC AUC `0.5000`, prob media `0.5000`.
+    - `DUMMY_PREVALENCIA`: Brier `0.254704`, prob media `0.4758`.
+  - **`2019-H2` (`n = 40`, prevalencia observada `0.4750`, `C = 0.01`):**
+    - `A_8VARS_ORIG`: $\alpha = 1.0$, Brier `0.255274`, Log-loss `0.703429`, Balanced Acc `46.74%`, ROC AUC `0.5288`, prob media `0.4772`.
+    - `B_8VARS_CONTR_05`: $\alpha = 0.0$, Brier `0.250000`, Log-loss `0.693147`, Balanced Acc `50.00%`, ROC AUC `0.5000`, prob media `0.5000`.
+    - `C_2VARS_ORIG`: $\alpha = 1.0$, Brier `0.241390` (mejora `-0.013883` vs `A`), Log-loss `0.675560`, Balanced Acc `51.50%`, ROC AUC `0.5714`, prob media `0.4760`.
+    - `D_2VARS_CONTR_05`: $\alpha = 0.0$, Brier `0.250000`, Log-loss `0.693147`, Balanced Acc `50.00%`, ROC AUC `0.5000`, prob media `0.5000`.
+    - `DUMMY_PREVALENCIA`: Brier `0.249627`, prob media `0.4909`.
+  - **`2020-H1` (`n = 58`, prevalencia observada `0.6207`, `C = 0.01`):**
+    - `A_8VARS_ORIG`: $\alpha = 1.0$, Brier `0.262554`, Log-loss `0.719990`, Balanced Acc `53.66%`, ROC AUC `0.5088`, prob media `0.4926`.
+    - `B_8VARS_CONTR_05`: $\alpha = 0.0$, Brier `0.250000`, Log-loss `0.693147`, Balanced Acc `50.00%`, ROC AUC `0.5000`, prob media `0.5000`.
+    - `C_2VARS_ORIG`: $\alpha = 1.0$, Brier `0.256864` (mejora `-0.005690` vs `A`), Log-loss `0.707266`, Balanced Acc `49.75%`, ROC AUC `0.5669`, prob media `0.4613`.
+    - `D_2VARS_CONTR_05`: $\alpha = 0.0$, Brier `0.250000`, Log-loss `0.693147`, Balanced Acc `50.00%`, ROC AUC `0.5000`, prob media `0.5000`.
+    - `DUMMY_PREVALENCIA`: Brier `0.252986`, prob media `0.4882`.
+  - **`2020-H2` (`n = 58`, prevalencia observada `0.6724`, `C = 0.01`):**
+    - `A_8VARS_ORIG`: $\alpha = 1.0$, Brier `0.260298`, Log-loss `0.714007`, Balanced Acc `48.31%`, ROC AUC `0.5128`, prob media `0.4756`.
+    - `B_8VARS_CONTR_05`: $\alpha = 0.0$, Brier `0.250000`, Log-loss `0.693147`, Balanced Acc `50.00%`, ROC AUC `0.5000`, prob media `0.5000`.
+    - `C_2VARS_ORIG`: $\alpha = 1.0$, Brier `0.262836`, Log-loss `0.718789`, Balanced Acc `43.05%`, ROC AUC `0.4372`, prob media `0.4724`.
+    - `D_2VARS_CONTR_05`: $\alpha = 0.0$, Brier `0.250000`, Log-loss `0.693147`, Balanced Acc `50.00%`, ROC AUC `0.5000`, prob media `0.5000`.
+    - `DUMMY_PREVALENCIA`: Brier `0.248586`, prob media `0.5041`.
+  - **`2021-H1` (`n = 75`, prevalencia observada `0.4800`, `C = 0.01`):**
+    - `A_8VARS_ORIG`: $\alpha = 1.0$, Brier `0.250539`, Log-loss `0.694507`, Balanced Acc `50.75%`, ROC AUC `0.5926`, prob media `0.5533`.
+    - `B_8VARS_CONTR_05`: $\alpha = 0.0$, Brier `0.250000`, Log-loss `0.693147`, Balanced Acc `50.00%`, ROC AUC `0.5000`, prob media `0.5000`.
+    - `C_2VARS_ORIG`: $\alpha = 1.0$, Brier `0.242433` (mejora `-0.008106` vs `A`), Log-loss `0.677858`, Balanced Acc `53.85%`, ROC AUC `0.7493`, prob media `0.5439`.
+    - `D_2VARS_CONTR_05`: $\alpha = 0.0$, Brier `0.250000`, Log-loss `0.693147`, Balanced Acc `50.00%`, ROC AUC `0.5000`, prob media `0.5000`.
+    - `DUMMY_PREVALENCIA`: Brier `0.251772`, prob media `0.5266`.
+  - **`2021-H2` (`n = 90`, prevalencia observada `0.4333`, `C = 0.01`):**
+    - `A_8VARS_ORIG`: $\alpha = 1.0$, Brier `0.257139`, Log-loss `0.707630`, Balanced Acc `55.13%`, ROC AUC `0.4922`, prob media `0.5280`.
+    - `B_8VARS_CONTR_05`: $\alpha = 0.0$, Brier `0.250000`, Log-loss `0.693147`, Balanced Acc `50.00%`, ROC AUC `0.5000`, prob media `0.5000`.
+    - `C_2VARS_ORIG`: $\alpha = 1.0$, Brier `0.254493` (mejora `-0.002646` vs `A`), Log-loss `0.702216`, Balanced Acc `51.51%`, ROC AUC `0.5199`, prob media `0.5310`.
+    - `D_2VARS_CONTR_05`: $\alpha = 0.0$, Brier `0.250000`, Log-loss `0.693147`, Balanced Acc `50.00%`, ROC AUC `0.5000`, prob media `0.5000`.
+    - `DUMMY_PREVALENCIA`: Brier `0.253922`, prob media `0.5248`.
+  - **`2022-H1` (`n = 99`, prevalencia observada `0.4242`, `C = 0.01`):**
+    - `A_8VARS_ORIG`: $\alpha = 1.0$, Brier `0.261937`, Log-loss `0.718139`, Balanced Acc `58.65%`, ROC AUC `0.4770`, prob media `0.5534`.
+    - `B_8VARS_CONTR_05`: $\alpha = 0.0$, Brier `0.250000`, Log-loss `0.693147`, Balanced Acc `50.00%`, ROC AUC `0.5000`, prob media `0.5000`.
+    - `C_2VARS_ORIG`: $\alpha = 1.0$, Brier `0.254942` (mejora `-0.006995` vs `A`), Log-loss `0.703237`, Balanced Acc `54.76%`, ROC AUC `0.5063`, prob media `0.5309`.
+    - `D_2VARS_CONTR_05`: $\alpha = 0.0$, Brier `0.250000`, Log-loss `0.693147`, Balanced Acc `50.00%`, ROC AUC `0.5000`, prob media `0.5000`.
+    - `DUMMY_PREVALENCIA`: Brier `0.252548`, prob media `0.5153`.
+  - **`2022-H2` (`n = 122`, prevalencia observada `0.4344`, `C = 0.01`):**
+    - `A_8VARS_ORIG`: $\alpha = 1.0$, Brier `0.240743`, Log-loss `0.674450`, Balanced Acc `61.14%`, ROC AUC `0.6697`, prob media `0.5112`.
+    - `B_8VARS_CONTR_05`: $\alpha = 0.0$, Brier `0.250000` (empeora `+0.009257` vs `A`), Log-loss `0.693147`, Balanced Acc `50.00%`, ROC AUC `0.5000`, prob media `0.5000`.
+    - `C_2VARS_ORIG`: $\alpha = 1.0$, Brier `0.241428`, Log-loss `0.676068`, Balanced Acc `63.60%`, ROC AUC `0.6721`, prob media `0.5016`.
+    - `D_2VARS_CONTR_05`: $\alpha = 0.0$, Brier `0.250000` (empeora `+0.008572` vs `C`), Log-loss `0.693147`, Balanced Acc `50.00%`, ROC AUC `0.5000`, prob media `0.5000`.
+    - `DUMMY_PREVALENCIA`: Brier `0.250579`, prob media `0.5043`.
+  - **`2023-H1` (`n = 39`, prevalencia observada `0.5897`, `C = 0.01`):**
+    - `A_8VARS_ORIG`: $\alpha = 1.0$, Brier `0.230061`, Log-loss `0.651874`, Balanced Acc `69.84%`, ROC AUC `0.8125`, prob media `0.4598`.
+    - `B_8VARS_CONTR_05`: $\alpha = 0.0$, Brier `0.250000` (empeora `+0.019939` vs `A`), Log-loss `0.693147`, Balanced Acc `50.00%`, ROC AUC `0.5000`, prob media `0.5000`.
+    - `C_2VARS_ORIG`: $\alpha = 1.0$, Brier `0.246504`, Log-loss `0.685815`, Balanced Acc `61.14%`, ROC AUC `0.6522`, prob media `0.4640`.
+    - `D_2VARS_CONTR_05`: $\alpha = 0.0$, Brier `0.250000` (empeora `+0.003496` vs `C`), Log-loss `0.693147`, Balanced Acc `50.00%`, ROC AUC `0.5000`, prob media `0.5000`.
+    - `DUMMY_PREVALENCIA`: Brier `0.251179`, prob media `0.4937`.
+  - **`2023-H2` (`n = 3 < 20`):**
+    - Estado: `INSUFICIENTE_MUESTRA` (`n_train = 990`, `n_val = 3`; hueco real de boletines BMV en 2023).
+  - **`2024-H1` (`n = 49`, prevalencia observada `0.4286`, `C = 0.01`):**
+    - `A_8VARS_ORIG`: $\alpha = 1.0$, Brier `0.243665`, Log-loss `0.680679`, Balanced Acc `66.67%`, ROC AUC `0.6752`, prob media `0.5144`.
+    - `B_8VARS_CONTR_05`: $\alpha = 0.25$, Brier `0.247867` (empeora `+0.004202` vs `A`), Log-loss `0.688883`, Balanced Acc `66.67%`, ROC AUC `0.6752`, prob media `0.5036`.
+    - `C_2VARS_ORIG`: $\alpha = 1.0$, Brier `0.234428` (mejora `-0.009237` vs `A`), Log-loss `0.661904`, Balanced Acc `76.19%`, ROC AUC `0.7976`, prob media `0.5089`.
+    - `D_2VARS_CONTR_05`: $\alpha = 0.0$, Brier `0.250000` (empeora `+0.015572` vs `C`), Log-loss `0.693147`, Balanced Acc `50.00%`, ROC AUC `0.5000`, prob media `0.5000`.
+    - `DUMMY_PREVALENCIA`: Brier `0.249786`, prob media `0.4985`.
+  - **`2024-H2` (`n = 70`, prevalencia observada `0.4714`, `C = 0.01`):**
+    - `A_8VARS_ORIG`: $\alpha = 1.0$, Brier `0.249300`, Log-loss `0.691712`, Balanced Acc `55.65%`, ROC AUC `0.5479`, prob media `0.4900`.
+    - `B_8VARS_CONTR_05`: $\alpha = 0.25$, Brier `0.249161` (mejora `-0.000138` vs `A`), Log-loss `0.691467`, Balanced Acc `55.65%`, ROC AUC `0.5479`, prob media `0.4975`.
+    - `C_2VARS_ORIG`: $\alpha = 1.0$, Brier `0.251200`, Log-loss `0.695452`, Balanced Acc `45.54%`, ROC AUC `0.4799`, prob media `0.4901`.
+    - `D_2VARS_CONTR_05`: $\alpha = 0.25$, Brier `0.249859` (mejora `-0.001340` vs `C`), Log-loss `0.692863`, Balanced Acc `45.54%`, ROC AUC `0.4799`, prob media `0.4975`.
+    - `DUMMY_PREVALENCIA`: Brier `0.249749`, prob media `0.4952`.
+  - **`2025-H1` parcial (`n = 50`, prevalencia observada `0.4600`, `C = 0.01`):**
+    - `A_8VARS_ORIG`: $\alpha = 1.0$, Brier `0.232852`, Log-loss `0.658490`, Balanced Acc `70.93%`, ROC AUC `0.7794`, prob media `0.5174`.
+    - `B_8VARS_CONTR_05`: $\alpha = 0.25$, Brier `0.245276` (empeora `+0.012424` vs `A`), Log-loss `0.683693`, Balanced Acc `70.93%`, ROC AUC `0.7794`, prob media `0.5044`.
+    - `C_2VARS_ORIG`: $\alpha = 1.0$, Brier `0.239979`, Log-loss `0.672992`, Balanced Acc `54.27%`, ROC AUC `0.7311`, prob media `0.5150`.
+    - `D_2VARS_CONTR_05`: $\alpha = 0.25$, Brier `0.247212` (empeora `+0.007232` vs `C`), Log-loss `0.687569`, Balanced Acc `54.27%`, ROC AUC `0.7311`, prob media `0.5038`.
+    - `DUMMY_PREVALENCIA`: Brier `0.249694`, prob media `0.4960`.
+
+---
+
+## 7. Comparaciones Pareadas e Inferencia por Bloques Temporales
+
+- **Metodología de inferencia ([comparaciones_pareadas.csv](file:///D:/Universidad/7mo%20Semestre/Big%20Data/Proyecto%20final/calibracion_simplificacion_gmexico_desarrollo/comparaciones_pareadas.csv)):**
+  - Dado que las etiquetas a cinco sesiones bursátiles ($Y_t = \mathbb{I}(\text{PPP}_{t+5} > \text{PPP}_t)$) presentan solapamiento temporal de hasta cuatro sesiones entre observaciones consecutivas, los errores cuadráticos puntuales $(p_t - y_t)^2$ no son independientes.
+  - Se evalúa la diferencia pareada $\Delta\text{Brier}_t = \text{Brier}_t(\text{Candidata}) - \text{Brier}_t(\text{Referencia})$ sobre las `803` fechas idénticas mediante bootstrap circular por bloques contiguos de tamaño `20` sesiones bursátiles con `5,000` réplicas (`SEMILLA = 42`). Valores negativos ($\Delta < 0$) indican que la variante candidata mejora (reduce) el Brier respecto de la referencia.
+- **Grupo 1: Efecto de la contracción frente a probabilidades originales, manteniendo fijo el conjunto de variables (`EXPANSIVA`):**
+  - **`B_8VARS_CONTR_05` vs `A_8VARS_ORIG` (8 variables, contracción hacia `0.5` vs original):**
+    - Diferencia pareada de Brier: `-0.001123` (IC 95% por bloques: `[-0.009958, +0.005694]`; incluye cero, `P(\Delta < 0) = 61.18%`).
+    - Diferencia pareada de Log-loss: `-0.002472`.
+    - Desempeño por semestre: mejora en `8 de 12`, empata en `0 de 12`, empeora en `4 de 12` (`2022-H2`, `2023-H1`, `2024-H1`, `2025-H1`), con peor deterioro semestral `+0.019939` en `2023-H1`.
+  - **`D_2VARS_CONTR_05` vs `C_2VARS_ORIG` (2 variables, contracción hacia `0.5` vs original):**
+    - Diferencia pareada de Brier: `+0.001109` (**la contracción empeora al modelo simplificado**; IC 95% por bloques: `[-0.004446, +0.006025]`; incluye cero, `P(\Delta < 0) = 33.48%`).
+    - Diferencia pareada de Log-loss: `+0.002221`.
+    - Desempeño por semestre: mejora en `6 de 12`, empeora en `6 de 12`, con peor deterioro semestral `+0.015572` en `2024-H1`.
+  - **`B_SENS_8VARS_CONTR_PREV` vs `A_8VARS_ORIG` (8 variables, contracción hacia `prevalencia_train` vs original):**
+    - Diferencia pareada de Brier: `-0.000104` (IC 95% por bloques: `[-0.005459, +0.004136]`; incluye cero, `P(\Delta < 0) = 51.40%`).
+    - Diferencia pareada de Log-loss: `-0.000411`.
+    - Desempeño por semestre: mejora en `6 de 12`, empata en `1 de 12` (`2019-H1`), empeora en `5 de 12`.
+  - **`D_SENS_2VARS_CONTR_PREV` vs `C_2VARS_ORIG` (2 variables, contracción hacia `prevalencia_train` vs original):**
+    - Diferencia pareada de Brier: `+0.000486` (IC 95% por bloques: `[-0.000627, +0.001508]`; incluye cero, `P(\Delta < 0) = 21.84%`).
+    - Diferencia pareada de Log-loss: `+0.000968`.
+    - Desempeño por semestre: mejora en `2 de 12`, empata en `7 de 12` (donde $\alpha = 1$), empeora en `3 de 12`.
+- **Grupo 2: Efecto de la simplificación (2 variables frente a 8 variables), manteniendo fijo el tratamiento probabilístico (`EXPANSIVA`):**
+  - **`C_2VARS_ORIG` vs `A_8VARS_ORIG` (probabilidades originales $\alpha = 1.0$):**
+    - Diferencia pareada de Brier: `-0.001921` (IC 95% por bloques: `[-0.007263, +0.001939]`; incluye cero, `P(\Delta < 0) = 80.52%`).
+    - Diferencia pareada de Log-loss: `-0.004070`.
+    - Desempeño por semestre: mejora en `7 de 12`, empeora en `5 de 12`, mejor ganancia semestral `-0.013883` (`2019-H2`), peor deterioro semestral `+0.016444` (`2023-H1`).
+  - **`D_2VARS_CONTR_05` vs `B_8VARS_CONTR_05` (probabilidades contraídas hacia `0.5`):**
+    - Diferencia pareada de Brier: `+0.000312` (IC 95% por bloques: `[-0.000012, +0.000605]`; incluye cero, `P(\Delta < 0) = 4.62%`).
+    - Desempeño por semestre: empata exactamente en los `9 de 12` semestres donde ambas eligen $\alpha = 0$, y empeora en los `3` semestres finales (`2024-H1`, `2024-H2`, `2025-H1`).
+  - **`D_SENS_2VARS_CONTR_PREV` vs `B_SENS_8VARS_CONTR_PREV` (probabilidades contraídas hacia `prevalencia_train`):**
+    - Diferencia pareada de Brier: `-0.001330` (IC 95% por bloques: `[-0.004242, +0.001388]`; incluye cero, `P(\Delta < 0) = 82.92%`).
+    - Desempeño por semestre: mejora en `7 de 12`, empeora en `5 de 12`.
+- **Grupo 3: Variante simplificada y contraída frente al benchmark principal (`EXPANSIVA`):**
+  - **`D_2VARS_CONTR_05` vs `A_8VARS_ORIG`:**
+    - Diferencia pareada de Brier: `-0.000812` (IC 95% por bloques: `[-0.009700, +0.006019]`; incluye cero, `P(\Delta < 0) = 56.98%`).
+    - Diferencia pareada de Log-loss: `-0.001849`.
+    - Desempeño por semestre: mejora en `7 de 12`, empeora en `5 de 12`.
+  - **`D_SENS_2VARS_CONTR_PREV` vs `A_8VARS_ORIG`:**
+    - Diferencia pareada de Brier: `-0.001435` (IC 95% por bloques: `[-0.007166, +0.002656]`; incluye cero, `P(\Delta < 0) = 74.08%`).
+    - Diferencia pareada de Log-loss: `-0.003103`.
+    - Desempeño por semestre: mejora en `7 de 12`, empeora en `5 de 12`.
+- **Grupo 4: Comparaciones frente a las referencias nulas (`DUMMY_PREVALENCIA` y `REFERENCIA_CONSTANTE_05` en `EXPANSIVA`):**
+  - **`A_8VARS_ORIG` vs `DUMMY_PREVALENCIA`:** $\Delta\text{Brier} = -0.000790$ (IC 95%: `[-0.008657, +0.007891]`, mejora en `7/12`).
+  - **`A_8VARS_ORIG` vs `REFERENCIA_CONSTANTE_05`:** $\Delta\text{Brier} = +0.000626$ (IC 95%: `[-0.006825, +0.009369]`, mejora en `5/12`).
+  - **`C_2VARS_ORIG` vs `DUMMY_PREVALENCIA`:** $\Delta\text{Brier} = -0.002711$ (IC 95%: `[-0.007202, +0.002485]`, `P(\Delta < 0) = 85.40%`, mejora en `7/12`).
+  - **`C_2VARS_ORIG` vs `REFERENCIA_CONSTANTE_05`:** $\Delta\text{Brier} = -0.001295$ (IC 95%: `[-0.006240, +0.004302]`, `P(\Delta < 0) = 69.80%`, mejora en `6/12`).
+  - **`B_8VARS_CONTR_05` vs `DUMMY_PREVALENCIA`:** $\Delta\text{Brier} = -0.001913$ (IC 95%: `[-0.003350, -0.000349]`, mejora en `10/12`).
+  - **`B_8VARS_CONTR_05` vs `REFERENCIA_CONSTANTE_05`:** $\Delta\text{Brier} = -0.000497$ (IC 95%: `[-0.000888, -0.000054]`, mejora en `3/12`, empata en `9/12`).
+    - *Advertencia metodológica de auditoría:* La exclusión de cero en el intervalo de `B_8VARS_CONTR_05` frente a `REFERENCIA_CONSTANTE_05` es un artefacto mecánico de haber elegido $\alpha = 0$ (diferencia exactamente nula `0.000000`) en los primeros `9` semestres (`2019-H1` a `2023-H1`) y haber activado $\alpha = 0.25$ únicamente en los últimos `3` semestres (`2024-H1` a `2025-H1`), donde el modelo base tuvo racha favorable. No constituye evidencia de superioridad estructural a lo largo de toda la historia.
+
+---
+
+## 8. Diagnósticos de Calibración por Intervalos Fijos Predefinidos
+
+- **Diseño de los esquemas de intervalos ([diagnosticos_calibracion.csv](file:///D:/Universidad/7mo%20Semestre/Big%20Data/Proyecto%20final/calibracion_simplificacion_gmexico_desarrollo/diagnosticos_calibracion.csv)):**
+  - Se fijaron previamente dos esquemas de pocos intervalos sobre $[0, 1]$:
+    - `ESQUEMA_5_BANDAS`: `[0.00, 0.45)`, `[0.45, 0.485)`, `[0.485, 0.515)`, `[0.515, 0.55)`, `[0.55, 1.00]`.
+    - `ESQUEMA_3_BANDAS`: `[0.00, 0.48)` (baja), `[0.48, 0.52)` (neutra), `[0.52, 1.00]` (alta).
+  - Se marca explícitamente `celda_pequena_n_menor_30 = True` en cualquier intervalo con menos de `30` observaciones para evitar conclusiones espurias.
+- **Calibración en `EXPANSIVA` — Comparación entre `A_8VARS_ORIG` y `C_2VARS_ORIG` (ambas con todas las celdas bien pobladas, $n \ge 128$ en todas las bandas):**
+  - **`A_8VARS_ORIG` (`ECE` ponderado 5 bandas = `0.052031`; `ECE` 3 bandas = `0.025869`):**
+    - Banda `B1 [0.00, 0.45)`: `n = 143` (`17.81%`), prob media `0.4028`, frecuencia observada de subida `0.4476` (subestima en `-0.0447`), Brier en banda `0.245268`, celda pequeña `False`.
+    - Banda `B2 [0.45, 0.485)`: `n = 128` (`15.94%`), prob media `0.4683`, frecuencia observada `0.4141` (sobreestima en `+0.0542`), Brier en banda `0.246496`, celda pequeña `False`.
+    - Banda `B3 [0.485, 0.515)`: `n = 147` (`18.31%`), prob media `0.5001`, frecuencia observada `0.4626` (sobreestima en `+0.0375`), Brier en banda `0.249395`, celda pequeña `False`.
+    - Banda `B4 [0.515, 0.55)`: `n = 177` (`22.04%`), prob media `0.5328`, frecuencia observada `0.5763` (subestima en `-0.0435`), Brier en banda `0.245670`, celda pequeña `False`.
+    - Banda `B5 [0.55, 1.00]`: `n = 208` (`25.90%`), prob media `0.5925`, frecuencia observada `0.5192` (sobreconfianza alcista de `+0.0733`), Brier en banda `0.261939` (**principal foco de degradación del Brier en el modelo de 8 variables**), celda pequeña `False`.
+  - **`C_2VARS_ORIG` (`ECE` ponderado 5 bandas = `0.030742`; `ECE` 3 bandas = `0.028676`):**
+    - Banda `B1 [0.00, 0.45)`: `n = 146` (`18.18%`), prob media `0.4174`, frecuencia observada `0.4315` (sesgo `-0.0141`), Brier en banda `0.244043`, celda pequeña `False`.
+    - Banda `B2 [0.45, 0.485)`: `n = 134` (`16.69%`), prob media `0.4691`, frecuencia observada `0.5149` (sesgo `-0.0459`), Brier en banda `0.251576`, celda pequeña `False`.
+    - Banda `B3 [0.485, 0.515)`: `n = 165` (`20.55%`), prob media `0.5006`, frecuencia observada `0.4364` (sesgo `+0.0643`), Brier en banda `0.250266`, celda pequeña `False`.
+    - Banda `B4 [0.515, 0.55)`: `n = 201` (`25.03%`), prob media `0.5315`, frecuencia observada `0.5124` (sesgo `+0.0190`), Brier en banda `0.249353`, celda pequeña `False`.
+    - Banda `B5 [0.55, 1.00]`: `n = 157` (`19.55%`), prob media `0.5735`, frecuencia observada `0.5605` (sesgo de apenas `+0.0130`), Brier en banda `0.248120`, celda pequeña `False`.
+    - *Interpretación:* Al eliminar las seis variables redundantes, `C_2VARS_ORIG` corrige de raíz la sobreconfianza en la banda superior `[0.55, 1.00]`, reduciendo el número de falsas alarmas alcistas extremas (de `208` a `157` casos), mejorando la frecuencia empírica de subida en esa banda de `51.92%` a `56.05%`, y bajando el Brier de esa cola de `0.261939` a `0.248120`.
+- **Calibración en `EXPANSIVA` — Variantes contraídas hacia `0.5` (`B_8VARS_CONTR_05` y `D_2VARS_CONTR_05`):**
+  - En `B_8VARS_CONTR_05`, `764 de 803` predicciones (`95.14%`) caen en la banda central `[0.485, 0.515)`, dejando celdas pequeñas (`n < 30`) o vacías en el resto: `B1` (`n = 0`), `B2` (`n = 18`, `celda_pequena = True`), `B4` (`n = 21`, `celda_pequena = True`) y `B5` (`n = 0`).
+  - En `D_2VARS_CONTR_05`, `787 de 803` predicciones (`98.01%`) caen en la banda central `[0.485, 0.515)`, dejando `B1` (`n = 0`), `B2` (`n = 11`, `celda_pequena = True`), `B4` (`n = 5`, `celda_pequena = True`) y `B5` (`n = 0`).
+  - Por tanto, la reducción aparente del `ECE` en `B_8VARS_CONTR_05` (`0.015884`) y `D_2VARS_CONTR_05` (`0.011624`) es consecuencia directa de colapsar casi todas las predicciones a la constante `0.5`, donde la prevalencia global observada (`0.491905`) está muy próxima a `0.500000`.
+
+---
+
+## 9. Verificación de Integridad y Pruebas Unitarias Automatizadas
+
+- **Ejecución de pruebas unitarias ([test_calibracion_simplificacion_gmexico.py](file:///D:/Universidad/7mo%20Semestre/Big%20Data/Proyecto%20final/test_calibracion_simplificacion_gmexico.py) y [test_estabilidad_historica_gmexico.py](file:///D:/Universidad/7mo%20Semestre/Big%20Data/Proyecto%20final/test_estabilidad_historica_gmexico.py)):**
+  - Comando ejecutado: `python -B -m unittest test_calibracion_simplificacion_gmexico.py test_estabilidad_historica_gmexico.py -v`
+  - Resultado: **19 pruebas ejecutadas en 4.447s — Estado: `OK` (`100%` aprobadas).**
+- **Detalle de las 7 nuevas pruebas específicas de auditoría en [`TestCalibracionSimplificacionGMexico`](file:///D:/Universidad/7mo%20Semestre/Big%20Data/Proyecto%20final/test_calibracion_simplificacion_gmexico.py#L31-L263):**
+  - `test_01_corromper_test_y_prospectiva_no_afecta_desarrollo_ni_resultados`: Corrompe simultáneamente en un archivo temporal todas las filas de `TEST`, `PROSPECTIVA` y las `25` filas de `TRAIN` no elegibles o posteriores a `2025-04-29`, verificando que el conjunto de desarrollo cargado (`1,167` filas) y los resultados experimentales son bit a bit idénticos.
+  - `test_02_alterar_futuro_posterior_a_corte_no_cambia_c_alpha_scaler_ni_prevalencia`: Verifica que alterar etiquetas y variables posteriores al corte de entrenamiento no modifica la selección de $C$, la selección de $\alpha$, el escalador `StandardScaler` ni la prevalencia de referencia de ningún período previo.
+  - `test_03_seleccion_c_y_alpha_estrictamente_dentro_del_pasado_permitido`: Verifica en los `12` períodos evaluados de ambos regímenes (`EXPANSIVA` y `MOVIL_3_ANIOS`) y en todos los cortes internos de selección de $\alpha$ que `fin_etiquetas_train < inicio_val`, `fin_etiquetas_val <= fin_bloque` y `fin_val <= "2025-04-29"`.
+  - `test_04_variantes_comparten_mismas_fechas_observaciones_y_modelo_base`: Comprueba que todas las variantes se evalúan exactamente sobre las mismas `803` fechas por régimen, que `2023-H2` aparece documentado como `INSUFICIENTE_MUESTRA` (`n_val = 3`), y que las variantes original y contraída de cada especificación comparten exactamente el mismo modelo base y $C$.
+  - `test_05_identidades_contraccion_alpha_0_y_alpha_1_y_rango_probabilidades`: Verifica algebraicamente y fila por fila sobre las `1,606` filas de `predicciones.csv` que $\alpha = 1$ reproduce exactamente las probabilidades originales, $\alpha = 0$ reproduce exactamente la referencia ($0.5$ o `prevalencia_train`), y que todas las variantes contraídas satisfacen $p_{\text{final}} = \alpha p_{\text{orig}} + (1 - \alpha) p_{\text{ref}}$ con tolerancia $< 10^{-12}$.
+  - `test_06_reconstruccion_exacta_de_metricas_y_diferencias_pareadas`: Recalcula independientemente desde `predicciones.csv` el Brier, Log-loss, probabilidad media, sesgo y diferencias pareadas $\Delta\text{Brier}$ para todas las variantes, confirmando coincidencia exacta con `reporte.json` y `comparaciones_pareadas.csv`.
+  - `test_07_archivos_protegidos_y_senales_prospectivas_intactos`: Verifica la existencia de los 9 artefactos requeridos y comprueba que los hashes SHA-256 de todos los archivos protegidos (`dataset_panel_15_emisoras_features.csv`, `serie_ppp_historica_15_emisoras_bmv.csv`, `registro_senales_prospectivas_gmexico.csv`, `registro_senales_prospectivas_walmex.csv` y artefactos previos) permanecen intactos.
+
+---
+
+## 10. Interpretación Científica: Respuestas Explícitas a las Cinco Preguntas de Investigación
+
+- **Pregunta 1: ¿La contracción mejora de verdad el Brier o solo apaga el modelo hacia `0.5`?**
+  - **Respuesta:** En el análisis principal (`p_referencia = 0.5`, régimen `EXPANSIVA`), la contracción **no mejora la señal predictiva del modelo; actúa predominantemente como un interruptor de apagado ($\alpha = 0.0$) hacia la constante `0.5`**.
+  - **Evidencia empírica:**
+    - Para ocho variables (`B_8VARS_CONTR_05`), la validación interna elige $\alpha = 0.0$ en `9 de los 12` períodos (`75%` de los semestres: desde `2019-H1` hasta `2023-H1`) y $\alpha = 0.25$ únicamente en los últimos `3` períodos (`2024-H1`, `2024-H2`, `2025-H1`). La reducción de Brier frente a `A_8VARS_ORIG` (`0.249503` vs `0.250626`, $\Delta\text{Brier} = -0.001123$, IC 95% `[-0.009958, +0.005694]`) proviene de sustituir las predicciones del modelo por `0.5` durante los años de alta volatilidad (`2019`–`2022`), a costa de destruir la habilidad predictiva real en `2022-H2` y `2023-H1` y de amortiguar en exceso la ganancia en `2024-H1` y `2025-H1`.
+    - Para dos variables (`D_2VARS_CONTR_05`), el efecto es aún más claro: elige $\alpha = 0.0$ en `10 de 12` períodos (`83.33%`) y **empeora** el Brier global respecto del modelo simplificado sin contracción `C_2VARS_ORIG` (`0.249814` vs `0.248705`, $\Delta\text{Brier} = +0.001109$).
+    - Cuando se contrae hacia la prevalencia histórica de entrenamiento (`B_SENS` y `D_SENS`), nunca se elige $\alpha = 0.0$ en `EXPANSIVA`, pero la ganancia en Brier sobre `A_8VARS_ORIG` es prácticamente nula (`-0.000104` en `B_SENS`) y negativa frente a `C_2VARS_ORIG` (`+0.000486` en `D_SENS`). Por tanto, no puede calificarse a esta contracción como una "calibración exitosa".
+
+- **Pregunta 2: ¿La simplificación a `ret_10` y `volatilidad_20` mejora estabilidad o reduce sobreajuste?**
+  - **Respuesta:** **Sí.** La simplificación a las dos variables predefinidas (`ret_10` y `volatilidad_20`, variante `C_2VARS_ORIG`) reduce el sobreajuste de colas, mejora la calibración natural y disminuye la dispersión semestral del error en ambos regímenes de entrenamiento (`EXPANSIVA` y `MOVIL_3_ANIOS`), aunque el intervalo de confianza por bloques de la diferencia pareada frente a `A_8VARS_ORIG` todavía incluye cero.
+  - **Evidencia empírica:**
+    - En `EXPANSIVA`, `C_2VARS_ORIG` reduce el Brier global de `0.250626` a `0.248705` ($\Delta\text{Brier} = -0.001921$, mejorando en `7 de 12` períodos y situándose por debajo de la barrera de `0.250000`), reduce el Log-loss de `0.694624` a `0.690554`, y mejora ligeramente el ROC AUC global de `0.5441` a `0.5456`.
+    - En `MOVIL_3_ANIOS`, `C_2VARS_ORIG` vuelve a superar a `A_8VARS_ORIG`, reduciendo el Brier global de `0.253217` a `0.250596` ($\Delta\text{Brier} = -0.002621$, mejorando en `8 de 12` períodos) y elevando el ROC AUC de `0.5250` a `0.5361`.
+    - Reduce la desviación estándar semestral del Brier de `0.010959` a `0.008524` (en `EXPANSIVA`) y de `0.013978` a `0.010918` (en `MOVIL_3_ANIOS`).
+    - Elimina la sobreconfianza en la banda superior `[0.55, 1.00]`: el `ECE` ponderado en 5 bandas baja de `0.052031` (`A_8VARS_ORIG`) a `0.030742` (`C_2VARS_ORIG`), y el Brier en la banda `[0.55, 1.00]` cae de `0.261939` a `0.248120`.
+    - El único costo observado es una menor exactitud balanceada en el corte rígido `0.5` (`51.90%` vs `55.16%` en `EXPANSIVA`), debido a que las probabilidades de `C_2VARS_ORIG` son naturalmente más moderadas (menor varianza) y cruzan menos el umbral en semestres donde las variables de muy corto plazo (`ret_1`, `ret_5`, `volatilidad_5`) acertaron direccionalmente (`2023-H1` y `2025-H1`).
+
+- **Pregunta 3: ¿Qué ocurre cuando se combinan simplificación y contracción?**
+  - **Respuesta:** En el régimen principal `EXPANSIVA`, **combinar simplificación y contracción es redundante y contraproducente** frente a usar únicamente la simplificación (`C_2VARS_ORIG`).
+  - **Evidencia empírica:**
+    - Porque `C_2VARS_ORIG` ya modera de forma orgánica la dispersión de las probabilidades mediante la eliminación de seis predictores colineales (con $C = 0.01$), aplicar encima una contracción post-hoc hacia `0.5` (`D_2VARS_CONTR_05`) apaga el modelo en `10 de 12` semestres ($\alpha = 0.0$) y eleva el Brier de `0.248705` a `0.249814` ($\Delta\text{Brier} = +0.001109$), haciendo caer el ROC AUC de `0.5456` a `0.4976`.
+    - Incluso cuando se contrae hacia `prevalencia_train` (`D_SENS_2VARS_CONTR_PREV`), donde la validación interna conserva $\alpha = 1.0$ en `7 de 12` semestres y $\alpha = 0.75$ en `4 de 12`, el Brier resultante (`0.249191`) es ligeramente peor que dejar `C_2VARS_ORIG` sin contracción (`0.248705`).
+
+- **Pregunta 4: ¿Alguna variante supera de forma consistente al Dummy y a la referencia `0.5`?**
+  - **Respuesta:** En puntaje puntual agregado sobre las `803` predicciones de `EXPANSIVA`, **`C_2VARS_ORIG` (`0.248705`), `D_SENS_2VARS_CONTR_PREV` (`0.249191`), `B_8VARS_CONTR_05` (`0.249503`) y `D_2VARS_CONTR_05` (`0.249814`) registran un Brier menor que tanto `DUMMY_PREVALENCIA` (`0.251416`) como `REFERENCIA_CONSTANTE_05` (`0.250000`)**. Sin embargo, desde una perspectiva rigurosa de inferencia de series de tiempo y consistencia semestral, **ninguna variante con señal activa demuestra una superioridad estadísticamente concluyente ni uniforme en todos los regímenes de mercado**.
+  - **Evidencia empírica:**
+    - `C_2VARS_ORIG` (la mejor variante con señal genuina, $\alpha = 1.0$) supera a `DUMMY_PREVALENCIA` en `7 de 12` semestres ($\Delta\text{Brier} = -0.002711$, IC 95% por bloques `[-0.007202, +0.002485]`) y a `REFERENCIA_CONSTANTE_05` en `6 de 12` semestres ($\Delta\text{Brier} = -0.001295$, IC 95% por bloques `[-0.006240, +0.004302]`). Ambos intervalos por bloques incluyen cero.
+    - `B_8VARS_CONTR_05` supera a `DUMMY_PREVALENCIA` en `10 de 12` semestres, pero frente a `REFERENCIA_CONSTANTE_05` **empata exactamente en `9 de 12` semestres** (porque elige $\alpha = 0.0$ y se convierte en la constante `0.5`) y solo la supera en los `3` semestres finales (`2024-H1`, `2024-H2`, `2025-H1`).
+
+- **Pregunta 5: ¿Existe justificación científica para promover alguna variante a una evaluación final en `TEST`, o debe mantenerse como resultado exploratorio en desarrollo?**
+  - **Respuesta:** **No se debe promover las variantes contraídas (`B_8VARS_CONTR_05` ni `D_2VARS_CONTR_05`) como un supuesto "modelo mejorado" para `TEST`**, ya que su comportamiento empírico demostró que la contracción hacia `0.5` equivale mayoritariamente a abstenerse de usar el modelo ($\alpha = 0$). En cuanto a la variante simplificada sin contracción (`C_2VARS_ORIG`: `ret_10` + `volatilidad_20`), **sus resultados deben mantenerse documentados como hallazgo exploratorio de parsimonia en `TRAIN`**, y si en una etapa posterior del proyecto se decide realizar una única evaluación congelada sobre `TEST`, la especificación candidata parsimoniosa que merece contrastarse junto al benchmark original `A_8VARS_ORIG` es exclusivamente `C_2VARS_ORIG` (con protocolo congelado: régimen `EXPANSIVA`, $C = 0.01$, sin contracción post-hoc $\alpha = 1.0$), reconociendo de antemano que en `TRAIN` su ventaja en Brier (`-0.001921`) tiene un intervalo de confianza por bloques que incluye cero y por tanto no autoriza promesas de rentabilidad ni de superioridad garantizada fuera de muestra.

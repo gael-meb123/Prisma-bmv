@@ -1,0 +1,4 @@
+﻿Archivos apartados el 2026-10-29 (no borrados):
+- boletines_trimestrales_walmex_oficiales.csv: contiene 41 fechas de publicacion escritas sin fuente y valores iniciales inventados (8.0 / 9.0).
+- comparativa_algoritmos_y_boletines.csv: los modelos 8, 9 y 10 dependian de esas fechas y no son validos. Los modelos 1-7 se regeneran por separado como exploratorios.
+El snapshot estado_sistema_nucleo_walmex_20261028.json conserva la senal V2 original, anulada en el registro vigente.

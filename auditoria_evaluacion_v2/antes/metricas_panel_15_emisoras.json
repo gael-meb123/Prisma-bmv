@@ -1,0 +1,140 @@
+{
+  "AC": {
+    "ticker": "AC",
+    "estado_evaluacion": "DATOS_INSUFICIENTES_POR_HUECOS_BOLETIN",
+    "n_train_elegible": 28,
+    "n_test_elegible": 3
+  },
+  "AMX": {
+    "ticker": "AMX",
+    "estado_evaluacion": "EVALUADO_CON_EXITO",
+    "n_train_elegible": 1741,
+    "n_test_elegible": 291,
+    "tasa_positiva_train": 0.4974,
+    "tasa_positiva_test": 0.4914,
+    "brier_score_test": 0.257528,
+    "brier_score_dummy_referencia": 0.249962,
+    "supera_referencia_brier": false,
+    "log_loss_test": 0.708304,
+    "accuracy_test": 0.4227,
+    "balanced_accuracy_test": 0.4239
+  },
+  "ASUR": {
+    "ticker": "ASUR",
+    "estado_evaluacion": "SIN_VENTANAS_CONTINUAS_21_SESIONES",
+    "n_train_elegible": 0,
+    "n_test_elegible": 0
+  },
+  "BIMBO": {
+    "ticker": "BIMBO",
+    "estado_evaluacion": "SIN_VENTANAS_CONTINUAS_21_SESIONES",
+    "n_train_elegible": 0,
+    "n_test_elegible": 0
+  },
+  "CEMEX": {
+    "ticker": "CEMEX",
+    "estado_evaluacion": "EVALUADO_CON_EXITO",
+    "n_train_elegible": 633,
+    "n_test_elegible": 244,
+    "tasa_positiva_train": 0.4471,
+    "tasa_positiva_test": 0.541,
+    "brier_score_test": 0.261876,
+    "brier_score_dummy_referencia": 0.257139,
+    "supera_referencia_brier": false,
+    "log_loss_test": 0.719093,
+    "accuracy_test": 0.5533,
+    "balanced_accuracy_test": 0.5601
+  },
+  "FEMSA": {
+    "ticker": "FEMSA",
+    "estado_evaluacion": "EVALUADO_CON_EXITO",
+    "n_train_elegible": 956,
+    "n_test_elegible": 88,
+    "tasa_positiva_train": 0.5262,
+    "tasa_positiva_test": 0.2841,
+    "brier_score_test": 0.279022,
+    "brier_score_dummy_referencia": 0.261976,
+    "supera_referencia_brier": false,
+    "log_loss_test": 0.753346,
+    "accuracy_test": 0.4091,
+    "balanced_accuracy_test": 0.4667
+  },
+  "GAP": {
+    "ticker": "GAP",
+    "estado_evaluacion": "DATOS_INSUFICIENTES_POR_HUECOS_BOLETIN",
+    "n_train_elegible": 28,
+    "n_test_elegible": 32
+  },
+  "GFINBUR": {
+    "ticker": "GFINBUR",
+    "estado_evaluacion": "SIN_VENTANAS_CONTINUAS_21_SESIONES",
+    "n_train_elegible": 0,
+    "n_test_elegible": 0
+  },
+  "GFNORTE": {
+    "ticker": "GFNORTE",
+    "estado_evaluacion": "EVALUADO_CON_EXITO",
+    "n_train_elegible": 1740,
+    "n_test_elegible": 291,
+    "tasa_positiva_train": 0.5132,
+    "tasa_positiva_test": 0.5258,
+    "brier_score_test": 0.254738,
+    "brier_score_dummy_referencia": 0.249493,
+    "supera_referencia_brier": false,
+    "log_loss_test": 0.702688,
+    "accuracy_test": 0.4708,
+    "balanced_accuracy_test": 0.474
+  },
+  "GMEXICO": {
+    "ticker": "GMEXICO",
+    "estado_evaluacion": "EVALUADO_CON_EXITO",
+    "n_train_elegible": 1167,
+    "n_test_elegible": 291,
+    "tasa_positiva_train": 0.4944,
+    "tasa_positiva_test": 0.6323,
+    "brier_score_test": 0.24932,
+    "brier_score_dummy_referencia": 0.251505,
+    "supera_referencia_brier": true,
+    "log_loss_test": 0.691805,
+    "accuracy_test": 0.5464,
+    "balanced_accuracy_test": 0.5592
+  },
+  "GRUMA": {
+    "ticker": "GRUMA",
+    "estado_evaluacion": "SIN_VENTANAS_CONTINUAS_21_SESIONES",
+    "n_train_elegible": 0,
+    "n_test_elegible": 0
+  },
+  "LIVEPOL": {
+    "ticker": "LIVEPOL",
+    "estado_evaluacion": "SIN_VENTANAS_CONTINUAS_21_SESIONES",
+    "n_train_elegible": 0,
+    "n_test_elegible": 0
+  },
+  "PE&OLES": {
+    "ticker": "PE&OLES",
+    "estado_evaluacion": "DATOS_INSUFICIENTES_POR_HUECOS_BOLETIN",
+    "n_train_elegible": 0,
+    "n_test_elegible": 48
+  },
+  "VESTA": {
+    "ticker": "VESTA",
+    "estado_evaluacion": "SIN_VENTANAS_CONTINUAS_21_SESIONES",
+    "n_train_elegible": 0,
+    "n_test_elegible": 0
+  },
+  "WALMEX": {
+    "ticker": "WALMEX",
+    "estado_evaluacion": "EVALUADO_CON_EXITO",
+    "n_train_elegible": 1829,
+    "n_test_elegible": 269,
+    "tasa_positiva_train": 0.5063,
+    "tasa_positiva_test": 0.4387,
+    "brier_score_test": 0.2533,
+    "brier_score_dummy_referencia": 0.250811,
+    "supera_referencia_brier": false,
+    "log_loss_test": 0.699329,
+    "accuracy_test": 0.5093,
+    "balanced_accuracy_test": 0.5296
+  }
+}

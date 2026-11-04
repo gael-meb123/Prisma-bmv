@@ -1,0 +1,165 @@
+{
+  "version_protocolo": "CALIBRACION_SIMPLIFICACION_GMEXICO_V1",
+  "naturaleza_estudio": "Investigacion exploratoria controlada post-hoc sobre el periodo de desarrollo TRAIN (<= 2025-04-29), utilizando exactamente la cobertura PPP completa (1,167 ejemplos elegibles y 803 predicciones externas en 12 semestres evaluables).",
+  "reglas_estrictas": {
+    "corte_train": "2025-04-29",
+    "uso_test_o_prospectiva": false,
+    "incorporacion_variables_externas": false,
+    "cobertura_ppp_completa": true,
+    "calibradores_post_hoc_adicionales": false
+  },
+  "conjuntos_variables": {
+    "OCHO_VARIABLES": [
+      "ret_1",
+      "ret_5",
+      "ret_10",
+      "ret_20",
+      "volatilidad_5",
+      "volatilidad_20",
+      "distancia_media_5",
+      "distancia_media_20"
+    ],
+    "DOS_VARIABLES_PREDEFINIDAS": [
+      "ret_10",
+      "volatilidad_20"
+    ]
+  },
+  "variantes_principales": {
+    "A_8VARS_ORIG": {
+      "variables": [
+        "ret_1",
+        "ret_5",
+        "ret_10",
+        "ret_20",
+        "volatilidad_5",
+        "volatilidad_20",
+        "distancia_media_5",
+        "distancia_media_20"
+      ],
+      "tratamiento_probabilistico": "ORIGINAL_ALPHA_1",
+      "referencia_contraccion": null
+    },
+    "B_8VARS_CONTR_05": {
+      "variables": [
+        "ret_1",
+        "ret_5",
+        "ret_10",
+        "ret_20",
+        "volatilidad_5",
+        "volatilidad_20",
+        "distancia_media_5",
+        "distancia_media_20"
+      ],
+      "tratamiento_probabilistico": "CONTRACCION_LINEAL_ANIDADA",
+      "referencia_contraccion": "CONSTANTE_05"
+    },
+    "C_2VARS_ORIG": {
+      "variables": [
+        "ret_10",
+        "volatilidad_20"
+      ],
+      "tratamiento_probabilistico": "ORIGINAL_ALPHA_1",
+      "referencia_contraccion": null
+    },
+    "D_2VARS_CONTR_05": {
+      "variables": [
+        "ret_10",
+        "volatilidad_20"
+      ],
+      "tratamiento_probabilistico": "CONTRACCION_LINEAL_ANIDADA",
+      "referencia_contraccion": "CONSTANTE_05"
+    }
+  },
+  "sensibilidades_secundarias_predefinidas": {
+    "referencia_contraccion_prevalencia_train": [
+      "B_SENS_8VARS_CONTR_PREV",
+      "D_SENS_2VARS_CONTR_PREV"
+    ],
+    "regimen_entrenamiento_secundario": "MOVIL_3_ANIOS"
+  },
+  "procedimiento_anidado_por_fold_externo": {
+    "paso_1": "Construir particiones semestrales internas purgadas exclusivamente con el pasado de Train externo (inicio >= 2017-01-01, n_train >= 100, n_val >= 20).",
+    "paso_2": "Seleccionar C en {0.01, 0.1, 1.0, 10.0} mediante regla de 1 error estandar sobre el Brier medio interno (prefiriendo menor C / mayor regularizacion).",
+    "paso_3": "Obtener las probabilidades de validacion interna fuera de muestra correspondientes exactamente al C seleccionado.",
+    "paso_4": "Evaluar la rejilla fija alpha en {0.0, 0.25, 0.50, 0.75, 1.0} sobre esas probabilidades internas y seleccionar alpha que minimice el Brier medio de validacion interna; en caso de empate dentro de 1e-12, elegir el menor alpha (mas conservador).",
+    "paso_5": "Reentrenar una sola vez el modelo logistico L2 sin ponderacion de clases sobre el Train externo completo con el C seleccionado.",
+    "paso_6": "Aplicar el alpha seleccionado a las probabilidades del bloque externo sin observar sus etiquetas, compartiendo exactamente el mismo modelo base y C entre la version original y la contraida."
+  },
+  "rejilla_c": [
+    0.01,
+    0.1,
+    1.0,
+    10.0
+  ],
+  "rejilla_alpha": [
+    0.0,
+    0.25,
+    0.5,
+    0.75,
+    1.0
+  ],
+  "regla_seleccion_alpha": "MIN_BRIER_MEDIO_INTERNO_CON_DESEMPATE_ALPHA_MENOR_MAS_CONSERVADOR",
+  "tolerancia_empate_alpha": 1e-12,
+  "bootstrap_bloques": {
+    "semilla": 20261029,
+    "total_replicas": 5000,
+    "tamano_bloque_sesiones_bmv": 20,
+    "estratificado_por_periodo_externo": true
+  },
+  "intervalos_diagnostico_calibracion": {
+    "esquema_5_bandas": [
+      {
+        "banda": "B1_MENOR_045",
+        "min": 0.0,
+        "max": 0.45,
+        "incluye_derecha": false
+      },
+      {
+        "banda": "B2_045_A_0485",
+        "min": 0.45,
+        "max": 0.485,
+        "incluye_derecha": false
+      },
+      {
+        "banda": "B3_0485_A_0515",
+        "min": 0.485,
+        "max": 0.515,
+        "incluye_derecha": false
+      },
+      {
+        "banda": "B4_0515_A_055",
+        "min": 0.515,
+        "max": 0.55,
+        "incluye_derecha": false
+      },
+      {
+        "banda": "B5_055_A_100",
+        "min": 0.55,
+        "max": 1.0,
+        "incluye_derecha": true
+      }
+    ],
+    "esquema_3_bandas": [
+      {
+        "banda": "T1_BAJA_MENOR_048",
+        "min": 0.0,
+        "max": 0.48,
+        "incluye_derecha": false
+      },
+      {
+        "banda": "T2_NEUTRA_048_A_052",
+        "min": 0.48,
+        "max": 0.52,
+        "incluye_derecha": true
+      },
+      {
+        "banda": "T3_ALTA_MAYOR_052",
+        "min": 0.52,
+        "max": 1.0,
+        "incluye_derecha": true
+      }
+    ],
+    "min_n_celda_confiable": 30
+  },
+  "timestamp_registro_utc": "2026-10-29T20:09:25.745923+00:00"
+}

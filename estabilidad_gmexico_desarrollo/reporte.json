@@ -1,0 +1,1416 @@
+{
+  "protocolo": {
+    "version": "ESTABILIDAD_DESARROLLO_GMEXICO_V1",
+    "corte_desarrollo": "2025-04-29",
+    "alcance": "Solo TRAIN; ni ajuste ni evaluacion sobre TEST o PROSPECTIVA",
+    "validacion_externa": "Semestres calendario 2019-H1 a 2025-H1 parcial, etiquetas dentro de cada bloque",
+    "regimenes": [
+      "EXPANSIVA",
+      "MOVIL_3_ANIOS"
+    ],
+    "modelos": {
+      "PPP_COMPLETO": [
+        "ret_1",
+        "ret_5",
+        "ret_10",
+        "ret_20",
+        "volatilidad_5",
+        "volatilidad_20",
+        "distancia_media_5",
+        "distancia_media_20"
+      ],
+      "PPP_PAREADO": [
+        "ret_1",
+        "ret_5",
+        "ret_10",
+        "ret_20",
+        "volatilidad_5",
+        "volatilidad_20",
+        "distancia_media_5",
+        "distancia_media_20"
+      ],
+      "PPP_MAS_FACTORES": [
+        "ret_1",
+        "ret_5",
+        "ret_10",
+        "ret_20",
+        "volatilidad_5",
+        "volatilidad_20",
+        "distancia_media_5",
+        "distancia_media_20",
+        "usd_mxn_logret_5_lag1",
+        "cobre_logret_5_lag1"
+      ]
+    },
+    "min_train": 100,
+    "min_validacion": 20,
+    "seleccion_C": {
+      "candidatos": [
+        0.01,
+        0.1,
+        1.0,
+        10.0
+      ],
+      "validacion_interna": "Semestres anteriores, purgados, contenidos en el Train externo",
+      "min_folds_internos": 2,
+      "regla": "Menor C dentro de 1 SE del menor Brier medio interno"
+    },
+    "ponderacion_clases": false,
+    "regularizacion": "L2; scaler ajustado exclusivamente en cada Train interno/externo",
+    "comparacion_factores": "PPP_PAREADO y PPP_MAS_FACTORES utilizan exactamente las mismas fechas Train y validacion",
+    "bootstrap": {
+      "replicas": 5000,
+      "bloque_sesiones": 20,
+      "semilla": 20261029,
+      "global": "Estratificado por fold externo, pesos fijos proporcionales a n; sin cruzar fronteras de reentrenamiento"
+    },
+    "periodos_insuficientes": "Se reportan sin metricas ni imputacion; la exclusion depende de tamano y elegibilidad, no del resultado",
+    "disponibilidad_externa": "Hipotesis de rezago 1 sesion; vintages historicos no certificados",
+    "naturaleza": "Diagnostico exploratorio interno; no nueva evidencia prospectiva ni seleccion de ganador en TEST"
+  },
+  "timestamp_ejecucion_utc": "2026-10-29T17:50:12.916867+00:00",
+  "desarrollo": {
+    "n_ppp": 1167,
+    "n_pareado": 968,
+    "primera_fecha": "2016-11-28",
+    "ultima_fecha_origen": "2025-04-04",
+    "ultima_etiqueta": "2025-04-11",
+    "sha256_subconjunto_desarrollo": "1521b934dbbf05dd5c6b90951618f39a448ff7097cf1e52c68e33d3a99f3bdb8"
+  },
+  "resumen_modelos": [
+    {
+      "regimen": "EXPANSIVA",
+      "modelo": "PPP_COMPLETO",
+      "n": 803,
+      "n_subida": 395,
+      "n_no_subida": 408,
+      "brier": 0.25062598979124273,
+      "brier_dummy": 0.251415841517818,
+      "brier_constante_05": 0.25,
+      "delta_brier_vs_dummy": -0.0007898517265752396,
+      "brier_skill_vs_dummy": 0.003141614791680847,
+      "log_loss": 0.6946238781403551,
+      "balanced_accuracy_pct": 55.16288160833954,
+      "accuracy_pct": 55.04358655043586,
+      "roc_auc": 0.5441486721270786,
+      "prevalencia_val": 0.4919053549190536,
+      "prob_media": 0.5088365259757517,
+      "sesgo_probabilidad": 0.016931171056698113,
+      "predice_subida_pct": 57.2851805728518,
+      "n_folds": 12,
+      "folds_supera_dummy": 7,
+      "folds_ba_mayor_50": 10,
+      "brier_medio_no_ponderado_folds": 0.249884515214542,
+      "desviacion_brier_entre_folds": 0.010959002635930425,
+      "peor_fold": "2020-H1",
+      "brier_peor_fold": 0.26255393913831077,
+      "mejor_fold": "2023-H1",
+      "brier_mejor_fold": 0.2300607221564634,
+      "C_por_fold": {
+        "2019-H1": 0.01,
+        "2019-H2": 0.01,
+        "2020-H1": 0.01,
+        "2020-H2": 0.01,
+        "2021-H1": 0.01,
+        "2021-H2": 0.01,
+        "2022-H1": 0.01,
+        "2022-H2": 0.01,
+        "2023-H1": 0.01,
+        "2024-H1": 0.01,
+        "2024-H2": 0.01,
+        "2025-H1": 0.01
+      },
+      "delta_dummy_incertidumbre": {
+        "media": -0.0007898517265752396,
+        "IC95_bloques": [
+          -0.007125812950750535,
+          0.007657620859718613
+        ],
+        "replicas": 5000,
+        "longitud_bloque_sesiones": 20,
+        "remuestreos_vacios_descartados": 35,
+        "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+      }
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "modelo": "PPP_PAREADO",
+      "n": 664,
+      "n_subida": 321,
+      "n_no_subida": 343,
+      "brier": 0.24868575211049984,
+      "brier_dummy": 0.2505578537265085,
+      "brier_constante_05": 0.25,
+      "delta_brier_vs_dummy": -0.0018721016160086258,
+      "brier_skill_vs_dummy": 0.007471733925579205,
+      "log_loss": 0.6908041999911303,
+      "balanced_accuracy_pct": 56.49891465264343,
+      "accuracy_pct": 56.62650602409639,
+      "roc_auc": 0.568122576133257,
+      "prevalencia_val": 0.48343373493975905,
+      "prob_media": 0.4946619356553395,
+      "sesgo_probabilidad": 0.01122820071558045,
+      "predice_subida_pct": 45.933734939759034,
+      "n_folds": 12,
+      "folds_supera_dummy": 5,
+      "folds_ba_mayor_50": 10,
+      "brier_medio_no_ponderado_folds": 0.24879494138355937,
+      "desviacion_brier_entre_folds": 0.013636447761977082,
+      "peor_fold": "2020-H1",
+      "brier_peor_fold": 0.26817373742400097,
+      "mejor_fold": "2022-H2",
+      "brier_mejor_fold": 0.22879684417292703,
+      "C_por_fold": {
+        "2019-H1": 0.01,
+        "2019-H2": 0.01,
+        "2020-H1": 0.01,
+        "2020-H2": 0.01,
+        "2021-H1": 0.01,
+        "2021-H2": 0.01,
+        "2022-H1": 0.01,
+        "2022-H2": 0.01,
+        "2023-H1": 0.01,
+        "2024-H1": 0.01,
+        "2024-H2": 0.01,
+        "2025-H1": 0.01
+      },
+      "delta_dummy_incertidumbre": {
+        "media": -0.0018721016160086258,
+        "IC95_bloques": [
+          -0.009835791877128016,
+          0.00815789288449631
+        ],
+        "replicas": 5000,
+        "longitud_bloque_sesiones": 20,
+        "remuestreos_vacios_descartados": 42,
+        "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+      }
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "modelo": "PPP_MAS_FACTORES",
+      "n": 664,
+      "n_subida": 321,
+      "n_no_subida": 343,
+      "brier": 0.25000006575185596,
+      "brier_dummy": 0.2505578537265085,
+      "brier_constante_05": 0.25,
+      "delta_brier_vs_dummy": -0.0005577879746525833,
+      "brier_skill_vs_dummy": 0.0022261843576509843,
+      "log_loss": 0.6935338568398381,
+      "balanced_accuracy_pct": 56.19737881801585,
+      "accuracy_pct": 56.325301204819276,
+      "roc_auc": 0.5596123629692197,
+      "prevalencia_val": 0.48343373493975905,
+      "prob_media": 0.49573299250244274,
+      "sesgo_probabilidad": 0.012299257562683685,
+      "predice_subida_pct": 45.933734939759034,
+      "n_folds": 12,
+      "folds_supera_dummy": 5,
+      "folds_ba_mayor_50": 10,
+      "brier_medio_no_ponderado_folds": 0.250732011173046,
+      "desviacion_brier_entre_folds": 0.014136066990924992,
+      "peor_fold": "2019-H2",
+      "brier_peor_fold": 0.2687000230466299,
+      "mejor_fold": "2022-H2",
+      "brier_mejor_fold": 0.22737476488211056,
+      "C_por_fold": {
+        "2019-H1": 0.01,
+        "2019-H2": 0.01,
+        "2020-H1": 0.01,
+        "2020-H2": 0.01,
+        "2021-H1": 0.01,
+        "2021-H2": 0.01,
+        "2022-H1": 0.01,
+        "2022-H2": 0.01,
+        "2023-H1": 0.01,
+        "2024-H1": 0.01,
+        "2024-H2": 0.01,
+        "2025-H1": 0.01
+      },
+      "delta_dummy_incertidumbre": {
+        "media": -0.0005577879746525833,
+        "IC95_bloques": [
+          -0.008281998953169674,
+          0.00954559343522733
+        ],
+        "replicas": 5000,
+        "longitud_bloque_sesiones": 20,
+        "remuestreos_vacios_descartados": 42,
+        "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+      }
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "modelo": "PPP_COMPLETO",
+      "n": 803,
+      "n_subida": 395,
+      "n_no_subida": 408,
+      "brier": 0.2532166958126357,
+      "brier_dummy": 0.2535185767485294,
+      "brier_constante_05": 0.25,
+      "delta_brier_vs_dummy": -0.00030188093589376264,
+      "brier_skill_vs_dummy": 0.0011907645576331172,
+      "log_loss": 0.6999553081212716,
+      "balanced_accuracy_pct": 53.81887565152643,
+      "accuracy_pct": 53.67372353673724,
+      "roc_auc": 0.5249813849590469,
+      "prevalencia_val": 0.4919053549190536,
+      "prob_media": 0.5138894144469209,
+      "sesgo_probabilidad": 0.02198405952786736,
+      "predice_subida_pct": 58.9041095890411,
+      "n_folds": 12,
+      "folds_supera_dummy": 7,
+      "folds_ba_mayor_50": 8,
+      "brier_medio_no_ponderado_folds": 0.251734999832369,
+      "desviacion_brier_entre_folds": 0.01397761607140982,
+      "peor_fold": "2021-H2",
+      "brier_peor_fold": 0.2779366430265222,
+      "mejor_fold": "2024-H1",
+      "brier_mejor_fold": 0.22689910803095034,
+      "C_por_fold": {
+        "2019-H1": 0.01,
+        "2019-H2": 0.01,
+        "2020-H1": 0.01,
+        "2020-H2": 0.01,
+        "2021-H1": 0.01,
+        "2021-H2": 0.01,
+        "2022-H1": 0.01,
+        "2022-H2": 0.01,
+        "2023-H1": 0.01,
+        "2024-H1": 0.01,
+        "2024-H2": 0.01,
+        "2025-H1": 0.01
+      },
+      "delta_dummy_incertidumbre": {
+        "media": -0.00030188093589376264,
+        "IC95_bloques": [
+          -0.006111783822071785,
+          0.007371728353814185
+        ],
+        "replicas": 5000,
+        "longitud_bloque_sesiones": 20,
+        "remuestreos_vacios_descartados": 35,
+        "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+      }
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "modelo": "PPP_PAREADO",
+      "n": 664,
+      "n_subida": 321,
+      "n_no_subida": 343,
+      "brier": 0.2485136023665094,
+      "brier_dummy": 0.25168346942055814,
+      "brier_constante_05": 0.25,
+      "delta_brier_vs_dummy": -0.0031698670540486994,
+      "brier_skill_vs_dummy": 0.012594657334256354,
+      "log_loss": 0.6903241797764194,
+      "balanced_accuracy_pct": 56.221447190358106,
+      "accuracy_pct": 56.174698795180724,
+      "roc_auc": 0.5577413876097835,
+      "prevalencia_val": 0.48343373493975905,
+      "prob_media": 0.49623948320795647,
+      "sesgo_probabilidad": 0.012805748268197414,
+      "predice_subida_pct": 51.204819277108435,
+      "n_folds": 12,
+      "folds_supera_dummy": 6,
+      "folds_ba_mayor_50": 8,
+      "brier_medio_no_ponderado_folds": 0.24942775971710884,
+      "desviacion_brier_entre_folds": 0.016664192661129056,
+      "peor_fold": "2020-H1",
+      "brier_peor_fold": 0.27299388492138765,
+      "mejor_fold": "2024-H1",
+      "brier_mejor_fold": 0.21299586420435385,
+      "C_por_fold": {
+        "2019-H1": 0.01,
+        "2019-H2": 0.01,
+        "2020-H1": 0.01,
+        "2020-H2": 0.01,
+        "2021-H1": 0.01,
+        "2021-H2": 0.01,
+        "2022-H1": 0.01,
+        "2022-H2": 0.01,
+        "2023-H1": 0.01,
+        "2024-H1": 0.01,
+        "2024-H2": 0.01,
+        "2025-H1": 0.01
+      },
+      "delta_dummy_incertidumbre": {
+        "media": -0.0031698670540486994,
+        "IC95_bloques": [
+          -0.009623177929959936,
+          0.0054585369095661316
+        ],
+        "replicas": 5000,
+        "longitud_bloque_sesiones": 20,
+        "remuestreos_vacios_descartados": 42,
+        "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+      }
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "modelo": "PPP_MAS_FACTORES",
+      "n": 664,
+      "n_subida": 321,
+      "n_no_subida": 343,
+      "brier": 0.2508224066797442,
+      "brier_dummy": 0.25168346942055814,
+      "brier_constante_05": 0.25,
+      "delta_brier_vs_dummy": -0.000861062740813907,
+      "brier_skill_vs_dummy": 0.003421212933834461,
+      "log_loss": 0.695039913755311,
+      "balanced_accuracy_pct": 54.60795800296086,
+      "accuracy_pct": 54.51807228915663,
+      "roc_auc": 0.5421741460269021,
+      "prevalencia_val": 0.48343373493975905,
+      "prob_media": 0.4986366300901453,
+      "sesgo_probabilidad": 0.015202895150386253,
+      "predice_subida_pct": 52.56024096385542,
+      "n_folds": 12,
+      "folds_supera_dummy": 3,
+      "folds_ba_mayor_50": 7,
+      "brier_medio_no_ponderado_folds": 0.25240023872000966,
+      "desviacion_brier_entre_folds": 0.01624463201594315,
+      "peor_fold": "2020-H1",
+      "brier_peor_fold": 0.2728363676628405,
+      "mejor_fold": "2024-H1",
+      "brier_mejor_fold": 0.2205588469839343,
+      "C_por_fold": {
+        "2019-H1": 0.01,
+        "2019-H2": 0.01,
+        "2020-H1": 0.01,
+        "2020-H2": 0.01,
+        "2021-H1": 0.01,
+        "2021-H2": 0.01,
+        "2022-H1": 0.01,
+        "2022-H2": 0.01,
+        "2023-H1": 0.01,
+        "2024-H1": 0.01,
+        "2024-H2": 0.01,
+        "2025-H1": 0.01
+      },
+      "delta_dummy_incertidumbre": {
+        "media": -0.000861062740813907,
+        "IC95_bloques": [
+          -0.007503189962040476,
+          0.00797402429555251
+        ],
+        "replicas": 5000,
+        "longitud_bloque_sesiones": 20,
+        "remuestreos_vacios_descartados": 42,
+        "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+      }
+    }
+  ],
+  "comparacion_factores": [
+    {
+      "regimen": "EXPANSIVA",
+      "fold": "GLOBAL",
+      "n": 664,
+      "delta_brier_factores_menos_ppp": 0.0013143136413560426,
+      "media": 0.0013143136413560426,
+      "IC95_bloques": [
+        0.0004301579467373959,
+        0.0022284235075032016
+      ],
+      "replicas": 5000,
+      "longitud_bloque_sesiones": 20,
+      "remuestreos_vacios_descartados": 42,
+      "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "fold": "2019-H1",
+      "n": 47,
+      "delta_brier_factores_menos_ppp": -0.0015295377855778895,
+      "media": -0.0015295377855778895,
+      "IC95_bloques": [
+        -0.0038589311500092757,
+        0.0009070133305400342
+      ],
+      "replicas": 5000,
+      "longitud_bloque_sesiones": 20,
+      "remuestreos_vacios_descartados": 1,
+      "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "fold": "2019-H2",
+      "n": 29,
+      "delta_brier_factores_menos_ppp": 0.013615336898610424,
+      "media": 0.013615336898610424,
+      "IC95_bloques": [
+        0.006130735792662996,
+        0.01928604423915162
+      ],
+      "replicas": 5000,
+      "longitud_bloque_sesiones": 20,
+      "remuestreos_vacios_descartados": 34,
+      "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "fold": "2020-H1",
+      "n": 46,
+      "delta_brier_factores_menos_ppp": 0.00017905867603363614,
+      "media": 0.00017905867603363614,
+      "IC95_bloques": [
+        -0.0005087338606009363,
+        0.002470398751096449
+      ],
+      "replicas": 5000,
+      "longitud_bloque_sesiones": 20,
+      "remuestreos_vacios_descartados": 0,
+      "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "fold": "2020-H2",
+      "n": 48,
+      "delta_brier_factores_menos_ppp": -0.001905271440085745,
+      "media": -0.001905271440085745,
+      "IC95_bloques": [
+        -0.004622597446248218,
+        0.0003761811695128423
+      ],
+      "replicas": 5000,
+      "longitud_bloque_sesiones": 20,
+      "remuestreos_vacios_descartados": 0,
+      "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "fold": "2021-H1",
+      "n": 67,
+      "delta_brier_factores_menos_ppp": 0.002091608403841855,
+      "media": 0.002091608403841855,
+      "IC95_bloques": [
+        -0.0008117434285892142,
+        0.005762412137810985
+      ],
+      "replicas": 5000,
+      "longitud_bloque_sesiones": 20,
+      "remuestreos_vacios_descartados": 0,
+      "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "fold": "2021-H2",
+      "n": 68,
+      "delta_brier_factores_menos_ppp": 0.002463450452392917,
+      "media": 0.002463450452392917,
+      "IC95_bloques": [
+        -1.3906692708694074e-05,
+        0.004490701744354362
+      ],
+      "replicas": 5000,
+      "longitud_bloque_sesiones": 20,
+      "remuestreos_vacios_descartados": 0,
+      "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "fold": "2022-H1",
+      "n": 97,
+      "delta_brier_factores_menos_ppp": 0.0013800613862689842,
+      "media": 0.0013800613862689842,
+      "IC95_bloques": [
+        -0.0018177852757711996,
+        0.00479992933306544
+      ],
+      "replicas": 5000,
+      "longitud_bloque_sesiones": 20,
+      "remuestreos_vacios_descartados": 0,
+      "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "fold": "2022-H2",
+      "n": 88,
+      "delta_brier_factores_menos_ppp": -0.001422079290816449,
+      "media": -0.001422079290816449,
+      "IC95_bloques": [
+        -0.003153030908275547,
+        0.00018649184632453408
+      ],
+      "replicas": 5000,
+      "longitud_bloque_sesiones": 20,
+      "remuestreos_vacios_descartados": 0,
+      "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "fold": "2023-H1",
+      "n": 33,
+      "delta_brier_factores_menos_ppp": 0.005089267063903359,
+      "media": 0.005089267063903359,
+      "IC95_bloques": [
+        0.0012476430127812035,
+        0.01240246485838196
+      ],
+      "replicas": 5000,
+      "longitud_bloque_sesiones": 20,
+      "remuestreos_vacios_descartados": 17,
+      "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "fold": "2024-H1",
+      "n": 42,
+      "delta_brier_factores_menos_ppp": 0.0018799682757083742,
+      "media": 0.0018799682757083742,
+      "IC95_bloques": [
+        -0.00158055922706743,
+        0.006707133970251612
+      ],
+      "replicas": 5000,
+      "longitud_bloque_sesiones": 20,
+      "remuestreos_vacios_descartados": 0,
+      "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "fold": "2024-H2",
+      "n": 49,
+      "delta_brier_factores_menos_ppp": 0.0004644993135294357,
+      "media": 0.0004644993135294357,
+      "IC95_bloques": [
+        -0.002253993227254863,
+        0.0022665977959095158
+      ],
+      "replicas": 5000,
+      "longitud_bloque_sesiones": 20,
+      "remuestreos_vacios_descartados": 2,
+      "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "fold": "2025-H1",
+      "n": 50,
+      "delta_brier_factores_menos_ppp": 0.0009384755200313549,
+      "media": 0.0009384755200313549,
+      "IC95_bloques": [
+        6.994175406072152e-05,
+        0.00190791071083176
+      ],
+      "replicas": 5000,
+      "longitud_bloque_sesiones": 20,
+      "remuestreos_vacios_descartados": 0,
+      "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "fold": "GLOBAL",
+      "n": 664,
+      "delta_brier_factores_menos_ppp": 0.0023088043132347916,
+      "media": 0.0023088043132347916,
+      "IC95_bloques": [
+        0.0006617716673937891,
+        0.003973101132666243
+      ],
+      "replicas": 5000,
+      "longitud_bloque_sesiones": 20,
+      "remuestreos_vacios_descartados": 42,
+      "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "fold": "2019-H1",
+      "n": 47,
+      "delta_brier_factores_menos_ppp": -0.0015295377855778895,
+      "media": -0.0015295377855778895,
+      "IC95_bloques": [
+        -0.0038589311500092757,
+        0.0009070133305400342
+      ],
+      "replicas": 5000,
+      "longitud_bloque_sesiones": 20,
+      "remuestreos_vacios_descartados": 1,
+      "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "fold": "2019-H2",
+      "n": 29,
+      "delta_brier_factores_menos_ppp": 0.013615336898610424,
+      "media": 0.013615336898610424,
+      "IC95_bloques": [
+        0.006130735792662996,
+        0.01928604423915162
+      ],
+      "replicas": 5000,
+      "longitud_bloque_sesiones": 20,
+      "remuestreos_vacios_descartados": 34,
+      "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "fold": "2020-H1",
+      "n": 46,
+      "delta_brier_factores_menos_ppp": -0.00015751725854717082,
+      "media": -0.00015751725854717082,
+      "IC95_bloques": [
+        -0.005929492673182683,
+        0.0016367260308712435
+      ],
+      "replicas": 5000,
+      "longitud_bloque_sesiones": 20,
+      "remuestreos_vacios_descartados": 0,
+      "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "fold": "2020-H2",
+      "n": 48,
+      "delta_brier_factores_menos_ppp": -0.002961924075557031,
+      "media": -0.002961924075557031,
+      "IC95_bloques": [
+        -0.006860475253184947,
+        0.0005432026182049022
+      ],
+      "replicas": 5000,
+      "longitud_bloque_sesiones": 20,
+      "remuestreos_vacios_descartados": 0,
+      "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "fold": "2021-H1",
+      "n": 67,
+      "delta_brier_factores_menos_ppp": 0.004038401726314724,
+      "media": 0.004038401726314724,
+      "IC95_bloques": [
+        -0.0021414354276575003,
+        0.012064291806117384
+      ],
+      "replicas": 5000,
+      "longitud_bloque_sesiones": 20,
+      "remuestreos_vacios_descartados": 0,
+      "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "fold": "2021-H2",
+      "n": 68,
+      "delta_brier_factores_menos_ppp": 0.00439686874535168,
+      "media": 0.00439686874535168,
+      "IC95_bloques": [
+        -0.0011031811986902354,
+        0.009283519936123199
+      ],
+      "replicas": 5000,
+      "longitud_bloque_sesiones": 20,
+      "remuestreos_vacios_descartados": 0,
+      "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "fold": "2022-H1",
+      "n": 97,
+      "delta_brier_factores_menos_ppp": 0.0018588940964548652,
+      "media": 0.0018588940964548652,
+      "IC95_bloques": [
+        -0.003647680788306675,
+        0.007735540949125041
+      ],
+      "replicas": 5000,
+      "longitud_bloque_sesiones": 20,
+      "remuestreos_vacios_descartados": 0,
+      "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "fold": "2022-H2",
+      "n": 88,
+      "delta_brier_factores_menos_ppp": -0.0001714355444228847,
+      "media": -0.0001714355444228847,
+      "IC95_bloques": [
+        -0.0004625320073908359,
+        8.908232402909538e-05
+      ],
+      "replicas": 5000,
+      "longitud_bloque_sesiones": 20,
+      "remuestreos_vacios_descartados": 0,
+      "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "fold": "2023-H1",
+      "n": 33,
+      "delta_brier_factores_menos_ppp": 0.008379422558217123,
+      "media": 0.008379422558217123,
+      "IC95_bloques": [
+        0.001755731015079566,
+        0.02002965452765857
+      ],
+      "replicas": 5000,
+      "longitud_bloque_sesiones": 20,
+      "remuestreos_vacios_descartados": 17,
+      "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "fold": "2024-H1",
+      "n": 42,
+      "delta_brier_factores_menos_ppp": 0.007562982779580404,
+      "media": 0.007562982779580404,
+      "IC95_bloques": [
+        -0.0026394528863023727,
+        0.021916132203534472
+      ],
+      "replicas": 5000,
+      "longitud_bloque_sesiones": 20,
+      "remuestreos_vacios_descartados": 0,
+      "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "fold": "2024-H2",
+      "n": 49,
+      "delta_brier_factores_menos_ppp": 0.0013576863064201604,
+      "media": 0.0013576863064201604,
+      "IC95_bloques": [
+        -0.0037185397007614947,
+        0.005053730361749026
+      ],
+      "replicas": 5000,
+      "longitud_bloque_sesiones": 20,
+      "remuestreos_vacios_descartados": 2,
+      "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "fold": "2025-H1",
+      "n": 50,
+      "delta_brier_factores_menos_ppp": -0.0007194304120354192,
+      "media": -0.0007194304120354192,
+      "IC95_bloques": [
+        -0.0035174974769894944,
+        0.002092986747675946
+      ],
+      "replicas": 5000,
+      "longitud_bloque_sesiones": 20,
+      "remuestreos_vacios_descartados": 0,
+      "condicionamiento": "Predicciones y ajustes congelados; bloques dentro de cada fold; no corrige multiplicidad exploratoria"
+    }
+  ],
+  "periodos_insuficientes": [
+    {
+      "regimen": "EXPANSIVA",
+      "fold": "2023-H2",
+      "modelo": "PPP_COMPLETO",
+      "inicio_bloque": "2023-07-01",
+      "fin_bloque": "2023-12-31",
+      "n_train": 990,
+      "n_val": 3,
+      "n_val_ppp": 3,
+      "exclusiones_externas_val": 0,
+      "purga_final_val_ppp": 0,
+      "estado": "INSUFICIENTE_MUESTRA"
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "fold": "2023-H2",
+      "modelo": "PPP_PAREADO",
+      "inicio_bloque": "2023-07-01",
+      "fin_bloque": "2023-12-31",
+      "n_train": 825,
+      "n_val": 2,
+      "n_val_ppp": 3,
+      "exclusiones_externas_val": 1,
+      "purga_final_val_ppp": 0,
+      "estado": "INSUFICIENTE_MUESTRA"
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "fold": "2023-H2",
+      "modelo": "PPP_MAS_FACTORES",
+      "inicio_bloque": "2023-07-01",
+      "fin_bloque": "2023-12-31",
+      "n_train": 825,
+      "n_val": 2,
+      "n_val_ppp": 3,
+      "exclusiones_externas_val": 1,
+      "purga_final_val_ppp": 0,
+      "estado": "INSUFICIENTE_MUESTRA"
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "fold": "2023-H2",
+      "modelo": "PPP_COMPLETO",
+      "inicio_bloque": "2023-07-01",
+      "fin_bloque": "2023-12-31",
+      "n_train": 503,
+      "n_val": 3,
+      "n_val_ppp": 3,
+      "exclusiones_externas_val": 0,
+      "purga_final_val_ppp": 0,
+      "estado": "INSUFICIENTE_MUESTRA"
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "fold": "2023-H2",
+      "modelo": "PPP_PAREADO",
+      "inicio_bloque": "2023-07-01",
+      "fin_bloque": "2023-12-31",
+      "n_train": 411,
+      "n_val": 2,
+      "n_val_ppp": 3,
+      "exclusiones_externas_val": 1,
+      "purga_final_val_ppp": 0,
+      "estado": "INSUFICIENTE_MUESTRA"
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "fold": "2023-H2",
+      "modelo": "PPP_MAS_FACTORES",
+      "inicio_bloque": "2023-07-01",
+      "fin_bloque": "2023-12-31",
+      "n_train": 411,
+      "n_val": 2,
+      "n_val_ppp": 3,
+      "exclusiones_externas_val": 1,
+      "purga_final_val_ppp": 0,
+      "estado": "INSUFICIENTE_MUESTRA"
+    }
+  ],
+  "coeficientes_estabilidad": [
+    {
+      "regimen": "EXPANSIVA",
+      "modelo": "PPP_COMPLETO",
+      "feature": "distancia_media_20",
+      "mean": -0.013380763051664723,
+      "std": 0.019516511249337024,
+      "min": -0.04760934088842029,
+      "max": 0.015228378724089853,
+      "count": 12
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "modelo": "PPP_COMPLETO",
+      "feature": "distancia_media_5",
+      "mean": -0.02791120391610501,
+      "std": 0.023608070047904134,
+      "min": -0.06548542357841103,
+      "max": 0.006882637442289667,
+      "count": 12
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "modelo": "PPP_COMPLETO",
+      "feature": "ret_1",
+      "mean": -0.01541010733102636,
+      "std": 0.016755787771283222,
+      "min": -0.04190337345763874,
+      "max": 0.014427372906011227,
+      "count": 12
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "modelo": "PPP_COMPLETO",
+      "feature": "ret_10",
+      "mean": -0.13221911290892677,
+      "std": 0.0165119368143555,
+      "min": -0.15402795957846083,
+      "max": -0.10301402896377698,
+      "count": 12
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "modelo": "PPP_COMPLETO",
+      "feature": "ret_20",
+      "mean": 0.03393062126548776,
+      "std": 0.030374628448209144,
+      "min": -0.022982516546423404,
+      "max": 0.0910025522804799,
+      "count": 12
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "modelo": "PPP_COMPLETO",
+      "feature": "ret_5",
+      "mean": -0.07351070280664483,
+      "std": 0.029927283094671575,
+      "min": -0.11087400504199876,
+      "max": -0.01721577385295937,
+      "count": 12
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "modelo": "PPP_COMPLETO",
+      "feature": "volatilidad_20",
+      "mean": -0.05849241940587263,
+      "std": 0.06257708894521015,
+      "min": -0.13524509525462483,
+      "max": 0.03263603192006666,
+      "count": 12
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "modelo": "PPP_COMPLETO",
+      "feature": "volatilidad_5",
+      "mean": 0.13695842566720137,
+      "std": 0.03112685488705497,
+      "min": 0.09701458191241881,
+      "max": 0.1938618147334188,
+      "count": 12
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "modelo": "PPP_MAS_FACTORES",
+      "feature": "cobre_logret_5_lag1",
+      "mean": -0.0007902575343498247,
+      "std": 0.019082484652442493,
+      "min": -0.0332145553164597,
+      "max": 0.030085045800738012,
+      "count": 12
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "modelo": "PPP_MAS_FACTORES",
+      "feature": "distancia_media_20",
+      "mean": -0.007931070493273493,
+      "std": 0.014333995854978519,
+      "min": -0.0405656352120817,
+      "max": 0.014723412477803217,
+      "count": 12
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "modelo": "PPP_MAS_FACTORES",
+      "feature": "distancia_media_5",
+      "mean": -0.06424405045825327,
+      "std": 0.031176736532071977,
+      "min": -0.11102803246617532,
+      "max": -0.027980697914640914,
+      "count": 12
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "modelo": "PPP_MAS_FACTORES",
+      "feature": "ret_1",
+      "mean": -0.053489582848235656,
+      "std": 0.021611826931982124,
+      "min": -0.09157516255074948,
+      "max": -0.02012151092218536,
+      "count": 12
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "modelo": "PPP_MAS_FACTORES",
+      "feature": "ret_10",
+      "mean": -0.117013542384889,
+      "std": 0.02931782632599605,
+      "min": -0.15429991507628285,
+      "max": -0.07809960583363298,
+      "count": 12
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "modelo": "PPP_MAS_FACTORES",
+      "feature": "ret_20",
+      "mean": 0.0639325090964677,
+      "std": 0.024666157143749465,
+      "min": 0.020389104895967958,
+      "max": 0.10619609212646605,
+      "count": 12
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "modelo": "PPP_MAS_FACTORES",
+      "feature": "ret_5",
+      "mean": -0.09900681672478513,
+      "std": 0.03766332439841766,
+      "min": -0.1483455487862835,
+      "max": -0.036110031131419286,
+      "count": 12
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "modelo": "PPP_MAS_FACTORES",
+      "feature": "usd_mxn_logret_5_lag1",
+      "mean": 0.01784191615105278,
+      "std": 0.03312028590742829,
+      "min": -0.04716423804686489,
+      "max": 0.06129445828056836,
+      "count": 12
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "modelo": "PPP_MAS_FACTORES",
+      "feature": "volatilidad_20",
+      "mean": -0.04902115880994851,
+      "std": 0.06557769744262065,
+      "min": -0.1352724323513567,
+      "max": 0.027456681935892034,
+      "count": 12
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "modelo": "PPP_MAS_FACTORES",
+      "feature": "volatilidad_5",
+      "mean": 0.1467512101603292,
+      "std": 0.04265513682274447,
+      "min": 0.08521480447624598,
+      "max": 0.21470148385121884,
+      "count": 12
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "modelo": "PPP_PAREADO",
+      "feature": "distancia_media_20",
+      "mean": -0.009031676808299133,
+      "std": 0.016020151219421016,
+      "min": -0.04153609858252769,
+      "max": 0.019196202647243095,
+      "count": 12
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "modelo": "PPP_PAREADO",
+      "feature": "distancia_media_5",
+      "mean": -0.06345121723282968,
+      "std": 0.03206273324508248,
+      "min": -0.10989517833691777,
+      "max": -0.025806955587283367,
+      "count": 12
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "modelo": "PPP_PAREADO",
+      "feature": "ret_1",
+      "mean": -0.05249741735007146,
+      "std": 0.021948077428029417,
+      "min": -0.0905929197931584,
+      "max": -0.018470811249342533,
+      "count": 12
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "modelo": "PPP_PAREADO",
+      "feature": "ret_10",
+      "mean": -0.1176488560496377,
+      "std": 0.03023126537589727,
+      "min": -0.15623683075604372,
+      "max": -0.0804610940767165,
+      "count": 12
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "modelo": "PPP_PAREADO",
+      "feature": "ret_20",
+      "mean": 0.06253451715667983,
+      "std": 0.026955393034653958,
+      "min": 0.019144061666570834,
+      "max": 0.11226154484104585,
+      "count": 12
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "modelo": "PPP_PAREADO",
+      "feature": "ret_5",
+      "mean": -0.09991231631977981,
+      "std": 0.039642941818434876,
+      "min": -0.15182980122088832,
+      "max": -0.03438658953905203,
+      "count": 12
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "modelo": "PPP_PAREADO",
+      "feature": "volatilidad_20",
+      "mean": -0.048368948056596084,
+      "std": 0.06400256516157661,
+      "min": -0.13455988039850705,
+      "max": 0.023873324249510948,
+      "count": 12
+    },
+    {
+      "regimen": "EXPANSIVA",
+      "modelo": "PPP_PAREADO",
+      "feature": "volatilidad_5",
+      "mean": 0.14762232229148134,
+      "std": 0.042287762376249684,
+      "min": 0.08540625556520126,
+      "max": 0.21554532294433804,
+      "count": 12
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "modelo": "PPP_COMPLETO",
+      "feature": "distancia_media_20",
+      "mean": -0.030060791341344484,
+      "std": 0.014303579690834832,
+      "min": -0.04824345284227066,
+      "max": -0.0015705154624870781,
+      "count": 12
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "modelo": "PPP_COMPLETO",
+      "feature": "distancia_media_5",
+      "mean": -0.017936797491359176,
+      "std": 0.03136196725674531,
+      "min": -0.06548542357841103,
+      "max": 0.03967865698463108,
+      "count": 12
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "modelo": "PPP_COMPLETO",
+      "feature": "ret_1",
+      "mean": -0.009108124126778043,
+      "std": 0.03226201683548451,
+      "min": -0.06429506735081193,
+      "max": 0.04530427441850463,
+      "count": 12
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "modelo": "PPP_COMPLETO",
+      "feature": "ret_10",
+      "mean": -0.10414209025766423,
+      "std": 0.024325944462601175,
+      "min": -0.15085556009049178,
+      "max": -0.06598298610076497,
+      "count": 12
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "modelo": "PPP_COMPLETO",
+      "feature": "ret_20",
+      "mean": -0.021158278599275392,
+      "std": 0.0571241874953483,
+      "min": -0.11960227907710985,
+      "max": 0.04556543078862631,
+      "count": 12
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "modelo": "PPP_COMPLETO",
+      "feature": "ret_5",
+      "mean": -0.05900839919714721,
+      "std": 0.04187401181891806,
+      "min": -0.11795211327398118,
+      "max": 0.010460945766382446,
+      "count": 12
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "modelo": "PPP_COMPLETO",
+      "feature": "volatilidad_20",
+      "mean": -0.0581721247452967,
+      "std": 0.07633205822402352,
+      "min": -0.14851872931618226,
+      "max": 0.0812495650332655,
+      "count": 12
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "modelo": "PPP_COMPLETO",
+      "feature": "volatilidad_5",
+      "mean": 0.0700550144025856,
+      "std": 0.07850621637232721,
+      "min": -0.03173119095802439,
+      "max": 0.1938618147334188,
+      "count": 12
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "modelo": "PPP_MAS_FACTORES",
+      "feature": "cobre_logret_5_lag1",
+      "mean": -0.00139363675695017,
+      "std": 0.03216772425831112,
+      "min": -0.05608341859091041,
+      "max": 0.06118055065597795,
+      "count": 12
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "modelo": "PPP_MAS_FACTORES",
+      "feature": "distancia_media_20",
+      "mean": -0.03440323624077168,
+      "std": 0.026829262997795096,
+      "min": -0.09147623786788103,
+      "max": -0.011892828027141459,
+      "count": 12
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "modelo": "PPP_MAS_FACTORES",
+      "feature": "distancia_media_5",
+      "mean": -0.03592204019300233,
+      "std": 0.0417551828670188,
+      "min": -0.11102803246617532,
+      "max": 0.022647769809685102,
+      "count": 12
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "modelo": "PPP_MAS_FACTORES",
+      "feature": "ret_1",
+      "mean": -0.029278713408631783,
+      "std": 0.040188708190877324,
+      "min": -0.09157516255074948,
+      "max": 0.03063192500568828,
+      "count": 12
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "modelo": "PPP_MAS_FACTORES",
+      "feature": "ret_10",
+      "mean": -0.09979146750275004,
+      "std": 0.016650024936308537,
+      "min": -0.13130968745628183,
+      "max": -0.07809960583363298,
+      "count": 12
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "modelo": "PPP_MAS_FACTORES",
+      "feature": "ret_20",
+      "mean": -0.0018279087863928793,
+      "std": 0.05608351749137584,
+      "min": -0.09699390083214814,
+      "max": 0.07742938561900868,
+      "count": 12
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "modelo": "PPP_MAS_FACTORES",
+      "feature": "ret_5",
+      "mean": -0.07806814013061936,
+      "std": 0.057430316714387156,
+      "min": -0.1662579370753468,
+      "max": 0.016475332022841627,
+      "count": 12
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "modelo": "PPP_MAS_FACTORES",
+      "feature": "usd_mxn_logret_5_lag1",
+      "mean": 0.01267785656587272,
+      "std": 0.05943139709422506,
+      "min": -0.09447311241540675,
+      "max": 0.09990491568754828,
+      "count": 12
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "modelo": "PPP_MAS_FACTORES",
+      "feature": "volatilidad_20",
+      "mean": -0.067903798180997,
+      "std": 0.08365920181946553,
+      "min": -0.1794504399681905,
+      "max": 0.05284129478619566,
+      "count": 12
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "modelo": "PPP_MAS_FACTORES",
+      "feature": "volatilidad_5",
+      "mean": 0.059074610748363086,
+      "std": 0.09946244227787646,
+      "min": -0.0674949176532886,
+      "max": 0.21470148385121884,
+      "count": 12
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "modelo": "PPP_PAREADO",
+      "feature": "distancia_media_20",
+      "mean": -0.03573646803548488,
+      "std": 0.030252648717423142,
+      "min": -0.10119458572507932,
+      "max": -0.008776628603746086,
+      "count": 12
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "modelo": "PPP_PAREADO",
+      "feature": "distancia_media_5",
+      "mean": -0.03555959755088058,
+      "std": 0.04090945881576392,
+      "min": -0.10989517833691777,
+      "max": 0.021829540036869193,
+      "count": 12
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "modelo": "PPP_PAREADO",
+      "feature": "ret_1",
+      "mean": -0.028559421701222113,
+      "std": 0.03976719354658566,
+      "min": -0.0905929197931584,
+      "max": 0.031993795116496374,
+      "count": 12
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "modelo": "PPP_PAREADO",
+      "feature": "ret_10",
+      "mean": -0.10162878769555789,
+      "std": 0.019025731054628972,
+      "min": -0.1428627765485994,
+      "max": -0.08101364059740204,
+      "count": 12
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "modelo": "PPP_PAREADO",
+      "feature": "ret_20",
+      "mean": -0.002630818147662035,
+      "std": 0.05820853318136755,
+      "min": -0.10460468854057026,
+      "max": 0.07221746476475806,
+      "count": 12
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "modelo": "PPP_PAREADO",
+      "feature": "ret_5",
+      "mean": -0.07889647969830905,
+      "std": 0.05997403520496023,
+      "min": -0.17220084323454,
+      "max": 0.024336213991716916,
+      "count": 12
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "modelo": "PPP_PAREADO",
+      "feature": "volatilidad_20",
+      "mean": -0.06796302254616061,
+      "std": 0.08170697827978088,
+      "min": -0.17922649700908208,
+      "max": 0.046650011093336975,
+      "count": 12
+    },
+    {
+      "regimen": "MOVIL_3_ANIOS",
+      "modelo": "PPP_PAREADO",
+      "feature": "volatilidad_5",
+      "mean": 0.05880165299049275,
+      "std": 0.09876027517111967,
+      "min": -0.06684656884790194,
+      "max": 0.21554532294433804,
+      "count": 12
+    }
+  ],
+  "limitaciones": [
+    "La validacion es anidada pero sigue siendo diagnostico de desarrollo; el diseno general se investigo previamente",
+    "Intervalos condicionados a ajustes, sin correccion por multiples comparaciones",
+    "Huecos y seleccion por presencia en boletin condicionan las sesiones elegibles",
+    "Factores externos conservan la hipotesis de disponibilidad rezagada, sin vintages certificados",
+    "Estabilidad de coeficientes marginales no implica causalidad; hay entradas correlacionadas"
+  ],
+  "archivos_protegidos_sha256": {
+    "serie_ppp_historica_15_emisoras_bmv.csv": "92201443e18dfe92f27038b232d038c6314d5e9029b523c55c089e900f665067",
+    "dataset_panel_15_emisoras_features.csv": "e6c8a2c4d48fa56382a104e9e595ede5438253c2fde2b5d03083d165865eabed",
+    "registro_senales_prospectivas_walmex.csv": "3c0b14086b12c83a0f9669038881f2efe83a6a6b639ecf58180867b6febcc4f7",
+    "registro_senales_prospectivas_gmexico.csv": "f7d407c836b3d3ca758e9e537e85ef9467d6ace8833a7573c0192948ba8ef2c1",
+    "experimento_gmexico_macro\\dataset_experimento.csv": "c9fdad0aca52dc6529fa063dc6b80c2f5f55cb05aeae3410edfde5322f4c3c8a",
+    "experimento_gmexico_macro\\reporte.json": "bf9f7c2347ac8b75d47c81d0ac64a0feb2016b590730c484eda2e6ce30af02e2",
+    "experimento_gmexico_macro\\predicciones_test_pareadas.csv": "b4a9aa9694a3051769d1c71754c5970a7a2c227458483b39dcb13b088594f26f"
+  }
+}

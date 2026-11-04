@@ -1,0 +1,139 @@
+{
+  "fecha_corte": "2026-10-28",
+  "arquitectura": "Opcion 1: Nucleo Estricto en WALMEX * + Modulo Comparativo Multi-Emisora Separado",
+  "selector_automatico_walmex_9E": {
+    "criterio_seleccion": "Cumplir >=3/4 periodos sobre base, FP < 131, LogLoss < 0.6900 y mayor Exactitud Balanceada en 9E (sin mirar 9G)",
+    "modelo_seleccionado": "5. Random Forest Balanceado (80 arboles, max_depth=3) + Ajuste Dividendos",
+    "metricas_9E_ganador": {
+      "n": 495,
+      "aciertos": 289,
+      "errores": 206,
+      "accuracy_pct": 58.38,
+      "balanced_accuracy_pct": 58.55,
+      "log_loss": 0.684,
+      "brier": 0.2452,
+      "TN": 159,
+      "FP": 119,
+      "FN": 87,
+      "TP": 130,
+      "FP_caida_ge_2pct": 58,
+      "modelo": "5. Random Forest Balanceado (80 arboles, max_depth=3) + Ajuste Dividendos",
+      "codigo": "rf_d3",
+      "mean_fold_bacc_pct": 61.09,
+      "fold_baccs": [
+        53.49,
+        68.87,
+        55.42,
+        66.57
+      ],
+      "periodos_que_superan_base": 3
+    }
+  },
+  "boletin_bmv_20261028": {
+    "fecha_boletin": "2026-10-28",
+    "url_fuente": "https://www.bmv.com.mx/docs-pub/rss/boletin20261028.html",
+    "sha256_html": "229f312aa9a3f57a4d151d68c479c7d0ac4816cbe3f97583fb2efb15c36d58be",
+    "bytes_html": 59224,
+    "timestamp_verificacion_utc": "2026-10-29T01:27:04.671011+00:00",
+    "cotizaciones": {
+      "WALMEX": {
+        "emisora": "WALMEX",
+        "serie": "*",
+        "ultimo": 48.42,
+        "anterior": 48.85,
+        "ppp": 48.4,
+        "evidencia_exacta": "WALMEX / * / PPP / 48.40"
+      },
+      "GMEXICO": {
+        "emisora": "GMEXICO",
+        "serie": "B",
+        "ultimo": 234.69,
+        "anterior": 233.84,
+        "ppp": 235.31,
+        "evidencia_exacta": "GMEXICO / B / PPP / 235.31"
+      },
+      "GFNORTE": {
+        "emisora": "GFNORTE",
+        "serie": "O",
+        "ultimo": 213.68,
+        "anterior": 213.64,
+        "ppp": 213.09,
+        "evidencia_exacta": "GFNORTE / O / PPP / 213.09"
+      }
+    }
+  },
+  "variables_walmex_20261028": {
+    "ret_1": -0.009212,
+    "ret_5": -0.019051,
+    "ret_10": 0.014462,
+    "ret_20": 0.049209,
+    "volatilidad_5": 0.018772,
+    "volatilidad_20": 0.013016,
+    "distancia_media_5": -0.026744,
+    "distancia_media_20": 0.003171
+  },
+  "senales_prospectivas_20261028": [
+    {
+      "id_senal": "WALMEX_20261028_V1_CONTROL_LOGREG",
+      "fecha_senal": "2026-10-28",
+      "fecha_objetivo_h5": "2026-11-05",
+      "emisora": "WALMEX",
+      "serie": "*",
+      "ppp_base_mxn": 48.4,
+      "cambio_diario_pct": -0.92,
+      "rol_modelo": "TITULAR_CONTROL (Intacto Etapa 9I)",
+      "algoritmo": "StandardScaler + LogisticRegression(C=1.0, balanced)",
+      "n_entrenamiento": 1278,
+      "prob_subida_h5": 0.535924,
+      "prob_subida_pct": 53.59,
+      "prediccion_clase": 1,
+      "prediccion_etiqueta": "SUBIDA",
+      "url_boletin_bmv": "https://www.bmv.com.mx/docs-pub/rss/boletin20261028.html",
+      "sha256_boletin_bmv": "229f312aa9a3f57a4d151d68c479c7d0ac4816cbe3f97583fb2efb15c36d58be",
+      "respuesta_real_h5": "PENDIENTE_HASTA_2026-11-05"
+    },
+    {
+      "id_senal": "WALMEX_20261028_V2_RETADOR_HIBRIDO_BOLETIN",
+      "fecha_senal": "2026-10-28",
+      "fecha_objetivo_h5": "2026-11-05",
+      "emisora": "WALMEX",
+      "serie": "*",
+      "ppp_base_mxn": 48.4,
+      "cambio_diario_pct": -0.92,
+      "rol_modelo": "RETADOR_SOMBRA_LINEAL (Ajuste Dividendos + Boletin Trimestral t+1)",
+      "algoritmo": "LogisticRegression + Ajuste Retroactivo Dividendos + Sorpresa Reporte 3T26",
+      "n_entrenamiento": 1743,
+      "prob_subida_h5": 0.448892,
+      "prob_subida_pct": 44.89,
+      "prediccion_clase": 0,
+      "prediccion_etiqueta": "NO_SUBIDA",
+      "url_boletin_bmv": "https://www.bmv.com.mx/docs-pub/rss/boletin20261028.html",
+      "sha256_boletin_bmv": "229f312aa9a3f57a4d151d68c479c7d0ac4816cbe3f97583fb2efb15c36d58be",
+      "respuesta_real_h5": "PENDIENTE_HASTA_2026-11-05"
+    },
+    {
+      "id_senal": "WALMEX_20261028_V3_RETADOR_SELECCIONADO_RF",
+      "fecha_senal": "2026-10-28",
+      "fecha_objetivo_h5": "2026-11-05",
+      "emisora": "WALMEX",
+      "serie": "*",
+      "ppp_base_mxn": 48.4,
+      "cambio_diario_pct": -0.92,
+      "rol_modelo": "RETADOR_SOMBRA_GANADOR_SELECTOR (Random Forest max_depth=3 + Dividendos)",
+      "algoritmo": "RandomForestClassifier(n_estimators=80, max_depth=3, min_samples_leaf=25, balanced)",
+      "n_entrenamiento": 1743,
+      "prob_subida_h5": 0.460207,
+      "prob_subida_pct": 46.02,
+      "prediccion_clase": 0,
+      "prediccion_etiqueta": "NO_SUBIDA",
+      "url_boletin_bmv": "https://www.bmv.com.mx/docs-pub/rss/boletin20261028.html",
+      "sha256_boletin_bmv": "229f312aa9a3f57a4d151d68c479c7d0ac4816cbe3f97583fb2efb15c36d58be",
+      "respuesta_real_h5": "PENDIENTE_HASTA_2026-11-05"
+    }
+  ],
+  "resumen_scraping_tiempo_real": {
+    "fuentes_auditadas": 4,
+    "items_en_bitacora": 29,
+    "noticias_tiempo_real": 20
+  }
+}
