@@ -30,8 +30,8 @@ from metodologia_ppp import (
     agregar_trazabilidad, localizar_insumo,
 )
 
-DOWNLOADS = Path(r"C:\Users\GAELMENDOZABALLARDO\Downloads")
-OUT_DIR = Path(r"D:\Universidad\7mo Semestre\Big Data\Proyecto final")
+DOWNLOADS = Path.home() / "Downloads"
+OUT_DIR = Path(__file__).resolve().parent
 Z9G = localizar_insumo("etapa9G_WALMEX_PPP_20261028T164002342440Z.zip")
 
 def consenso_label(c1: int, c2: int, c3: int) -> str:

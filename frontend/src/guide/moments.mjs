@@ -3,7 +3,7 @@
  * Define las expresiones y los mensajes contextuales según la pantalla activa.
  */
 
-export function guideMoment({ route, phase, selectedTicker, busy = false, error = null }) {
+export function guideMoment({ route, phase, selectedTicker, busy = false, error = null, hasSession = false, nombre = "" }) {
   if (busy) {
     return {
       expression: "thinking",
@@ -20,12 +20,36 @@ export function guideMoment({ route, phase, selectedTicker, busy = false, error 
     };
   }
 
-  if (route === "/") {
+  if (route === "/acceso" || route === "/registro") {
     return {
       expression: "happy",
-      prompt: "¡Hola! ¿Quieres conocer la terminal?",
-      message: "Descubre por qué el PPP oficial de la BMV es superior al precio de cierre convencional."
+      prompt: route === "/registro" ? "Crear tu cuenta es gratis" : "¡Bienvenido de vuelta!",
+      message: route === "/registro"
+        ? "Empiezas con el plan Explorer: monitor de las 15 emisoras y análisis completo de WALMEX."
+        : "Escribe tu correo y contraseña. ¿No tienes cuenta? Usa «Regístrate» debajo del formulario."
     };
+  }
+
+  if ((route === "/sistema" || route.startsWith("/ficha")) && !hasSession) {
+    return {
+      expression: "unsure",
+      prompt: "La terminal necesita sesión",
+      message: "Inicia sesión o crea tu cuenta gratis para ver las señales, la serie histórica y la auditoría."
+    };
+  }
+
+  if (route === "/") {
+    return hasSession
+      ? {
+          expression: "happy",
+          prompt: `¡Hola${nombre ? `, ${nombre}` : ""}!`,
+          message: "Tu sesión está activa. Usa «Abrir Terminal» para ir directo al análisis."
+        }
+      : {
+          expression: "happy",
+          prompt: "¡Hola! ¿Quieres conocer la terminal?",
+          message: "Descubre por qué el PPP oficial de la BMV es superior al precio de cierre. Para entrar a la terminal, inicia sesión."
+        };
   }
 
   if (route === "/metodologia") {
@@ -53,7 +77,7 @@ export function guideMoment({ route, phase, selectedTicker, busy = false, error 
   }
 
   if (route === "/sistema") {
-    if (phase === "result") {
+    if (phase === "analysis" || phase === "audit") {
       return {
         expression: "happy",
         prompt: `¿Analizando ${selectedTicker || "WALMEX"}?`,

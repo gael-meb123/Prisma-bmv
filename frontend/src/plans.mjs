@@ -24,7 +24,7 @@ export const PLANS = [
     maxQueriesPerDay: 5
   },
   {
-    id: "profesional",
+    id: "professional",
     name: "Professional",
     audience: "Inversionistas Cuantitativos",
     cost: "$49 USD al mes",

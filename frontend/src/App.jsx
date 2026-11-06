@@ -17,12 +17,25 @@ import { Report } from "./pages/Report";
 import { useCatalog } from "./hooks/useCatalog";
 import { useAccount } from "./hooks/useAccount";
 import { canAccessTicker } from "./plans.mjs";
+import { Admin } from "./pages/Admin";
+import { TerminalGate } from "./pages/TerminalGate";
 
 function currentRoute() {
   return location.hash.startsWith("#/") ? location.hash.slice(1) : "/";
 }
 
+// Las rutas de la terminal exigen sesión iniciada.
+const isTerminalRoute = (route) => route === "/sistema" || route.startsWith("/ficha");
+
+// Al iniciar/cerrar sesión o cambiar de plan, la app se vuelve a montar para que
+// el catálogo (señales, serie) se recargue con los permisos nuevos.
 export default function App() {
+  const account = useAccount();
+  const key = `${account.profile?.id || "anon"}:${account.role}`;
+  return <AppInner key={key} />;
+}
+
+function AppInner() {
   const catalog = useCatalog();
   const account = useAccount();
   const [route, setRoute] = useState(currentRoute);
@@ -41,6 +54,15 @@ export default function App() {
     }
     window.addEventListener("hashchange", handleHashChange);
     return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
+
+  // El recorrido guiado puede cambiar de módulo (select / analysis / audit)
+  useEffect(() => {
+    function handleTourPhase(event) {
+      if (["select", "analysis", "audit"].includes(event.detail)) setPhase(event.detail);
+    }
+    window.addEventListener("prisma:tour-phase", handleTourPhase);
+    return () => window.removeEventListener("prisma:tour-phase", handleTourPhase);
   }, []);
 
   // Filtrar señales activas para la emisora seleccionada
@@ -67,12 +89,25 @@ export default function App() {
 
   // Enrutamiento de Vistas
   let content;
-  if (route === "/") {
+  if (isTerminalRoute(route) && !account.ready) {
+    content = (
+      <>
+        <Header context="inner" />
+        <main id="main-content" className="container" style={{ padding: "80px 20px", textAlign: "center", color: "var(--muted)" }}>
+          Verificando sesión…
+        </main>
+      </>
+    );
+  } else if (isTerminalRoute(route) && !account.session) {
+    content = <TerminalGate />;
+  } else if (route === "/") {
     content = <Landing />;
   } else if (route === "/planes") {
     content = <Plans />;
-  } else if (route === "/acceso") {
-    content = <Access />;
+  } else if (route === "/acceso" || route === "/registro") {
+    content = <Access key={route} initialMode={route === "/registro" ? "register" : "login"} />;
+  } else if (route === "/admin") {
+    content = <Admin />;
   } else if (route === "/metodologia") {
     content = <Methodology />;
   } else if (route === "/fuentes") {
@@ -107,7 +142,7 @@ export default function App() {
           {/* Panel Derecho Analítico: Fases de Selección, Inferencia IA y Auditoría */}
           <section className="workspace-panel" aria-label="Panel Analítico Dual">
             {/* Navegación de Fases Internas */}
-            <div style={{ display: "flex", gap: "8px", borderBottom: "1px solid var(--line)", paddingBottom: "12px", marginBottom: "14px" }}>
+            <div data-tour="fases" style={{ display: "flex", gap: "8px", borderBottom: "1px solid var(--line)", paddingBottom: "12px", marginBottom: "14px" }}>
               <button
                 className={`button ${phase === "select" ? "button-primary" : "button-subtle"}`}
                 onClick={() => setPhase("select")}
@@ -233,7 +268,7 @@ export default function App() {
         busy={busy}
       />
 
-      {/* Tour Onboarding Interactivo */}
+      {/* Recorrido guiado: Prismi vuela a cada sección */}
       <Tour route={route} />
     </>
   );

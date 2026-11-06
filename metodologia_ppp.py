@@ -24,9 +24,8 @@ FERIADOS_BMV_2026 = {
 
 
 def localizar_insumo(nombre):
-    candidatos = [ROOT.parent / "Parcial 3" / nombre, Path.home() / "Downloads" / nombre]
+    candidatos = [ROOT / nombre, ROOT.parent / "Parcial 3" / nombre, Path.home() / "Downloads" / nombre]
     return next((p for p in candidatos if p.exists()), candidatos[0])
-
 
 @lru_cache(maxsize=1)
 def rejilla_historica():

@@ -63,7 +63,7 @@ export function Landing() {
               PLATAFORMA CUANTITATIVA INSTITUCIONAL · BOLSA MEXICANA DE VALORES
             </span>
 
-            <h1 style={{ fontSize: "clamp(32px, 4.5vw, 54px)", color: "var(--navy)", margin: "16px 0", lineHeight: "1.15" }}>
+            <h1 data-tour="hero" style={{ fontSize: "clamp(32px, 4.5vw, 54px)", color: "var(--navy)", margin: "16px 0", lineHeight: "1.15" }}>
               Inferencia Bursátil sobre <br />
               <em style={{ color: "var(--teal-dark)" }}>Precios Oficiales Ponderados (PPP)</em>
             </h1>
@@ -73,7 +73,7 @@ export function Landing() {
             </p>
 
             <div style={{ display: "flex", gap: "14px", justifyContent: "center", flexWrap: "wrap" }}>
-              <a href="#/sistema" className="button button-primary" style={{ padding: "12px 28px", fontSize: "15px", background: "#079baa", borderColor: "#1fd2ea" }}>
+              <a href="#/sistema" data-tour="cta-sistema" className="button button-primary" style={{ padding: "12px 28px", fontSize: "15px", background: "#079baa", borderColor: "#1fd2ea" }}>
                 <span>Ingresar a la Terminal Cuantitativa</span>
                 <ArrowRight size={16} />
               </a>
@@ -85,7 +85,7 @@ export function Landing() {
         </section>
 
         {/* Sección de Comparativa: Cierre vs PPP Oficial */}
-        <section className="section container" style={{ maxWidth: "1080px", margin: "48px auto", padding: "0 20px" }}>
+        <section data-tour="por-que-ppp" className="section container" style={{ maxWidth: "1080px", margin: "48px auto", padding: "0 20px" }}>
           <div style={{ textAlign: "center", marginBottom: "32px" }}>
             <span className="eyebrow">FUNDAMENTO CUANTITATIVO</span>
             <h2 style={{ color: "var(--navy)", fontSize: "28px" }}>¿Por qué PPP Oficial y no Precio de Cierre?</h2>
@@ -113,7 +113,7 @@ export function Landing() {
         </section>
 
         {/* Pilares Tecnológicos */}
-        <section id="capacidades" className="section container" style={{ maxWidth: "1080px", margin: "48px auto", padding: "0 20px" }}>
+        <section id="capacidades" data-tour="capacidades" className="section container" style={{ maxWidth: "1080px", margin: "48px auto", padding: "0 20px" }}>
           <div style={{ textAlign: "center", marginBottom: "32px" }}>
             <span className="eyebrow">METODOLOGÍA INSTITUCIONAL</span>
             <h2 style={{ color: "var(--navy)", fontSize: "28px" }}>Pilares de Alta Disponibilidad y Rigor Matemático</h2>
@@ -133,7 +133,7 @@ export function Landing() {
         </section>
 
         {/* Sección de Planes Freemium */}
-        <section id="planes" className="section container" style={{ maxWidth: "1080px", margin: "48px auto", padding: "0 20px" }}>
+        <section id="planes" data-tour="planes" className="section container" style={{ maxWidth: "1080px", margin: "48px auto", padding: "0 20px" }}>
           <div style={{ textAlign: "center", marginBottom: "32px" }}>
             <span className="eyebrow">SUSCRIPCIONES FLEXIBLES</span>
             <h2 style={{ color: "var(--navy)", fontSize: "28px" }}>Planes Diseñados para Cada Perfil Cuantitativo</h2>

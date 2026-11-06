@@ -1,0 +1,153 @@
+/* Asistente Prismi (esquina inferior derecha) */
+/* Fuerza clics en el asistente: otros CSS del proyecto pueden poner pointer-events: none
+   en .guide o heredarlo de un ancestro. "auto" explícito lo sobrescribe. */
+.guide,
+.guide * {
+  pointer-events: auto !important;
+}
+.guide {
+  position: fixed;
+  right: 20px;
+  bottom: 16px;
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.guide-toggle {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  filter: drop-shadow(0 10px 18px rgba(6, 44, 80, 0.3));
+  transition: transform 0.2s ease;
+}
+.guide-toggle:hover { transform: translateY(-3px) rotate(-3deg); }
+.guide-toggle:focus-visible { outline: 3px solid #1fd2ea; outline-offset: 4px; border-radius: 12px; }
+
+.guide-bubble {
+  position: relative;
+  max-width: 320px;
+  margin: 0 8px 6px 0;
+  padding: 12px 16px;
+  background: #ffffff;
+  border: 1px solid var(--line, #dbe4ec);
+  border-radius: 14px 14px 4px 14px;
+  box-shadow: 0 12px 35px rgba(9, 42, 73, 0.12);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--navy, #062c50);
+  animation: guide-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes guide-pop {
+  from { opacity: 0; transform: scale(0.9) translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+.guide-bubble-close {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  color: var(--muted, #64748b);
+}
+.guide-bubble-prompt {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--teal-dark, #067a86);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.guide-bubble-text { margin: 0; padding-right: 12px; }
+.guide-offer-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.guide-offer-actions .button { padding: 6px 12px; font-size: 12px; }
+
+.guide-chat {
+  width: 360px;
+  max-width: calc(100vw - 32px);
+  height: 460px;
+  margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid var(--line, #dbe4ec);
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(9, 42, 73, 0.2);
+}
+.guide-chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  color: #ffffff;
+  background: linear-gradient(105deg, #062c50, #073b67 56%, #06294c);
+}
+.guide-chat-id { display: flex; align-items: center; gap: 10px; }
+.guide-chat-id strong { display: block; font-size: 14px; }
+.guide-chat-id span { font-size: 11px; color: #8ee3ed; }
+.guide-chat-tools { display: flex; gap: 4px; }
+.guide-chat-tools button {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #ffffff;
+  cursor: pointer;
+}
+.guide-chat-tools button:hover { background: rgba(255, 255, 255, 0.1); }
+
+.guide-chat-thread {
+  flex: 1;
+  padding: 14px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 13px;
+}
+.guide-msg {
+  max-width: 85%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  line-height: 1.5;
+}
+.guide-msg-prismi {
+  align-self: flex-start;
+  background: #f1f5f9;
+  color: var(--navy, #062c50);
+  border-bottom-left-radius: 2px;
+}
+.guide-msg-user {
+  align-self: flex-end;
+  background: #079baa;
+  color: #ffffff;
+  border-bottom-right-radius: 2px;
+}
+.guide-msg-typing {
+  align-self: flex-start;
+  background: #f1f5f9;
+  color: var(--muted, #64748b);
+  font-size: 12px;
+}
+.guide-chat-form {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--line, #dbe4ec);
+  background: #fafcff;
+}
+.guide-chat-form input {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--line, #dbe4ec);
+  font-size: 12px;
+}
+.guide-chat-form .button { padding: 0 12px; }

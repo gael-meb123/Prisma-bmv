@@ -28,8 +28,8 @@ from experimento_integral_ia_boletines_noticias import (
     run_live_regulatory_and_news_scraper,
 )
 
-DOWNLOADS = Path(r"C:\Users\GAELMENDOZABALLARDO\Downloads")
-OUT_DIR = Path(r"D:\Universidad\7mo Semestre\Big Data\Proyecto final")
+DOWNLOADS = Path.home() / "Downloads"
+OUT_DIR = Path(__file__).resolve().parent
 Z9G = localizar_insumo("etapa9G_WALMEX_PPP_20261028T164002342440Z.zip")
 
 

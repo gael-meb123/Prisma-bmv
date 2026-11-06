@@ -19,8 +19,6 @@ from metodologia_ppp import (
     seleccionar_train_test, validar_ventana_fechas,
 )
 
-TEMP_ROOT = Path(r"C:\Users\GAELME~1\AppData\Local\Temp\opencode")
-
 
 class EvaluacionPPPTests(unittest.TestCase):
     @classmethod

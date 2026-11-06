@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Check, ArrowRight, ShieldCheck, Zap } from "lucide-react";
 import { Header } from "../components/Header";
 import { Button, Notice } from "../components/UI";
@@ -8,6 +8,21 @@ import { PLANS, planById } from "../plans.mjs";
 export function Plans() {
   const account = useAccount();
   const currentPlan = planById(account.role);
+  const [switching, setSwitching] = useState(null); // id del plan que se está activando
+  const [error, setError] = useState("");
+
+  async function handleSwitch(planId) {
+    if (planId === account.role) return;
+    setSwitching(planId);
+    setError("");
+    try {
+      await account.switchPlan(planId);
+    } catch (err) {
+      setError(err.message || "No se pudo cambiar el plan.");
+    } finally {
+      setSwitching(null);
+    }
+  }
 
   return (
     <>
@@ -26,10 +41,16 @@ export function Plans() {
           Modo Demostración Activo: La conmutación de planes es instantánea para permitir la evaluación completa de las capacidades multi-modelo y los bloqueos freemium.
         </Notice>
 
+        {error && (
+          <div style={{ margin: "12px 0", padding: "10px 16px", background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: "8px", fontSize: "13px", color: "#b91c1c" }}>
+            {error}
+          </div>
+        )}
+
         <div style={{ margin: "24px 0", padding: "14px 20px", background: "#ffffff", border: "1px solid var(--line)", borderRadius: "10px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
             <span style={{ fontSize: "12px", color: "var(--muted)" }}>SESIÓN ACTUAL:</span>
-            <strong style={{ display: "block", fontSize: "15px", color: "var(--navy)" }}>{account.user?.email || "analista.demo@prismabmv.com"}</strong>
+            <strong style={{ display: "block", fontSize: "15px", color: "var(--navy)" }}>{account.user?.email || "—"}</strong>
           </div>
           <div style={{ textAlign: "right" }}>
             <span style={{ fontSize: "12px", color: "var(--muted)" }}>PLAN VIGENTE:</span>
@@ -40,6 +61,7 @@ export function Plans() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "24px", marginTop: "32px" }}>
           {PLANS.map((plan) => {
             const isActive = account.role === plan.id;
+            const isSwitching = switching === plan.id;
             return (
               <article
                 key={plan.id}
@@ -73,10 +95,11 @@ export function Plans() {
 
                 <Button
                   variant={isActive ? "outline" : "primary"}
-                  onClick={() => account.switchPlan(plan.id)}
-                  style={{ width: "100%", justifyContent: "center" }}
+                  disabled={isSwitching}
+                  onClick={() => handleSwitch(plan.id)}
+                  style={{ width: "100%", justifyContent: "center", opacity: isSwitching ? 0.7 : 1 }}
                 >
-                  {isActive ? "✓ Plan Activo" : `Activar Plan ${plan.name}`}
+                  {isActive ? "✓ Plan Activo" : isSwitching ? "Cambiando…" : `Activar Plan ${plan.name}`}
                 </Button>
               </article>
             );

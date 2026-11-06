@@ -54,7 +54,7 @@ def cargar_serie_walmex() -> pd.DataFrame:
     if not FILE_SERIE_WALMEX.exists():
         return pd.DataFrame()
     df = pd.read_csv(FILE_SERIE_WALMEX)
-    df["ppp_oficial_bmv"] = pd.to_numeric(df["ppp_oficial_bmv"], errors="coerce")
+    df["ppp_bmv_mxn"] = pd.to_numeric(df["ppp_bmv_mxn"], errors="coerce")
     return df
 
 

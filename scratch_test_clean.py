@@ -1,8 +1,9 @@
 import re
 from pathlib import Path
+ROOT = Path(__file__).resolve().parent          # carpeta del proyecto
 
-cache_dir = Path(r"D:\Universidad\7mo Semestre\Big Data\Proyecto final\cache_boletines")
-
+cache_dir = ROOT / "cache_boletines"
+cache_dir.mkdir(exist_ok=True)
 def parse_bulletin_quotes_updated(raw_html_bytes: bytes) -> dict:
     if not raw_html_bytes:
         return {}

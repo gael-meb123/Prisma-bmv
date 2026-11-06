@@ -18,8 +18,8 @@ from experimento_integral_ia_boletines_noticias import (
     fit_predict_random_forest,
 )
 
-DOWNLOADS = Path(r"C:\Users\GAELMENDOZABALLARDO\Downloads")
-OUT_DIR = Path(r"D:\Universidad\7mo Semestre\Big Data\Proyecto final")
+DOWNLOADS = Path.home() / "Downloads"
+OUT_DIR = Path(__file__).resolve().parent
 Z8 = DOWNLOADS / "etapa8_20261028T043637850012Z.zip"
 
 

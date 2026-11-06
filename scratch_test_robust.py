@@ -4,10 +4,11 @@ import pandas as pd
 import zipfile
 import io
 
-cache_dir = Path(r"D:\Universidad\7mo Semestre\Big Data\Proyecto final\cache_boletines")
-z9c = r'D:\Universidad\7mo Semestre\Big Data\Parcial 3\Prisma_BMV_Etapa9C_WALMEX_Cierre_Uniforme.zip'
-z9g = r'D:\Universidad\7mo Semestre\Big Data\Parcial 3\Prisma_BMV_Etapa9G_Insumos_Prueba_Final_CORREGIDO.zip'
+from pathlib import Path
 
+ROOT = Path(__file__).resolve().parent # Load ground truth dates from 9C and 9G
+z9c = ROOT / "Prisma_BMV_Etapa9C_WALMEX_Cierre_Uniforme.zip"
+z9g = ROOT / "Prisma_BMV_Etapa9G_Insumos_Prueba_Final_CORREGIDO.zip"
 with zipfile.ZipFile(z9c) as z:
     df_9c = pd.read_csv(io.BytesIO(z.read('datos/WALMEX_cierre_PPP_BMV_uniforme.csv')))
 with zipfile.ZipFile(z9g) as z:
