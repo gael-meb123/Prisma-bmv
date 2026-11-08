@@ -1,0 +1,950 @@
+{
+  "fase": "FASE_4_MODELOS_SEXTA_GENERACION_V6",
+  "timestamp_utc": "2026-11-07T03:36:23.767443+00:00",
+  "regla_promocion_preregistrada": {
+    "criterio_1": "Diebold-Mariano vs G2_V4_ADJ con p_unilateral < 0.05 en Brier y log-loss (TEST 15 emisoras)",
+    "criterio_2": "Brier Skill Score > 0 contra climatología rodante purgada de 250 sesiones",
+    "criterio_3": "Pendiente de calibración logística lambda_Cox en [0.70, 1.30]",
+    "criterio_4": "Rank IC transversal diario medio > 0.02",
+    "criterio_5": "Mejora en Brier y log-loss en al menos 3 de las 4 emisoras foco (AMX, GFNORTE, GMEXICO, WALMEX)"
+  },
+  "candidatos_que_cumplen_5_criterios": [],
+  "decision_oficial_fase4": {
+    "campeon_oficial": "G2_V4_ADJ",
+    "subcampeon_shadow_operativo": "G2_V4_F1_GAP",
+    "justificacion": "Ningún candidato V6 cumple simultáneamente los 5 criterios estrictos pre-registrados (en particular p_DM < 0.05 frente a G2_V4_ADJ en N_eff=624 sesiones). Conforme al protocolo, G2_V4_ADJ (y su extensión lineal G2_V4_F1_GAP con Rank IC > 0.02) se mantiene como referencia principal y los modelos V6 quedan registrados en SHADOW."
+  },
+  "modelos": {
+    "G2_V4_ADJ": {
+      "test_15_emisoras": {
+        "n": 1557,
+        "aciertos": 805,
+        "exactitud_pct": 51.7,
+        "wilson_95_pct": [
+          49.22,
+          54.18
+        ],
+        "brier": 0.249668,
+        "log_loss": 0.692522,
+        "bss_vs_climatologia_pct": 0.4746,
+        "bss_vs_050_pct": 0.1327,
+        "information_gain_bits": 0.003392,
+        "ece": 0.012334,
+        "lambda_calibracion": 0.532662,
+        "pendiente_lineal_calibracion": 0.54191,
+        "murphy": {
+          "confiabilidad": 0.000659,
+          "resolucion": 0.000613
+        },
+        "rank_ic": {
+          "ic_medio": -0.012,
+          "ic_ir_anualizado": -0.1682,
+          "t_stat_hac": -0.2847,
+          "p_valor_hac": 0.7758
+        },
+        "vs_g2_v4_adj": {
+          "delta_brier": 0.0,
+          "dm_stat_brier": 0.0,
+          "p_dm_brier_unilateral": 0.5,
+          "p_dm_brier_bilateral": 1.0,
+          "delta_logloss": 0.0,
+          "dm_stat_logloss": 0.0,
+          "p_dm_logloss_unilateral": 0.5,
+          "p_dm_logloss_bilateral": 1.0,
+          "prob_bootstrap_menor_brier_que_v4": 0.0
+        }
+      },
+      "test_4_emisoras_foco": {
+        "n": 1142,
+        "aciertos": 598,
+        "exactitud_pct": 52.36,
+        "wilson_95_pct": [
+          49.46,
+          55.25
+        ],
+        "brier": 0.248752,
+        "log_loss": 0.69064,
+        "bss_vs_climatologia_pct": 0.617,
+        "bss_vs_050_pct": 0.4991,
+        "information_gain_bits": 0.004481,
+        "ece": 0.030047,
+        "lambda_calibracion": 0.883305,
+        "pendiente_lineal_calibracion": 0.878596,
+        "murphy": {
+          "confiabilidad": 0.001307,
+          "resolucion": 0.000834
+        },
+        "rank_ic": {
+          "ic_medio": -0.0399,
+          "ic_ir_anualizado": -0.4611,
+          "t_stat_hac": -0.7846,
+          "p_valor_hac": 0.4327
+        },
+        "vs_g2_v4_adj": {
+          "delta_brier": 0.0,
+          "dm_stat_brier": 0.0,
+          "p_dm_brier_unilateral": 0.5,
+          "p_dm_brier_bilateral": 1.0,
+          "delta_logloss": 0.0,
+          "dm_stat_logloss": 0.0,
+          "p_dm_logloss_unilateral": 0.5,
+          "p_dm_logloss_bilateral": 1.0,
+          "prob_bootstrap_menor_brier_que_v4": 0.0
+        }
+      },
+      "desglose_4_emisoras_foco": {
+        "AMX": {
+          "n": 291,
+          "acc_v4_pct": 48.45,
+          "acc_cand_pct": 48.45,
+          "brier_v4": 0.252156,
+          "brier_cand": 0.252156,
+          "delta_brier": 0.0,
+          "logloss_v4": 0.697485,
+          "logloss_cand": 0.697485,
+          "delta_logloss": 0.0,
+          "mejora_brier": false,
+          "mejora_logloss": false
+        },
+        "GFNORTE": {
+          "n": 291,
+          "acc_v4_pct": 50.86,
+          "acc_cand_pct": 50.86,
+          "brier_v4": 0.249978,
+          "brier_cand": 0.249978,
+          "delta_brier": 0.0,
+          "logloss_v4": 0.693119,
+          "logloss_cand": 0.693119,
+          "delta_logloss": 0.0,
+          "mejora_brier": false,
+          "mejora_logloss": false
+        },
+        "GMEXICO": {
+          "n": 291,
+          "acc_v4_pct": 58.42,
+          "acc_cand_pct": 58.42,
+          "brier_v4": 0.245307,
+          "brier_cand": 0.245307,
+          "delta_brier": 0.0,
+          "logloss_v4": 0.683735,
+          "logloss_cand": 0.683735,
+          "delta_logloss": 0.0,
+          "mejora_brier": false,
+          "mejora_logloss": false
+        },
+        "WALMEX": {
+          "n": 269,
+          "acc_v4_pct": 51.67,
+          "acc_cand_pct": 51.67,
+          "brier_v4": 0.247471,
+          "brier_cand": 0.247471,
+          "delta_brier": 0.0,
+          "logloss_v4": 0.688022,
+          "logloss_cand": 0.688022,
+          "delta_logloss": 0.0,
+          "mejora_brier": false,
+          "mejora_logloss": false
+        }
+      },
+      "evaluacion_regla_promocion": {
+        "criterio_1_dm_p_menor_005_brier_y_logloss": false,
+        "criterio_2_bss_positivo_vs_climatologia": true,
+        "criterio_3_pendiente_calibracion_070_a_130": false,
+        "criterio_4_rank_ic_medio_mayor_002": false,
+        "criterio_5_mejora_al_menos_3_de_4_foco": false,
+        "emisoras_foco_mejoradas_brier": 0,
+        "emisoras_foco_mejoradas_logloss": 0,
+        "promovido_a_campeon": false
+      },
+      "hiperparametros_y_ajuste": {
+        "especificacion": "Logit pooled C=0.01 con 4 features cortas y etiquetas limpias Fase 1"
+      }
+    },
+    "G2_V4_F1_GAP": {
+      "test_15_emisoras": {
+        "n": 1557,
+        "aciertos": 819,
+        "exactitud_pct": 52.6,
+        "wilson_95_pct": [
+          50.12,
+          55.07
+        ],
+        "brier": 0.249627,
+        "log_loss": 0.692474,
+        "bss_vs_climatologia_pct": 0.4908,
+        "bss_vs_050_pct": 0.149,
+        "information_gain_bits": 0.003462,
+        "ece": 0.01208,
+        "lambda_calibracion": 0.532723,
+        "pendiente_lineal_calibracion": 0.546629,
+        "murphy": {
+          "confiabilidad": 0.000785,
+          "resolucion": 0.000936
+        },
+        "rank_ic": {
+          "ic_medio": 0.0202,
+          "ic_ir_anualizado": 0.2882,
+          "t_stat_hac": 0.5437,
+          "p_valor_hac": 0.5866
+        },
+        "vs_g2_v4_adj": {
+          "delta_brier": -4.1e-05,
+          "dm_stat_brier": -0.1009,
+          "p_dm_brier_unilateral": 0.4598,
+          "p_dm_brier_bilateral": 0.9197,
+          "delta_logloss": -4.8e-05,
+          "dm_stat_logloss": -0.0592,
+          "p_dm_logloss_unilateral": 0.4764,
+          "p_dm_logloss_bilateral": 0.9528,
+          "prob_bootstrap_menor_brier_que_v4": 0.5505
+        }
+      },
+      "test_4_emisoras_foco": {
+        "n": 1142,
+        "aciertos": 602,
+        "exactitud_pct": 52.71,
+        "wilson_95_pct": [
+          49.81,
+          55.6
+        ],
+        "brier": 0.248646,
+        "log_loss": 0.690426,
+        "bss_vs_climatologia_pct": 0.6595,
+        "bss_vs_050_pct": 0.5416,
+        "information_gain_bits": 0.004789,
+        "ece": 0.030672,
+        "lambda_calibracion": 0.861121,
+        "pendiente_lineal_calibracion": 0.85677,
+        "murphy": {
+          "confiabilidad": 0.00115,
+          "resolucion": 0.000881
+        },
+        "rank_ic": {
+          "ic_medio": -0.0,
+          "ic_ir_anualizado": -0.0,
+          "t_stat_hac": -0.0,
+          "p_valor_hac": 1.0
+        },
+        "vs_g2_v4_adj": {
+          "delta_brier": -0.000106,
+          "dm_stat_brier": -0.2461,
+          "p_dm_brier_unilateral": 0.4028,
+          "p_dm_brier_bilateral": 0.8056,
+          "delta_logloss": -0.000214,
+          "dm_stat_logloss": -0.2463,
+          "p_dm_logloss_unilateral": 0.4027,
+          "p_dm_logloss_bilateral": 0.8054,
+          "prob_bootstrap_menor_brier_que_v4": 0.5985
+        }
+      },
+      "desglose_4_emisoras_foco": {
+        "AMX": {
+          "n": 291,
+          "acc_v4_pct": 48.45,
+          "acc_cand_pct": 48.45,
+          "brier_v4": 0.252156,
+          "brier_cand": 0.251604,
+          "delta_brier": -0.000552,
+          "logloss_v4": 0.697485,
+          "logloss_cand": 0.696362,
+          "delta_logloss": -0.001123,
+          "mejora_brier": true,
+          "mejora_logloss": true
+        },
+        "GFNORTE": {
+          "n": 291,
+          "acc_v4_pct": 50.86,
+          "acc_cand_pct": 52.23,
+          "brier_v4": 0.249978,
+          "brier_cand": 0.248697,
+          "delta_brier": -0.001281,
+          "logloss_v4": 0.693119,
+          "logloss_cand": 0.690546,
+          "delta_logloss": -0.002573,
+          "mejora_brier": true,
+          "mejora_logloss": true
+        },
+        "GMEXICO": {
+          "n": 291,
+          "acc_v4_pct": 58.42,
+          "acc_cand_pct": 56.36,
+          "brier_v4": 0.245307,
+          "brier_cand": 0.245701,
+          "delta_brier": 0.000394,
+          "logloss_v4": 0.683735,
+          "logloss_cand": 0.684524,
+          "delta_logloss": 0.000789,
+          "mejora_brier": false,
+          "mejora_logloss": false
+        },
+        "WALMEX": {
+          "n": 269,
+          "acc_v4_pct": 51.67,
+          "acc_cand_pct": 53.9,
+          "brier_v4": 0.247471,
+          "brier_cand": 0.248576,
+          "delta_brier": 0.001105,
+          "logloss_v4": 0.688022,
+          "logloss_cand": 0.690259,
+          "delta_logloss": 0.002237,
+          "mejora_brier": false,
+          "mejora_logloss": false
+        }
+      },
+      "evaluacion_regla_promocion": {
+        "criterio_1_dm_p_menor_005_brier_y_logloss": false,
+        "criterio_2_bss_positivo_vs_climatologia": true,
+        "criterio_3_pendiente_calibracion_070_a_130": false,
+        "criterio_4_rank_ic_medio_mayor_002": true,
+        "criterio_5_mejora_al_menos_3_de_4_foco": false,
+        "emisoras_foco_mejoradas_brier": 2,
+        "emisoras_foco_mejoradas_logloss": 2,
+        "promovido_a_campeon": false
+      },
+      "hiperparametros_y_ajuste": {
+        "especificacion": "Logit pooled C=0.01 + gap_uh_ppp (feature aceptada en Fase 3)"
+      }
+    },
+    "G2_V6A_JERARQUICO": {
+      "test_15_emisoras": {
+        "n": 1557,
+        "aciertos": 796,
+        "exactitud_pct": 51.12,
+        "wilson_95_pct": [
+          48.64,
+          53.6
+        ],
+        "brier": 0.250099,
+        "log_loss": 0.693416,
+        "bss_vs_climatologia_pct": 0.3027,
+        "bss_vs_050_pct": -0.0397,
+        "information_gain_bits": 0.002102,
+        "ece": 0.018394,
+        "lambda_calibracion": 0.389836,
+        "pendiente_lineal_calibracion": 0.401372,
+        "murphy": {
+          "confiabilidad": 0.001005,
+          "resolucion": 0.000346
+        },
+        "rank_ic": {
+          "ic_medio": 0.0134,
+          "ic_ir_anualizado": 0.1919,
+          "t_stat_hac": 0.3418,
+          "p_valor_hac": 0.7325
+        },
+        "vs_g2_v4_adj": {
+          "delta_brier": 0.000431,
+          "dm_stat_brier": 0.965,
+          "p_dm_brier_unilateral": 0.8327,
+          "p_dm_brier_bilateral": 0.3345,
+          "delta_logloss": 0.000894,
+          "dm_stat_logloss": 0.9887,
+          "p_dm_logloss_unilateral": 0.8386,
+          "p_dm_logloss_bilateral": 0.3228,
+          "prob_bootstrap_menor_brier_que_v4": 0.1705
+        }
+      },
+      "test_4_emisoras_foco": {
+        "n": 1142,
+        "aciertos": 586,
+        "exactitud_pct": 51.31,
+        "wilson_95_pct": [
+          48.42,
+          54.2
+        ],
+        "brier": 0.249196,
+        "log_loss": 0.691532,
+        "bss_vs_climatologia_pct": 0.4397,
+        "bss_vs_050_pct": 0.3216,
+        "information_gain_bits": 0.003194,
+        "ece": 0.032977,
+        "lambda_calibracion": 0.654663,
+        "pendiente_lineal_calibracion": 0.651853,
+        "murphy": {
+          "confiabilidad": 0.001944,
+          "resolucion": 0.000812
+        },
+        "rank_ic": {
+          "ic_medio": -0.0127,
+          "ic_ir_anualizado": -0.1518,
+          "t_stat_hac": -0.2692,
+          "p_valor_hac": 0.7878
+        },
+        "vs_g2_v4_adj": {
+          "delta_brier": 0.000444,
+          "dm_stat_brier": 0.892,
+          "p_dm_brier_unilateral": 0.8138,
+          "p_dm_brier_bilateral": 0.3724,
+          "delta_logloss": 0.000892,
+          "dm_stat_logloss": 0.8909,
+          "p_dm_logloss_unilateral": 0.8135,
+          "p_dm_logloss_bilateral": 0.373,
+          "prob_bootstrap_menor_brier_que_v4": 0.202
+        }
+      },
+      "desglose_4_emisoras_foco": {
+        "AMX": {
+          "n": 291,
+          "acc_v4_pct": 48.45,
+          "acc_cand_pct": 46.74,
+          "brier_v4": 0.252156,
+          "brier_cand": 0.2512,
+          "delta_brier": -0.000956,
+          "logloss_v4": 0.697485,
+          "logloss_cand": 0.695549,
+          "delta_logloss": -0.001936,
+          "mejora_brier": true,
+          "mejora_logloss": true
+        },
+        "GFNORTE": {
+          "n": 291,
+          "acc_v4_pct": 50.86,
+          "acc_cand_pct": 52.23,
+          "brier_v4": 0.249978,
+          "brier_cand": 0.248882,
+          "delta_brier": -0.001096,
+          "logloss_v4": 0.693119,
+          "logloss_cand": 0.690916,
+          "delta_logloss": -0.002203,
+          "mejora_brier": true,
+          "mejora_logloss": true
+        },
+        "GMEXICO": {
+          "n": 291,
+          "acc_v4_pct": 58.42,
+          "acc_cand_pct": 55.67,
+          "brier_v4": 0.245307,
+          "brier_cand": 0.247139,
+          "delta_brier": 0.001832,
+          "logloss_v4": 0.683735,
+          "logloss_cand": 0.687411,
+          "delta_logloss": 0.003676,
+          "mejora_brier": false,
+          "mejora_logloss": false
+        },
+        "WALMEX": {
+          "n": 269,
+          "acc_v4_pct": 51.67,
+          "acc_cand_pct": 50.56,
+          "brier_v4": 0.247471,
+          "brier_cand": 0.249593,
+          "delta_brier": 0.002121,
+          "logloss_v4": 0.688022,
+          "logloss_cand": 0.692309,
+          "delta_logloss": 0.004288,
+          "mejora_brier": false,
+          "mejora_logloss": false
+        }
+      },
+      "evaluacion_regla_promocion": {
+        "criterio_1_dm_p_menor_005_brier_y_logloss": false,
+        "criterio_2_bss_positivo_vs_climatologia": true,
+        "criterio_3_pendiente_calibracion_070_a_130": false,
+        "criterio_4_rank_ic_medio_mayor_002": false,
+        "criterio_5_mejora_al_menos_3_de_4_foco": false,
+        "emisoras_foco_mejoradas_brier": 2,
+        "emisoras_foco_mejoradas_logloss": 2,
+        "promovido_a_campeon": false
+      },
+      "hiperparametros_y_ajuste": {
+        "c_pool": 0.01,
+        "tau": 0.0005,
+        "alpha_0": 0.03128209044839136,
+        "beta_pool": {
+          "ret_1_rel_panel": 0.015159,
+          "distancia_media_5": -0.12308,
+          "distancia_media_5_rel_panel": -0.028127,
+          "volatilidad_20": -0.020411,
+          "gap_uh_ppp": 0.05427
+        },
+        "norma_l2_efectos_aleatorios": 0.045739,
+        "cv_logloss_seleccion": 0.691608,
+        "grid_cv": [
+          {
+            "c_pool": 0.01,
+            "tau": 0.0005,
+            "cv_logloss": 0.691608
+          },
+          {
+            "c_pool": 0.01,
+            "tau": 0.001,
+            "cv_logloss": 0.69185
+          },
+          {
+            "c_pool": 0.01,
+            "tau": 0.0025,
+            "cv_logloss": 0.69247
+          },
+          {
+            "c_pool": 0.01,
+            "tau": 0.005,
+            "cv_logloss": 0.693267
+          },
+          {
+            "c_pool": 0.02,
+            "tau": 0.001,
+            "cv_logloss": 0.691902
+          },
+          {
+            "c_pool": 0.02,
+            "tau": 0.0025,
+            "cv_logloss": 0.692517
+          }
+        ]
+      }
+    },
+    "G2_V6B_DESCOMPUESTO": {
+      "test_15_emisoras": {
+        "n": 1557,
+        "aciertos": 779,
+        "exactitud_pct": 50.03,
+        "wilson_95_pct": [
+          47.55,
+          52.51
+        ],
+        "brier": 0.250146,
+        "log_loss": 0.693439,
+        "bss_vs_climatologia_pct": 0.2842,
+        "bss_vs_050_pct": -0.0584,
+        "information_gain_bits": 0.002068,
+        "ece": 0.015672,
+        "lambda_calibracion": -0.796603,
+        "pendiente_lineal_calibracion": -0.795071,
+        "murphy": {
+          "confiabilidad": 0.000452,
+          "resolucion": 4.1e-05
+        },
+        "rank_ic": {
+          "ic_medio": 0.0049,
+          "ic_ir_anualizado": 0.0684,
+          "t_stat_hac": 0.119,
+          "p_valor_hac": 0.9052
+        },
+        "vs_g2_v4_adj": {
+          "delta_brier": 0.000478,
+          "dm_stat_brier": 0.5104,
+          "p_dm_brier_unilateral": 0.6951,
+          "p_dm_brier_bilateral": 0.6098,
+          "delta_logloss": 0.000917,
+          "dm_stat_logloss": 0.4826,
+          "p_dm_logloss_unilateral": 0.6853,
+          "p_dm_logloss_bilateral": 0.6294,
+          "prob_bootstrap_menor_brier_que_v4": 0.3025
+        }
+      },
+      "test_4_emisoras_foco": {
+        "n": 1142,
+        "aciertos": 581,
+        "exactitud_pct": 50.88,
+        "wilson_95_pct": [
+          47.98,
+          53.77
+        ],
+        "brier": 0.249849,
+        "log_loss": 0.692846,
+        "bss_vs_climatologia_pct": 0.1788,
+        "bss_vs_050_pct": 0.0603,
+        "information_gain_bits": 0.001298,
+        "ece": 0.033728,
+        "lambda_calibracion": -0.093317,
+        "pendiente_lineal_calibracion": -0.092218,
+        "murphy": {
+          "confiabilidad": 0.00128,
+          "resolucion": 1.6e-05
+        },
+        "rank_ic": {
+          "ic_medio": -0.022,
+          "ic_ir_anualizado": -0.2508,
+          "t_stat_hac": -0.4164,
+          "p_valor_hac": 0.6771
+        },
+        "vs_g2_v4_adj": {
+          "delta_brier": 0.001097,
+          "dm_stat_brier": 1.2869,
+          "p_dm_brier_unilateral": 0.9009,
+          "p_dm_brier_bilateral": 0.1981,
+          "delta_logloss": 0.002206,
+          "dm_stat_logloss": 1.2855,
+          "p_dm_logloss_unilateral": 0.9007,
+          "p_dm_logloss_bilateral": 0.1986,
+          "prob_bootstrap_menor_brier_que_v4": 0.1105
+        }
+      },
+      "desglose_4_emisoras_foco": {
+        "AMX": {
+          "n": 291,
+          "acc_v4_pct": 48.45,
+          "acc_cand_pct": 47.77,
+          "brier_v4": 0.252156,
+          "brier_cand": 0.25073,
+          "delta_brier": -0.001426,
+          "logloss_v4": 0.697485,
+          "logloss_cand": 0.694608,
+          "delta_logloss": -0.002878,
+          "mejora_brier": true,
+          "mejora_logloss": true
+        },
+        "GFNORTE": {
+          "n": 291,
+          "acc_v4_pct": 50.86,
+          "acc_cand_pct": 49.48,
+          "brier_v4": 0.249978,
+          "brier_cand": 0.249822,
+          "delta_brier": -0.000156,
+          "logloss_v4": 0.693119,
+          "logloss_cand": 0.692793,
+          "delta_logloss": -0.000326,
+          "mejora_brier": true,
+          "mejora_logloss": true
+        },
+        "GMEXICO": {
+          "n": 291,
+          "acc_v4_pct": 58.42,
+          "acc_cand_pct": 57.04,
+          "brier_v4": 0.245307,
+          "brier_cand": 0.248609,
+          "delta_brier": 0.003302,
+          "logloss_v4": 0.683735,
+          "logloss_cand": 0.690364,
+          "delta_logloss": 0.006629,
+          "mejora_brier": false,
+          "mejora_logloss": false
+        },
+        "WALMEX": {
+          "n": 269,
+          "acc_v4_pct": 51.67,
+          "acc_cand_pct": 49.07,
+          "brier_v4": 0.247471,
+          "brier_cand": 0.250267,
+          "delta_brier": 0.002796,
+          "logloss_v4": 0.688022,
+          "logloss_cand": 0.693682,
+          "delta_logloss": 0.00566,
+          "mejora_brier": false,
+          "mejora_logloss": false
+        }
+      },
+      "evaluacion_regla_promocion": {
+        "criterio_1_dm_p_menor_005_brier_y_logloss": false,
+        "criterio_2_bss_positivo_vs_climatologia": true,
+        "criterio_3_pendiente_calibracion_070_a_130": false,
+        "criterio_4_rank_ic_medio_mayor_002": false,
+        "criterio_5_mejora_al_menos_3_de_4_foco": false,
+        "emisoras_foco_mejoradas_brier": 2,
+        "emisoras_foco_mejoradas_logloss": 2,
+        "promovido_a_campeon": false
+      },
+      "hiperparametros_y_ajuste": {
+        "alpha_mkt": 1000.0,
+        "alpha_ex": 500.0,
+        "escala_sigma": 3.5,
+        "cv_logloss_seleccion": 0.69272
+      }
+    },
+    "G2_V6C_RIDGE_CONTINUO": {
+      "test_15_emisoras": {
+        "n": 1557,
+        "aciertos": 799,
+        "exactitud_pct": 51.32,
+        "wilson_95_pct": [
+          48.83,
+          53.79
+        ],
+        "brier": 0.249971,
+        "log_loss": 0.693109,
+        "bss_vs_climatologia_pct": 0.3538,
+        "bss_vs_050_pct": 0.0115,
+        "information_gain_bits": 0.002545,
+        "ece": 0.010358,
+        "lambda_calibracion": 0.289758,
+        "pendiente_lineal_calibracion": 0.29528,
+        "murphy": {
+          "confiabilidad": 0.001446,
+          "resolucion": 0.000798
+        },
+        "rank_ic": {
+          "ic_medio": -0.0021,
+          "ic_ir_anualizado": -0.0307,
+          "t_stat_hac": -0.0523,
+          "p_valor_hac": 0.9583
+        },
+        "vs_g2_v4_adj": {
+          "delta_brier": 0.000303,
+          "dm_stat_brier": 0.679,
+          "p_dm_brier_unilateral": 0.7514,
+          "p_dm_brier_bilateral": 0.4972,
+          "delta_logloss": 0.000587,
+          "dm_stat_logloss": 0.6498,
+          "p_dm_logloss_unilateral": 0.7421,
+          "p_dm_logloss_bilateral": 0.5159,
+          "prob_bootstrap_menor_brier_que_v4": 0.248
+        }
+      },
+      "test_4_emisoras_foco": {
+        "n": 1142,
+        "aciertos": 589,
+        "exactitud_pct": 51.58,
+        "wilson_95_pct": [
+          48.68,
+          54.46
+        ],
+        "brier": 0.249144,
+        "log_loss": 0.691429,
+        "bss_vs_climatologia_pct": 0.4607,
+        "bss_vs_050_pct": 0.3426,
+        "information_gain_bits": 0.003342,
+        "ece": 0.024935,
+        "lambda_calibracion": 0.557665,
+        "pendiente_lineal_calibracion": 0.554329,
+        "murphy": {
+          "confiabilidad": 0.001072,
+          "resolucion": 9e-06
+        },
+        "rank_ic": {
+          "ic_medio": -0.0285,
+          "ic_ir_anualizado": -0.3384,
+          "t_stat_hac": -0.5586,
+          "p_valor_hac": 0.5764
+        },
+        "vs_g2_v4_adj": {
+          "delta_brier": 0.000391,
+          "dm_stat_brier": 0.7688,
+          "p_dm_brier_unilateral": 0.779,
+          "p_dm_brier_bilateral": 0.442,
+          "delta_logloss": 0.000789,
+          "dm_stat_logloss": 0.7711,
+          "p_dm_logloss_unilateral": 0.7797,
+          "p_dm_logloss_bilateral": 0.4406,
+          "prob_bootstrap_menor_brier_que_v4": 0.212
+        }
+      },
+      "desglose_4_emisoras_foco": {
+        "AMX": {
+          "n": 291,
+          "acc_v4_pct": 48.45,
+          "acc_cand_pct": 49.83,
+          "brier_v4": 0.252156,
+          "brier_cand": 0.251424,
+          "delta_brier": -0.000732,
+          "logloss_v4": 0.697485,
+          "logloss_cand": 0.696003,
+          "delta_logloss": -0.001482,
+          "mejora_brier": true,
+          "mejora_logloss": true
+        },
+        "GFNORTE": {
+          "n": 291,
+          "acc_v4_pct": 50.86,
+          "acc_cand_pct": 51.2,
+          "brier_v4": 0.249978,
+          "brier_cand": 0.248955,
+          "delta_brier": -0.001023,
+          "logloss_v4": 0.693119,
+          "logloss_cand": 0.69106,
+          "delta_logloss": -0.002059,
+          "mejora_brier": true,
+          "mejora_logloss": true
+        },
+        "GMEXICO": {
+          "n": 291,
+          "acc_v4_pct": 58.42,
+          "acc_cand_pct": 57.73,
+          "brier_v4": 0.245307,
+          "brier_cand": 0.245879,
+          "delta_brier": 0.000572,
+          "logloss_v4": 0.683735,
+          "logloss_cand": 0.684888,
+          "delta_logloss": 0.001153,
+          "mejora_brier": false,
+          "mejora_logloss": false
+        },
+        "WALMEX": {
+          "n": 269,
+          "acc_v4_pct": 51.67,
+          "acc_cand_pct": 47.21,
+          "brier_v4": 0.247471,
+          "brier_cand": 0.250413,
+          "delta_brier": 0.002941,
+          "logloss_v4": 0.688022,
+          "logloss_cand": 0.693957,
+          "delta_logloss": 0.005935,
+          "mejora_brier": false,
+          "mejora_logloss": false
+        }
+      },
+      "evaluacion_regla_promocion": {
+        "criterio_1_dm_p_menor_005_brier_y_logloss": false,
+        "criterio_2_bss_positivo_vs_climatologia": true,
+        "criterio_3_pendiente_calibracion_070_a_130": false,
+        "criterio_4_rank_ic_medio_mayor_002": false,
+        "criterio_5_mejora_al_menos_3_de_4_foco": false,
+        "emisoras_foco_mejoradas_brier": 2,
+        "emisoras_foco_mejoradas_logloss": 2,
+        "promovido_a_campeon": false
+      },
+      "hiperparametros_y_ajuste": {
+        "alpha_ridge": 500.0,
+        "escala_res": 1.25,
+        "sigma_res_train": 1.030102,
+        "cv_logloss_seleccion": 0.691265
+      }
+    },
+    "G2_LGBM_CHALLENGER": {
+      "test_15_emisoras": {
+        "n": 1557,
+        "aciertos": 765,
+        "exactitud_pct": 49.13,
+        "wilson_95_pct": [
+          46.65,
+          51.62
+        ],
+        "brier": 0.255362,
+        "log_loss": 0.704085,
+        "bss_vs_climatologia_pct": -1.795,
+        "bss_vs_050_pct": -2.1447,
+        "information_gain_bits": -0.01329,
+        "ece": 0.056795,
+        "lambda_calibracion": -0.160476,
+        "pendiente_lineal_calibracion": -0.164896,
+        "murphy": {
+          "confiabilidad": 0.004277,
+          "resolucion": 0.000573
+        },
+        "rank_ic": {
+          "ic_medio": -0.0552,
+          "ic_ir_anualizado": -0.776,
+          "t_stat_hac": -1.2589,
+          "p_valor_hac": 0.2081
+        },
+        "vs_g2_v4_adj": {
+          "delta_brier": 0.005694,
+          "dm_stat_brier": 2.8989,
+          "p_dm_brier_unilateral": 0.9981,
+          "p_dm_brier_bilateral": 0.0037,
+          "delta_logloss": 0.011563,
+          "dm_stat_logloss": 2.91,
+          "p_dm_logloss_unilateral": 0.9982,
+          "p_dm_logloss_bilateral": 0.0036,
+          "prob_bootstrap_menor_brier_que_v4": 0.002
+        }
+      },
+      "test_4_emisoras_foco": {
+        "n": 1142,
+        "aciertos": 565,
+        "exactitud_pct": 49.47,
+        "wilson_95_pct": [
+          46.58,
+          52.37
+        ],
+        "brier": 0.254313,
+        "log_loss": 0.701901,
+        "bss_vs_climatologia_pct": -1.6045,
+        "bss_vs_050_pct": -1.725,
+        "information_gain_bits": -0.011766,
+        "ece": 0.059205,
+        "lambda_calibracion": -0.071477,
+        "pendiente_lineal_calibracion": -0.072247,
+        "murphy": {
+          "confiabilidad": 0.00415,
+          "resolucion": 0.00068
+        },
+        "rank_ic": {
+          "ic_medio": -0.1024,
+          "ic_ir_anualizado": -1.223,
+          "t_stat_hac": -2.1687,
+          "p_valor_hac": 0.0301
+        },
+        "vs_g2_v4_adj": {
+          "delta_brier": 0.00556,
+          "dm_stat_brier": 2.9609,
+          "p_dm_brier_unilateral": 0.9985,
+          "p_dm_brier_bilateral": 0.0031,
+          "delta_logloss": 0.011261,
+          "dm_stat_logloss": 2.9694,
+          "p_dm_logloss_unilateral": 0.9985,
+          "p_dm_logloss_bilateral": 0.003,
+          "prob_bootstrap_menor_brier_que_v4": 0.0005
+        }
+      },
+      "desglose_4_emisoras_foco": {
+        "AMX": {
+          "n": 291,
+          "acc_v4_pct": 48.45,
+          "acc_cand_pct": 47.08,
+          "brier_v4": 0.252156,
+          "brier_cand": 0.255576,
+          "delta_brier": 0.00342,
+          "logloss_v4": 0.697485,
+          "logloss_cand": 0.704431,
+          "delta_logloss": 0.006946,
+          "mejora_brier": false,
+          "mejora_logloss": false
+        },
+        "GFNORTE": {
+          "n": 291,
+          "acc_v4_pct": 50.86,
+          "acc_cand_pct": 47.77,
+          "brier_v4": 0.249978,
+          "brier_cand": 0.254888,
+          "delta_brier": 0.00491,
+          "logloss_v4": 0.693119,
+          "logloss_cand": 0.703102,
+          "delta_logloss": 0.009984,
+          "mejora_brier": false,
+          "mejora_logloss": false
+        },
+        "GMEXICO": {
+          "n": 291,
+          "acc_v4_pct": 58.42,
+          "acc_cand_pct": 41.58,
+          "brier_v4": 0.245307,
+          "brier_cand": 0.262974,
+          "delta_brier": 0.017667,
+          "logloss_v4": 0.683735,
+          "logloss_cand": 0.719344,
+          "delta_logloss": 0.035609,
+          "mejora_brier": false,
+          "mejora_logloss": false
+        },
+        "WALMEX": {
+          "n": 269,
+          "acc_v4_pct": 51.67,
+          "acc_cand_pct": 62.45,
+          "brier_v4": 0.247471,
+          "brier_cand": 0.242953,
+          "delta_brier": -0.004518,
+          "logloss_v4": 0.688022,
+          "logloss_cand": 0.678995,
+          "delta_logloss": -0.009027,
+          "mejora_brier": true,
+          "mejora_logloss": true
+        }
+      },
+      "evaluacion_regla_promocion": {
+        "criterio_1_dm_p_menor_005_brier_y_logloss": false,
+        "criterio_2_bss_positivo_vs_climatologia": false,
+        "criterio_3_pendiente_calibracion_070_a_130": false,
+        "criterio_4_rank_ic_medio_mayor_002": false,
+        "criterio_5_mejora_al_menos_3_de_4_foco": false,
+        "emisoras_foco_mejoradas_brier": 1,
+        "emisoras_foco_mejoradas_logloss": 1,
+        "promovido_a_campeon": false
+      },
+      "hiperparametros_y_ajuste": {
+        "best_iteration": 150,
+        "lambda_platt_val": 1.218693,
+        "lambda_platt_aplicada": 1.0,
+        "intercepto_platt_val": -0.138046,
+        "feature_importance_gain": {
+          "ret_1_rel_panel": 25.9992,
+          "distancia_media_5": 1226.533,
+          "distancia_media_5_rel_panel": 238.5306,
+          "volatilidad_20": 1634.4182,
+          "gap_uh_ppp": 123.3588,
+          "emisora_cat": 677.6569
+        }
+      }
+    }
+  },
+  "integridad_archivos_protegidos_intacta": true
+}

@@ -74,9 +74,13 @@ export function Button({
 }
 
 export function Badge({ status, children }) {
-  const s = STATUS[status] || {
+  const normalizedKey =
+    typeof status === "string" && status.startsWith("DIVERGENCIA_G2")
+      ? "DIVERGENCIA_PANEL_G2"
+      : status;
+  const s = STATUS[normalizedKey] || {
     tone: "partial",
-    label: "Estado no documentado",
+    label: typeof status === "string" && status.length > 0 ? status : "Estado no documentado",
   };
   return (
     <span className={`badge badge-${s.tone}`}>

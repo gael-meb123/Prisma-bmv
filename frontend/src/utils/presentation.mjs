@@ -28,6 +28,11 @@ export const STATUS = {
     tone: "available",
     description: "Precio Promedio Ponderado extraído del boletín regulatorio de la BMV con hash SHA-256 verificado."
   },
+  CONTINGENCIA_FUENTE_SECUNDARIA: {
+    label: "Contingencia Secundaria",
+    tone: "partial",
+    description: "Cotización obtenida de fuente secundaria mientras la BMV publica el boletín RSS oficial; se reconcilia automáticamente."
+  },
   NO_PUBLICADA_EN_BOLETIN_RSS_DEL_DIA: {
     label: "Ausente en Boletín",
     tone: "missing",
@@ -36,17 +41,37 @@ export const STATUS = {
   CONSENSO_PANEL_G2_SUBIDA: {
     label: "Consenso Fuerte: Subida",
     tone: "available",
-    description: "Unanimidad positiva (3/3 modelos): Alta probabilidad de apreciación acumulada en el horizonte a 5 sesiones (t+5)."
+    description: "Unanimidad positiva (5/5 modelos G2 V1-V5): Alta probabilidad de apreciación acumulada en el horizonte a 5 sesiones (t+5)."
   },
   CONSENSO_PANEL_G2_NO_SUBIDA: {
     label: "Consenso: No Subida / Consolidación",
     tone: "missing",
-    description: "Unanimidad neutral/bajista (3/3 modelos): Probabilidad inferior al 50%. Se anticipa consolidación técnica."
+    description: "Unanimidad neutral/bajista (5/5 modelos G2 V1-V5): Probabilidad inferior al 50%. Se anticipa consolidación técnica."
   },
   DIVERGENCIA_PANEL_G2: {
-    label: "Divergencia entre Modelos",
+    label: "Divergencia entre Modelos G2",
     tone: "partial",
-    description: "Divergencia entre variantes V1, V2 y V3. Se recomienda abstención direccional hasta convergencia."
+    description: "Divergencia entre variantes V1, V2, V3, V4 y V5. Se recomienda cautela o dimensionamiento fraccional ¼-Kelly."
+  },
+  IN_SAMPLE_DISENO: {
+    label: "In-Sample Diseño (< 2026-11-06)",
+    tone: "partial",
+    description: "Señal emitida antes de la fecha de congelamiento formal (2026-11-06); contabilizada como muestra de diseño."
+  },
+  OUT_OF_SAMPLE_PRE_REGISTRADO: {
+    label: "Out-of-Sample Pre-Registrado (≥ 2026-11-06)",
+    tone: "available",
+    description: "Señal prospectiva estrictamente fuera de muestra posterior al congelamiento SHA-256 de coeficientes."
+  },
+  PENDIENTE_RECONCILIACION: {
+    label: "En Maduración (t+1 a t+4)",
+    tone: "partial",
+    description: "Señal activa en ventana de 5 sesiones bursátiles pendiente de liquidación oficial en t+5."
+  },
+  RESUELTA_OFICIAL_T5: {
+    label: "Liquidada Oficial (t+5)",
+    tone: "available",
+    description: "Señal reconciliada contra el PPP oficial verificado de la 5ª sesión hábil posterior."
   }
 };
 

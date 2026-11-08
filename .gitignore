@@ -39,7 +39,8 @@ develop-eggs/
 downloads/
 eggs/
 .eggs/
-lib/
+/lib/
+!frontend/src/lib/
 lib64/
 parts/
 sdist/
@@ -53,6 +54,7 @@ wheels/
 # Cache Local de Boletines y Scraping
 # ==========================================
 cache_boletines/
+cache_externo/
 
 # ==========================================
 # IDEs y Sistema Operativo

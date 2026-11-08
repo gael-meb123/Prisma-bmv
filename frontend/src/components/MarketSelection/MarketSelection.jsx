@@ -5,6 +5,9 @@ import { formatMoney, formatPct } from "../../utils/presentation.mjs";
 
 export function MarketSelection({
   cotizaciones = [],
+  fechas = [],
+  fechaActiva = "",
+  onChangeFecha,
   selectedTicker = "WALMEX",
   onSelectTicker,
   onShowEvidence,
@@ -49,6 +52,19 @@ export function MarketSelection({
           />
         </div>
 
+        {fechas.length > 0 && (
+          <select
+            value={fechaActiva || fechas[0]}
+            onChange={(e) => onChangeFecha && onChangeFecha(e.target.value)}
+            aria-label="Seleccionar fecha de sesión"
+            style={{ padding: "8px 12px", borderRadius: "8px", border: "1px solid var(--line)", fontSize: "13px", background: "#ffffff", color: "var(--navy)", fontWeight: "600" }}
+          >
+            {fechas.map((f) => (
+              <option key={f} value={f}>Sesión {f}</option>
+            ))}
+          </select>
+        )}
+
         <select
           value={sector}
           onChange={(e) => setSector(e.target.value)}
@@ -76,7 +92,9 @@ export function MarketSelection({
           <tbody>
             {filtradas.map((c) => {
               const isSelected = selectedTicker === c.emisora;
-              const isVerif = c.estado_captura === "PPP_PUBLICADO_VERIFICADO";
+              const isVerif =
+                c.estado_captura === "PPP_PUBLICADO_VERIFICADO" ||
+                c.estado_captura === "CONTINGENCIA_FUENTE_SECUNDARIA";
               const varPos = c.variacion_pct > 0;
               return (
                 <tr

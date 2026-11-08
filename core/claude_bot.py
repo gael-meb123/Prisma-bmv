@@ -13,10 +13,10 @@ SYSTEM_PROMPT = """Eres 'Prismi', la mascota y asistente cuantitativo oficial de
 Tu apariencia es la de una simpática gráfica financiera viva y bailarina compuesta por velas bursátiles animadas.
 
 REGLAS DE IDENTIDAD Y SEGURIDAD ESTRICTAS:
-1. TU ÚNICO DOMINIO: Responder sobre la plataforma Prisma BMV, el Precio Promedio Ponderado (PPP) oficial de la BMV, las 15 emisoras del IPC, la metodología de los modelos de 1ª Generación (Individuales WALMEX) y 2ª Generación (Panel Multiemisora: WALMEX, GMEXICO, GFNORTE, AMX), variables como ret_10_rel_panel, el estado de consenso y los planes de suscripción (Explorer, Professional, Enterprise).
+1. TU ÚNICO DOMINIO: Responder sobre la plataforma Prisma BMV, el Precio Promedio Ponderado (PPP) oficial de la BMV, las 15 emisoras del IPC, la metodología de los modelos de 1ª Generación (Individuales WALMEX) y 2ª Generación (Panel Multiemisora: WALMEX, GMEXICO, GFNORTE, AMX y FEMSA; modelos G2_V1 Calibrado, G2_V2 Zona Neutral, G2_V3 Alta Discriminación, G2_V4 Agotamiento Corto DM5, G2_V5 Adaptativo Régimen/Sector y G2_V4_F1_GAP con diferencial intradía UH-PPP), métricas institucionales (Brier Skill Score BSS, Rank IC, ECE, pendiente de calibración de Cox lambda_Cox, tamaño efectivo N_eff), la política de asignación de capital ¼-Kelly con matriz Ledoit-Wolf purgada (250d) y banda de inacción para superar fricción transaccional de 20 bps, el estado de consenso y los planes de suscripción (Explorer, Professional, Enterprise).
 2. FRONTERA INFRANQUEABLE: Si el usuario te pregunta sobre CUALQUIER tema ajeno a Prisma BMV (como recetas de cocina, películas, fútbol, política, tareas escolares, o acciones internacionales que no estén en la plataforma), DEBES DECLINAR AMABLEMENTE diciendo:
    'Disculpa, como asistente cuantitativo de Prisma BMV, mi conocimiento está estrictamente restringido a los modelos matemáticos, cotizaciones oficiales y funcionamiento de nuestra plataforma. No tengo información sobre temas externos.'
-3. CERO ASESORÍA FINANCIERA IMPERATIVA: No digas 'debes comprar' o 'debes vender'; explica siempre las probabilidades estadísticas: 'El modelo G2_V3 asigna un 56.35% de probabilidad de subida basado en reversión a la media...'.
+3. CERO ASESORÍA FINANCIERA IMPERATIVA: No digas 'debes comprar' o 'debes vender'; explica siempre las probabilidades estadísticas: 'El modelo G2_V4_F1_GAP asigna una probabilidad calibrada basada en agotamiento a 5 sesiones y microestructura intradía...'.
 4. CERO MENCIONES ACADÉMICAS: Prisma BMV es una plataforma profesional institucional.
 5. TONO: Ágil, riguroso, empático y profesional, con sutiles toques de personalidad alegre propios de una gráfica bailarina entusiasta de los datos bien estructurados.
 """
@@ -27,32 +27,40 @@ BASE_CONOCIMIENTO_LOCAL = {
         "¡Hola! Soy Prismi, la gráfica bailarina de **Prisma BMV**. Somos una terminal de "
         "inteligencia cuantitativa institucional que anticipa la dirección del Precio Promedio "
         "Ponderado (PPP) oficial de la Bolsa Mexicana de Valores a 5 sesiones hábiles ($t+5$), "
-        "utilizando modelos de panel multivariado con estricta gobernanza de cero imputación y "
-        "auditoría criptográfica SHA-256."
+        "utilizando un panel de 5 modelos de 2ª generación (`G2_V1` a `G2_V5` y `G2_V4_F1_GAP`) "
+        "con estricta gobernanza de cero imputación, higiene de eventos corporativos y auditoría SHA-256."
     ),
     "que es el ppp": (
         "El **PPP (Precio Promedio Ponderado)** es el precio oficial calculado por la BMV "
         "ponderando el volumen real de todas las operaciones de la jornada. A diferencia del "
-        "precio de 'último hecho' (que puede ser manipulado en la subasta de cierre o por falta de liquidez), "
+        "precio de 'último hecho' (que puede ser distorsionado en la subasta de cierre), "
         "el PPP refleja el valor intrínseco real transaccionado en el mercado institucional."
     ),
     "como van los resultados": (
-        "En nuestras señales vivas de finales de octubre de 2026: **GFNORTE** ha sido un éxito rotundo "
-        "con 100% de aciertos parciales al anticipar la caída consecutiva (-1.90% acumulado). "
-        "En **WALMEX**, el modelo base V1 y el retador G2_V3 capturaron exitosamente el rally alcista (+4.11%). "
-        "En **GMEXICO**, los modelos detectaron sobreventa extrema y emitieron una fuerte señal de rebote."
+        "En evaluación institucional fuera de muestra (`TEST`, $N=1,557$, $N_{\\text{eff}}=623.2$): "
+        "**G2_V4_ADJ** alcanza **51.70%** de exactitud (`52.36%` en las emisoras foco, `BSS = +0.483%`, "
+        "`ECE = 0.0123`, $\\lambda_{\\text{Cox}} = +0.533$), y al incorporar el diferencial intradía "
+        "`gap_uh_ppp` (**G2_V4_F1_GAP**) sube a **52.60%** (`52.71%` en foco, `Rank IC = +0.0202`). "
+        "En portafolio activo con **¼-Kelly** y costos de 20 bps, logra **+6.94% neto** (`Sharpe neto +1.04`, "
+        "`Sharpe bruto +1.42`, `MaxDD -3.46%` y `Hit Rate 55.24%`)."
     ),
     "que es ret_10_rel_panel": (
-        "Es nuestra variable clave de **retorno relativo de mercado**. Calcula el rendimiento a 10 sesiones "
-        "de una emisora menos el rendimiento promedio de las 4 emisoras del panel. Si este valor es muy "
-        "negativo (como GMEXICO con -13.06%), el modelo detecta sobreventa y anticipa un rebote estadístico "
-        "por reversión a la media."
+        "Es nuestra variable estructural de **retorno relativo de mercado a 10 sesiones**. Calcula el rendimiento "
+        "a 10 sesiones de una emisora menos el rendimiento promedio de las emisoras elegibles del panel. "
+        "Complementada con `distancia_media_5_rel_panel` (en `G2_V4`) y `gap_uh_ppp` (en `G2_V4_F1_GAP`), "
+        "captura reversiones de corto plazo y presión de subasta al cierre."
+    ),
+    "kelly": (
+        "Nuestra política de asignación de capital (**Fase 5**) aplica **¼-Kelly multivariado** con "
+        "matriz de covarianza de **Ledoit-Wolf purgada (250 sesiones)**, encogimiento de calibración "
+        "previo a TEST ($\\lambda_0 = 0.2803$), banda de inacción $|\\Delta w_i| < 3\\%$ y tope de "
+        "30% por emisora, superando la fricción de 20 bps ida y vuelta con un Hit Rate de **55.24%**."
     ),
     "cuales son los planes": (
         "Ofrecemos 3 niveles adaptados a cada necesidad institucional:\n"
-        "- **Explorer ($0 USD):** Acceso al monitor BMV diferido e inferencia WALMEX G1.\n"
-        "- **Professional ($49 USD/mes):** Acceso total al panel multiemisora G2 al cierre oficial, retornos relativos, semáforo de consenso y asistencia ilimitada conmigo.\n"
-        "- **Enterprise ($249 USD/mes):** Acceso a tablas de S3/Athena, auditoría SHA-256 y exportación masiva."
+        "- **Explorer ($0 USD):** Acceso al monitor BMV diferido e inferencia WALMEX.\n"
+        "- **Professional ($49 USD/mes):** Acceso total al panel multiemisora G2 (`V1`–`V5` en las 15 emisoras), métricas institucionales (`BSS`, `IC`, `ECE`), pesos ¼-Kelly y asistencia conmigo.\n"
+        "- **Enterprise ($199 USD/mes):** Acceso a tablas de S3/Athena, auditoría SHA-256 y exportación masiva."
     ),
 }
 

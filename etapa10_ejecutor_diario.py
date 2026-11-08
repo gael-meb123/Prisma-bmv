@@ -113,16 +113,41 @@ def init_or_update_master_ppp_series(bulletin_info: dict, series_csv_path: Path)
     ppp_val = float(w_quote["ppp"]) if w_quote is not None else np.nan
     if w_quote is not None and not (np.isfinite(ppp_val) and ppp_val > 0):
         raise ValueError(f"PPP no finito o no positivo ({ppp_val}) en {fecha_nueva}")
+    estado_nuevo = (
+        bulletin_info.get("estado_captura", "PPP_PUBLICADO_VERIFICADO")
+        if w_quote is not None
+        else "NO_PUBLICADA_EN_BOLETIN_RSS_DEL_DIA"
+    )
     old = df_series[df_series.fecha.eq(fecha_nueva)]
     if not old.empty and old.ppp_bmv_mxn.notna().any():
-        if w_quote is None or not np.isclose(float(old.ppp_bmv_mxn.iloc[0]), ppp_val, rtol=0, atol=1e-9):
+        estado_previo = str(old["estado"].iloc[0]) if "estado" in old.columns else "PPP_PUBLICADO_VERIFICADO"
+        if estado_previo == "CONTINGENCIA_FUENTE_SECUNDARIA":
+            if estado_nuevo == "PPP_PUBLICADO_VERIFICADO" and w_quote is not None:
+                print(
+                    f"[RECONCILIACION EXITOSA] {fecha_nueva}: WALMEX promovida de "
+                    f"CONTINGENCIA_FUENTE_SECUNDARIA ({old.ppp_bmv_mxn.iloc[0]} MXN) -> "
+                    f"PPP_PUBLICADO_VERIFICADO ({ppp_val} MXN)"
+                )
+                df_series = df_series[~df_series.fecha.eq(fecha_nueva)]
+                df_series = pd.concat([df_series, pd.DataFrame([{
+                    "fecha": fecha_nueva, "emisora": "WALMEX", "serie": "*",
+                    "ppp_bmv_mxn": ppp_val,
+                    "estado": "PPP_PUBLICADO_VERIFICADO",
+                    "url_fuente": bulletin_info["url_fuente"], "sha256_html": bulletin_info["sha256_html"],
+                    "precio_apto_calculo": True,
+                    "timestamp_captura_utc": bulletin_info.get("timestamp_verificacion_utc", datetime.now(timezone.utc).isoformat()),
+                }])], ignore_index=True)
+        elif estado_nuevo == "CONTINGENCIA_FUENTE_SECUNDARIA" and estado_previo == "PPP_PUBLICADO_VERIFICADO":
+            # Jamas degradar un dato primario verificado a fuente secundaria
+            pass
+        elif w_quote is None or not np.isclose(float(old.ppp_bmv_mxn.iloc[0]), ppp_val, rtol=0, atol=1e-9):
             raise ValueError(f"Conflicto con PPP previamente documentado en {fecha_nueva}")
     else:
         df_series = df_series[~df_series.fecha.eq(fecha_nueva)]
         df_series = pd.concat([df_series, pd.DataFrame([{
             "fecha": fecha_nueva, "emisora": "WALMEX", "serie": "*",
             "ppp_bmv_mxn": ppp_val,
-            "estado": "PPP_PUBLICADO_VERIFICADO" if w_quote is not None else "NO_PUBLICADA_EN_BOLETIN_RSS_DEL_DIA",
+            "estado": estado_nuevo,
             "url_fuente": bulletin_info["url_fuente"], "sha256_html": bulletin_info["sha256_html"],
             "precio_apto_calculo": w_quote is not None,
             "timestamp_captura_utc": bulletin_info.get("timestamp_verificacion_utc", datetime.now(timezone.utc).isoformat()),
@@ -144,6 +169,7 @@ def init_or_update_master_ppp_series(bulletin_info: dict, series_csv_path: Path)
 
 
 def update_live_multicompany_ppp(bulletin_info: dict, multi_csv_path: Path) -> pd.DataFrame:
+    estado_cap = bulletin_info.get("estado_captura", "PPP_PUBLICADO_VERIFICADO")
     rows = []
     for tk, info in bulletin_info["cotizaciones"].items():
         rows.append(
@@ -153,7 +179,7 @@ def update_live_multicompany_ppp(bulletin_info: dict, multi_csv_path: Path) -> p
                 "serie": info["serie"],
                 "anillo_madurez": info.get("anillo_madurez", ""),
                 "sector_economico": info.get("sector_economico", ""),
-                "estado_captura": "PPP_PUBLICADO_VERIFICADO",
+                "estado_captura": estado_cap,
                 "ppp_bmv_mxn": info["ppp"],
                 "ultimo_bmv_mxn": info["ultimo"],
                 "anterior_bmv_mxn": info["anterior"],
@@ -187,6 +213,16 @@ def update_live_multicompany_ppp(bulletin_info: dict, multi_csv_path: Path) -> p
         df_old = pd.read_csv(multi_csv_path)
         if "estado_captura" not in df_old.columns:
             df_old["estado_captura"] = "PPP_PUBLICADO_VERIFICADO"
+        if estado_cap == "CONTINGENCIA_FUENTE_SECUNDARIA":
+            # Si ya existian registros primarios verificados para esta fecha, no sobreescribirlos con contingencia
+            ya_primarias = set(
+                df_old.loc[
+                    (df_old["fecha"] == bulletin_info["fecha_boletin"])
+                    & (df_old["estado_captura"] == "PPP_PUBLICADO_VERIFICADO"),
+                    "emisora",
+                ]
+            )
+            df_new = df_new[~df_new["emisora"].isin(ya_primarias)]
         combined = pd.concat([df_old, df_new], ignore_index=True)
         combined = combined.drop_duplicates(subset=["fecha", "emisora"], keep="last")
     else:
@@ -389,6 +425,25 @@ def generate_daily_signals_for_date(
         for col in df_new_sig.columns:
             if col not in df_existing.columns:
                 df_existing[col] = df_new_sig[col].iloc[0] if col == "estado_consenso" else np.nan
+
+        # Si la fecha ya existia con fuente secundaria y ahora llega el boletin primario verificado,
+        # promover y recalcular las senales de esa fecha conservando su timestamp de emision original.
+        es_primaria_hoy = str(row_today.get("estado", "")) == "PPP_PUBLICADO_VERIFICADO"
+        mask_misma_fecha = df_existing["fecha_senal"].astype(str) == fecha_senal
+        if es_primaria_hoy and mask_misma_fecha.any():
+            urls_prev = df_existing.loc[mask_misma_fecha, "url_boletin_bmv"].astype(str)
+            if urls_prev.str.contains("contingencia_bmv_404", na=False).any():
+                ts_prev_map = dict(
+                    zip(
+                        df_existing.loc[mask_misma_fecha, "id_senal"].astype(str),
+                        df_existing.loc[mask_misma_fecha, "timestamp_emision_utc"].astype(str),
+                    )
+                )
+                df_new_sig["timestamp_emision_utc"] = df_new_sig["id_senal"].map(
+                    lambda sid: ts_prev_map.get(str(sid), ts_emision)
+                )
+                df_existing = df_existing[~mask_misma_fecha].copy()
+
         existing_ids = set(df_existing["id_senal"].astype(str))
         to_add = df_new_sig[~df_new_sig["id_senal"].isin(existing_ids)]
         if len(to_add) > 0:
@@ -527,6 +582,60 @@ def run_self_test_simulation(df_series_real, merged_9d, reg_df):
     return True
 
 
+def obtener_cola_fechas_reconciliacion(
+    fecha_objetivo_yyyymmdd: str,
+    series_csv_path: Path,
+    multi_csv_path: Path,
+) -> list[str]:
+    """
+    Construye la cola cronologica de fechas YYYYMMDD que deben consultarse en la ejecucion:
+      1. Cualquier fecha previa (>= 2026-10-28) que haya sido obtenida de la fuente secundaria
+         ('CONTINGENCIA_FUENTE_SECUNDARIA') para intentar promoverla a la fuente primaria oficial BMV.
+      2. Cualquier sesion habil BMV faltante entre la ultima sesion verificada y la fecha objetivo.
+      3. La fecha objetivo solicitada en la ejecucion actual.
+    """
+    from datetime import timedelta
+
+    d_str = fecha_objetivo_yyyymmdd.replace("-", "").strip()
+    curr_date = date.fromisoformat(f"{d_str[:4]}-{d_str[4:6]}-{d_str[6:]}")
+    while not is_bmv_business_day(curr_date):
+        curr_date -= timedelta(days=1)
+    fecha_obj_iso = curr_date.isoformat()
+
+    todas_sesiones_prospectivas = sesiones_entre("2026-10-28", fecha_obj_iso)
+    primarias_completas: set[str] = set()
+    pendientes_reconciliacion: set[str] = set()
+
+    if series_csv_path.exists():
+        df_s = pd.read_csv(series_csv_path)
+        for _, r in df_s[df_s["fecha"].astype(str) >= "2026-10-28"].iterrows():
+            f_row = str(r["fecha"])
+            est_row = str(r.get("estado", ""))
+            if est_row == "PPP_PUBLICADO_VERIFICADO":
+                primarias_completas.add(f_row)
+            elif est_row in ("CONTINGENCIA_FUENTE_SECUNDARIA", "SESION_SIN_CAPTURA_DOCUMENTADA"):
+                pendientes_reconciliacion.add(f_row)
+
+    if multi_csv_path.exists():
+        df_m = pd.read_csv(multi_csv_path)
+        if "estado_captura" in df_m.columns:
+            sec_dates = set(
+                df_m.loc[
+                    df_m["estado_captura"].astype(str) == "CONTINGENCIA_FUENTE_SECUNDARIA",
+                    "fecha",
+                ].astype(str)
+            )
+            pendientes_reconciliacion |= sec_dates
+            primarias_completas -= sec_dates
+
+    cola_iso = []
+    for f_ses in todas_sesiones_prospectivas:
+        if f_ses in pendientes_reconciliacion or f_ses not in primarias_completas or f_ses == fecha_obj_iso:
+            cola_iso.append(f_ses)
+
+    return [f.replace("-", "") for f in sorted(set(cola_iso))]
+
+
 def main():
     parser = argparse.ArgumentParser(description="Etapa 10A: Ejecutor Diario Autonomo Prisma BMV")
     parser.add_argument(
@@ -545,30 +654,46 @@ def main():
     merged_9d = build_adjusted_features_and_indicator(s9d, el9d, div_map)
     reg_df = pd.DataFrame()  # Los modelos activos no usan variables de reportes.
 
-    # Paso 1: Descargar y verificar boletin oficial de la BMV
-    bulletin_info = fetch_and_verify_bmv_bulletin(args.fecha)
-    fecha_iso = bulletin_info["fecha_boletin"]
-
-    # Paso 2: Actualizar de manera idempotente la serie maestra prospectiva de PPP y monitoreo multi-emisora
     series_csv = OUT_DIR / "serie_ppp_walmex_prospectiva.csv"
     multi_csv = OUT_DIR / "monitoreo_ppp_multiemisora_en_vivo.csv"
     signals_csv = OUT_DIR / "registro_senales_prospectivas_walmex.csv"
     scoreboard_csv = OUT_DIR / "marcador_modelos_prospectivo.csv"
 
-    df_series = init_or_update_master_ppp_series(bulletin_info, series_csv)
-    df_multi_15 = update_live_multicompany_ppp(bulletin_info, multi_csv)
+    # Construir cola de ejecucion: fechas previas en contingencia secundaria + huecos + fecha del dia
+    cola_fechas = obtener_cola_fechas_reconciliacion(args.fecha, series_csv, multi_csv)
+    print(f"=== COLA DE RECONCILIACION E INGESTA DIARIA: {cola_fechas} ===")
+
+    df_series = None
+    df_multi_15 = None
+    df_signals = None
+    fecha_iso = None
+
+    for f_yyyymmdd in cola_fechas:
+        # Paso 1: Intentar primero fuente primaria BMV; si da 404, usar fuente secundaria
+        bulletin_info = fetch_and_verify_bmv_bulletin(f_yyyymmdd, allow_secondary_fallback=True)
+        fecha_iso = bulletin_info["fecha_boletin"]
+        origen_str = bulletin_info.get("origen_fuente", "PRIMARIA_BOLETIN_OFICIAL_BMV")
+        print(f" -> Procesando {fecha_iso} | Fuente: {origen_str} ({bulletin_info.get('estado_captura')})")
+
+        # Paso 2: Actualizar de manera idempotente (o reconciliar Secundaria -> Primaria)
+        df_series = init_or_update_master_ppp_series(bulletin_info, series_csv)
+        df_multi_15 = update_live_multicompany_ppp(bulletin_info, multi_csv)
+
+        # Paso 4: Emitir o actualizar las 3 senales del dia (V1 Control, V2R, V3 Random Forest)
+        try:
+            df_signals = generate_daily_signals_for_date(
+                fecha_iso, df_series, merged_9d, reg_df, signals_csv, div_map=div_map
+            )
+        except (ValueError, RuntimeError) as exc:
+            print(f"Senal no emitida para {fecha_iso}: {exc}")
+            if signals_csv.exists():
+                df_signals = pd.read_csv(signals_csv)
 
     # Paso 3: Prueba unitaria en memoria del resolutor t+5 y salto del feriado 2026-11-02
     test_ok = add_bmv_sessions("2026-10-28", 5) == "2026-11-05"
     print(f"Autoverificacion del Resolutor t+5 y feriado 2026-11-02 en memoria: {'OK' if test_ok else 'ERROR'}")
 
-    # Paso 4: Emitir las 3 senales del dia (V1 Control, V2 Hibrido, V3 Random Forest) con estado de consenso
-    try:
-        df_signals = generate_daily_signals_for_date(
-            fecha_iso, df_series, merged_9d, reg_df, signals_csv, div_map=div_map
-        )
-    except (ValueError, RuntimeError) as exc:
-        print(f"Senal no emitida para {fecha_iso}: {exc}")
+    if df_signals is None:
         if not signals_csv.exists():
             return
         df_signals = pd.read_csv(signals_csv)
@@ -580,6 +705,17 @@ def main():
     df_signals, df_score = resolve_matured_signals_and_update_scoreboard(
         df_series, signals_csv, scoreboard_csv
     )
+
+    # Paso 5B: Sincronizar el Monitor Prospectivo de Segunda Generacion (Panel G2 para Web/API)
+    try:
+        from monitor_prospectivo_segunda_generacion import ejecutar_monitor_prospectivo_g2
+        res_g2 = ejecutar_monitor_prospectivo_g2()
+        print(
+            f"Monitor Prospectivo Panel G2 sincronizado: {res_g2['total_senales_emitidas_g2']} senales "
+            f"en fechas {res_g2['fechas_procesadas']}"
+        )
+    except Exception as exc_g2:
+        print(f"Aviso al sincronizar Panel G2: {exc_g2}")
 
     # Paso 6: Actualizar bitacora de noticias y boletines en tiempo real
     scraping_ev, df_news = run_live_regulatory_and_news_scraper()

@@ -25,7 +25,7 @@ def render_terminal_senales(plan_usuario: str = "professional") -> None:
         st.warning("No hay señales registradas.")
         return
 
-    emisoras_disponibles = ["WALMEX", "GMEXICO", "GFNORTE", "AMX"]
+    emisoras_disponibles = ["WALMEX", "GMEXICO", "GFNORTE", "AMX", "FEMSA"]
     
     col_sel_emi, col_sel_fecha = st.columns([1, 1])
     with col_sel_emi:
@@ -77,15 +77,15 @@ def render_terminal_senales(plan_usuario: str = "professional") -> None:
 
     with c_card1:
         st.markdown("<div class='kpi-title'>Estado de Consenso del Panel G2</div>", unsafe_allow_html=True)
-        if "SUBIDA" in consenso_raw and "NO_SUBIDA" not in consenso_raw:
+        if consenso_raw.startswith("CONSENSO_PANEL_G2_SUBIDA"):
             st.markdown(f"<div class='badge-consenso-subida'>🟢 {consenso_raw}</div>", unsafe_allow_html=True)
             st.markdown("<p style='color: #10B981; font-size: 0.85rem; margin-top: 8px;'>Los modelos anticipan alza hacia el objetivo formal.</p>", unsafe_allow_html=True)
-        elif "NO_SUBIDA" in consenso_raw:
+        elif consenso_raw.startswith("CONSENSO_PANEL_G2_NO_SUBIDA"):
             st.markdown(f"<div class='badge-consenso-baja'>🔴 {consenso_raw}</div>", unsafe_allow_html=True)
             st.markdown("<p style='color: #EF4444; font-size: 0.85rem; margin-top: 8px;'>Los modelos proyectan consolidación o retroceso.</p>", unsafe_allow_html=True)
         else:
             st.markdown(f"<div class='badge-consenso-alerta'>🟡 {consenso_raw}</div>", unsafe_allow_html=True)
-            st.markdown("<p style='color: #F59E0B; font-size: 0.85rem; margin-top: 8px;'>Divergencia entre algoritmos lineales y retadores.</p>", unsafe_allow_html=True)
+            st.markdown("<p style='color: #F59E0B; font-size: 0.85rem; margin-top: 8px;'>Divergencia entre algoritmos base 10d y retadores multiescala/sectoriales (V4/V5).</p>", unsafe_allow_html=True)
 
     with c_card2:
         st.markdown(
@@ -120,7 +120,12 @@ def render_terminal_senales(plan_usuario: str = "professional") -> None:
     colores = []
 
     for _, row in senales_corte.iterrows():
-        mod_nombre = str(row["modelo_g2"]).replace("G2_", "").replace("_POOLED_REL3", "")
+        mod_nombre = (
+            str(row["modelo_g2"])
+            .replace("G2_", "")
+            .replace("_POOLED_REL3", "")
+            .replace("_POOLED_DM5_REL", "_DM5_REL")
+        )
         p_val = float(row["probabilidad_subida"]) * 100.0
         modelos_nombres.append(mod_nombre)
         probabilidades.append(p_val)

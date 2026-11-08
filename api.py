@@ -23,6 +23,7 @@ from core.data_provider import (
     cargar_serie_walmex,
     obtener_fechas_mercado,
     obtener_kpis_mercado,
+    obtener_metricas_institucionales_modelos,
 )
 from core.supabase_auth import (
     Usuario,
@@ -50,6 +51,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# ==============================================================================
+# HEALTH CHECK
+# ==============================================================================
+@app.get("/health")
+@app.get("/api/health")
+def health_check() -> dict[str, str]:
+    """Endpoint de verificación de estado para monitores, Docker y proxies."""
+    return {"status": "ok", "service": "prisma-bmv-api"}
 
 
 # ==============================================================================
@@ -167,6 +178,7 @@ def get_senales_panel(
         registros.append({
             "id_senal_g2": str(r.get("id_senal_g2", "")),
             "fecha_senal": str(r.get("fecha_senal", "")),
+            "muestra_evaluacion": str(r.get("muestra_evaluacion", "IN_SAMPLE_DISENO")),
             "fecha_objetivo_h5": str(r.get("fecha_objetivo_h5", "")),
             "emisora": str(r.get("emisora", "")),
             "sector": str(r.get("sector_economico", "")),
@@ -178,9 +190,27 @@ def get_senales_panel(
             "probabilidad_subida": float(r["probabilidad_subida"]) if pd.notna(r.get("probabilidad_subida")) else 0.5,
             "prediccion_etiqueta": str(r.get("prediccion_etiqueta", "")),
             "estado_consenso_g2": str(r.get("estado_consenso_g2", "")),
+            "estado_resolucion": str(r.get("estado_resolucion", "")),
+            "sesiones_transcurridas": int(r["sesiones_transcurridas"]) if pd.notna(r.get("sesiones_transcurridas")) else 0,
+            "retorno_parcial_pct": float(r["retorno_parcial_pct"]) if pd.notna(r.get("retorno_parcial_pct")) else None,
+            "acierto_parcial_en_curso": bool(r["acierto_parcial_en_curso"]) if pd.notna(r.get("acierto_parcial_en_curso")) and str(r.get("acierto_parcial_en_curso")).lower() in ("true", "1", "false", "0") else None,
         })
 
     return {"senales": registros}
+
+
+# ==============================================================================
+# MÓDULO 2B: MÉTRICAS INSTITUCIONALES Y ASIGNACIÓN DE CAPITAL (abierto para dashboard)
+# ==============================================================================
+@app.get("/api/metricas/modelos")
+def get_metricas_modelos() -> dict[str, Any]:
+    """
+    Expone las métricas institucionales de calidad (BSS, Rank IC, ECE, lambda_Cox,
+    intervalos Wilson 95%, N_eff y diagrama de confiabilidad), la separación de
+    muestra prospectiva (IN_SAMPLE_DISENO vs OUT_OF_SAMPLE_PRE_REGISTRADO) y la
+    política de asignación de capital ¼-Kelly (Fase 5).
+    """
+    return obtener_metricas_institucionales_modelos()
 
 
 # ==============================================================================

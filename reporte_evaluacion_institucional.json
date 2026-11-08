@@ -1,0 +1,2959 @@
+{
+  "fase": "FASE_2_MARCO_EVALUACION_INSTITUCIONAL",
+  "timestamp_utc": "2026-11-07T02:37:39.789648+00:00",
+  "lambda_calibracion_v4": {
+    "train_cv_purgada_sin_fuga_orig": {
+      "n_oof_train": 3646,
+      "lambda_calibracion_cox": 0.243026,
+      "pendiente_lineal": 0.265381,
+      "ece_oof_train": 0.047474
+    },
+    "train_cv_purgada_sin_fuga_adj": {
+      "n_oof_train": 3646,
+      "lambda_calibracion_cox": 0.280333,
+      "pendiente_lineal": 0.297813,
+      "ece_oof_train": 0.045642
+    },
+    "test_15_emisoras_orig": 0.337999,
+    "test_4_foco_orig": 0.676681,
+    "test_15_emisoras_adj": 0.532662,
+    "test_4_foco_adj": 0.883305
+  },
+  "test_15_emisoras": {
+    "CLIMATOLOGIA": {
+      "n": 1557,
+      "n_efectivo_lag4": 623.2,
+      "aciertos": 766,
+      "exactitud_pct": 49.2,
+      "intervalo_wilson_95_pct": [
+        46.72,
+        51.68
+      ],
+      "brier": 0.250726,
+      "bss_vs_climatologia": 0.0,
+      "bss_vs_050": -0.002903,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.00079,
+        "resolucion": 0.0,
+        "incertidumbre": 0.249936,
+        "brier_murphy": 0.250726
+      },
+      "log_loss_nats": 0.6946,
+      "information_gain_bits_vs_climatologia": 0.0,
+      "information_gain_bits_vs_050": -0.002096,
+      "calibracion": {
+        "ece": 0.028111,
+        "lambda_calibracion": 0.0,
+        "intercepto_calibracion": 0.0,
+        "pendiente_lineal": 0.0,
+        "bins_detalle": [
+          {
+            "bin": 4,
+            "rango_min": 0.4,
+            "rango_max": 0.5,
+            "n": 1557,
+            "prob_media": 0.479918,
+            "frecuencia_observada": 0.508028
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 0,
+        "ic_medio": 0.0,
+        "ic_std": 0.0,
+        "ic_ir_anualizado": 0.0,
+        "t_stat_hac": 0.0,
+        "p_valor_hac": 1.0
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": 0.0,
+        "se_hac": 0.0,
+        "dm_stat": 0.0,
+        "p_valor_bilateral": 1.0,
+        "p_valor_a_menor_perdida": 0.5
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": 0.0,
+        "se_hac": 0.0,
+        "dm_stat": 0.0,
+        "p_valor_bilateral": 1.0,
+        "p_valor_a_menor_perdida": 0.5
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": -0.002606,
+        "se_hac": 0.002056,
+        "dm_stat": -1.267677,
+        "p_valor_bilateral": 0.204913,
+        "p_valor_a_menor_perdida": 0.102457
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": 0.0,
+        "ic_inferior": 0.0,
+        "ic_superior": 0.0,
+        "prob_a_menor_perdida": 0.0
+      }
+    },
+    "SIEMPRE_SUBIDA": {
+      "n": 1557,
+      "n_efectivo_lag4": 623.2,
+      "aciertos": 791,
+      "exactitud_pct": 50.8,
+      "intervalo_wilson_95_pct": [
+        48.32,
+        53.28
+      ],
+      "brier": 0.251697,
+      "bss_vs_climatologia": -0.003874,
+      "bss_vs_050": -0.006789,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.001762,
+        "resolucion": 0.0,
+        "incertidumbre": 0.249936,
+        "brier_murphy": 0.251697
+      },
+      "log_loss_nats": 0.696561,
+      "information_gain_bits_vs_climatologia": -0.00283,
+      "information_gain_bits_vs_050": -0.004926,
+      "calibracion": {
+        "ece": 0.041972,
+        "lambda_calibracion": 0.0,
+        "intercepto_calibracion": 0.0,
+        "pendiente_lineal": 0.0,
+        "bins_detalle": [
+          {
+            "bin": 5,
+            "rango_min": 0.5,
+            "rango_max": 0.6,
+            "n": 1557,
+            "prob_media": 0.55,
+            "frecuencia_observada": 0.508028
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 0,
+        "ic_medio": 0.0,
+        "ic_std": 0.0,
+        "ic_ir_anualizado": 0.0,
+        "t_stat_hac": 0.0,
+        "p_valor_hac": 1.0
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": 0.000971,
+        "se_hac": 0.002807,
+        "dm_stat": 0.346064,
+        "p_valor_bilateral": 0.729295,
+        "p_valor_a_menor_perdida": 0.635353
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": 0.001962,
+        "se_hac": 0.005628,
+        "dm_stat": 0.348522,
+        "p_valor_bilateral": 0.727448,
+        "p_valor_a_menor_perdida": 0.636276
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": -0.001635,
+        "se_hac": 0.002721,
+        "dm_stat": -0.600778,
+        "p_valor_bilateral": 0.547988,
+        "p_valor_a_menor_perdida": 0.273994
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": 0.000971,
+        "ic_inferior": -0.00497,
+        "ic_superior": 0.006553,
+        "prob_a_menor_perdida": 0.3885
+      }
+    },
+    "MOMENTUM_INGENUO": {
+      "n": 1557,
+      "n_efectivo_lag4": 623.2,
+      "aciertos": 773,
+      "exactitud_pct": 49.65,
+      "intervalo_wilson_95_pct": [
+        47.17,
+        52.13
+      ],
+      "brier": 0.260764,
+      "bss_vs_climatologia": -0.040038,
+      "bss_vs_050": -0.043057,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.010774,
+        "resolucion": 1.6e-05,
+        "incertidumbre": 0.249936,
+        "brier_murphy": 0.260694
+      },
+      "log_loss_nats": 0.715108,
+      "information_gain_bits_vs_climatologia": -0.029587,
+      "information_gain_bits_vs_050": -0.031682,
+      "calibracion": {
+        "ece": 0.103468,
+        "lambda_calibracion": -0.042237,
+        "intercepto_calibracion": 0.032998,
+        "pendiente_lineal": -0.042801,
+        "bins_detalle": [
+          {
+            "bin": 4,
+            "rango_min": 0.4,
+            "rango_max": 0.5,
+            "n": 738,
+            "prob_media": 0.4,
+            "frecuencia_observada": 0.512195
+          },
+          {
+            "bin": 5,
+            "rango_min": 0.5,
+            "rango_max": 0.6,
+            "n": 819,
+            "prob_media": 0.599878,
+            "frecuencia_observada": 0.504274
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 240,
+        "ic_medio": 0.03871,
+        "ic_std": 0.492458,
+        "ic_ir_anualizado": 0.558,
+        "t_stat_hac": 0.9064,
+        "p_valor_hac": 0.3647
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": 0.010039,
+        "se_hac": 0.003486,
+        "dm_stat": 2.879662,
+        "p_valor_bilateral": 0.003981,
+        "p_valor_a_menor_perdida": 0.998009
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": 0.020508,
+        "se_hac": 0.007063,
+        "dm_stat": 2.903756,
+        "p_valor_bilateral": 0.003687,
+        "p_valor_a_menor_perdida": 0.998156
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": 0.007432,
+        "se_hac": 0.004758,
+        "dm_stat": 1.561906,
+        "p_valor_bilateral": 0.11831,
+        "p_valor_a_menor_perdida": 0.940845
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": 0.010039,
+        "ic_inferior": 0.003129,
+        "ic_superior": 0.016822,
+        "prob_a_menor_perdida": 0.0035
+      }
+    },
+    "G2_V1": {
+      "n": 1557,
+      "n_efectivo_lag4": 623.2,
+      "aciertos": 758,
+      "exactitud_pct": 48.68,
+      "intervalo_wilson_95_pct": [
+        46.21,
+        51.17
+      ],
+      "brier": 0.253332,
+      "bss_vs_climatologia": -0.010395,
+      "bss_vs_050": -0.013328,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.003823,
+        "resolucion": 0.001125,
+        "incertidumbre": 0.249936,
+        "brier_murphy": 0.252633
+      },
+      "log_loss_nats": 0.700037,
+      "information_gain_bits_vs_climatologia": -0.007845,
+      "information_gain_bits_vs_050": -0.00994,
+      "calibracion": {
+        "ece": 0.048793,
+        "lambda_calibracion": -0.228359,
+        "intercepto_calibracion": 0.030063,
+        "pendiente_lineal": -0.238967,
+        "bins_detalle": [
+          {
+            "bin": 1,
+            "rango_min": 0.1,
+            "rango_max": 0.2,
+            "n": 1,
+            "prob_media": 0.19249,
+            "frecuencia_observada": 1.0
+          },
+          {
+            "bin": 2,
+            "rango_min": 0.2,
+            "rango_max": 0.3,
+            "n": 9,
+            "prob_media": 0.25313,
+            "frecuencia_observada": 0.555556
+          },
+          {
+            "bin": 3,
+            "rango_min": 0.3,
+            "rango_max": 0.4,
+            "n": 31,
+            "prob_media": 0.38385,
+            "frecuencia_observada": 0.354839
+          },
+          {
+            "bin": 4,
+            "rango_min": 0.4,
+            "rango_max": 0.5,
+            "n": 726,
+            "prob_media": 0.469252,
+            "frecuencia_observada": 0.527548
+          },
+          {
+            "bin": 5,
+            "rango_min": 0.5,
+            "rango_max": 0.6,
+            "n": 773,
+            "prob_media": 0.530033,
+            "frecuencia_observada": 0.49806
+          },
+          {
+            "bin": 6,
+            "rango_min": 0.6,
+            "rango_max": 0.7,
+            "n": 17,
+            "prob_media": 0.61788,
+            "frecuencia_observada": 0.352941
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 291,
+        "ic_medio": -0.04892,
+        "ic_std": 0.513237,
+        "ic_ir_anualizado": -0.6767,
+        "t_stat_hac": -1.0149,
+        "p_valor_hac": 0.3101
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": 0.002606,
+        "se_hac": 0.002056,
+        "dm_stat": 1.267677,
+        "p_valor_bilateral": 0.204913,
+        "p_valor_a_menor_perdida": 0.897543
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": 0.005437,
+        "se_hac": 0.004205,
+        "dm_stat": 1.293176,
+        "p_valor_bilateral": 0.19595,
+        "p_valor_a_menor_perdida": 0.902025
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": 0.0,
+        "se_hac": 0.0,
+        "dm_stat": 0.0,
+        "p_valor_bilateral": 1.0,
+        "p_valor_a_menor_perdida": 0.5
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": 0.002606,
+        "ic_inferior": -0.001272,
+        "ic_superior": 0.006633,
+        "prob_a_menor_perdida": 0.1
+      }
+    },
+    "G2_V2": {
+      "n": 1557,
+      "n_efectivo_lag4": 623.2,
+      "aciertos": 762,
+      "exactitud_pct": 48.94,
+      "intervalo_wilson_95_pct": [
+        46.46,
+        51.42
+      ],
+      "brier": 0.253471,
+      "bss_vs_climatologia": -0.010948,
+      "bss_vs_050": -0.013883,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.003784,
+        "resolucion": 0.001083,
+        "incertidumbre": 0.249936,
+        "brier_murphy": 0.252637
+      },
+      "log_loss_nats": 0.700336,
+      "information_gain_bits_vs_climatologia": -0.008275,
+      "information_gain_bits_vs_050": -0.010371,
+      "calibracion": {
+        "ece": 0.046212,
+        "lambda_calibracion": -0.223844,
+        "intercepto_calibracion": 0.028842,
+        "pendiente_lineal": -0.234621,
+        "bins_detalle": [
+          {
+            "bin": 1,
+            "rango_min": 0.1,
+            "rango_max": 0.2,
+            "n": 2,
+            "prob_media": 0.191017,
+            "frecuencia_observada": 0.5
+          },
+          {
+            "bin": 2,
+            "rango_min": 0.2,
+            "rango_max": 0.3,
+            "n": 8,
+            "prob_media": 0.254942,
+            "frecuencia_observada": 0.625
+          },
+          {
+            "bin": 3,
+            "rango_min": 0.3,
+            "rango_max": 0.4,
+            "n": 35,
+            "prob_media": 0.382027,
+            "frecuencia_observada": 0.371429
+          },
+          {
+            "bin": 4,
+            "rango_min": 0.4,
+            "rango_max": 0.5,
+            "n": 744,
+            "prob_media": 0.468627,
+            "frecuencia_observada": 0.524194
+          },
+          {
+            "bin": 5,
+            "rango_min": 0.5,
+            "rango_max": 0.6,
+            "n": 749,
+            "prob_media": 0.529969,
+            "frecuencia_observada": 0.502003
+          },
+          {
+            "bin": 6,
+            "rango_min": 0.6,
+            "rango_max": 0.7,
+            "n": 19,
+            "prob_media": 0.61653,
+            "frecuencia_observada": 0.315789
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 291,
+        "ic_medio": -0.045999,
+        "ic_std": 0.514955,
+        "ic_ir_anualizado": -0.6342,
+        "t_stat_hac": -0.9625,
+        "p_valor_hac": 0.3358
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": 0.002745,
+        "se_hac": 0.002072,
+        "dm_stat": 1.325078,
+        "p_valor_bilateral": 0.185145,
+        "p_valor_a_menor_perdida": 0.907427
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": 0.005736,
+        "se_hac": 0.004245,
+        "dm_stat": 1.351352,
+        "p_valor_bilateral": 0.176583,
+        "p_valor_a_menor_perdida": 0.911709
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": 0.000139,
+        "se_hac": 0.0001,
+        "dm_stat": 1.389701,
+        "p_valor_bilateral": 0.16462,
+        "p_valor_a_menor_perdida": 0.91769
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": 0.002745,
+        "ic_inferior": -0.001122,
+        "ic_superior": 0.006909,
+        "prob_a_menor_perdida": 0.09
+      }
+    },
+    "G2_V3": {
+      "n": 1557,
+      "n_efectivo_lag4": 623.2,
+      "aciertos": 760,
+      "exactitud_pct": 48.81,
+      "intervalo_wilson_95_pct": [
+        46.33,
+        51.29
+      ],
+      "brier": 0.252269,
+      "bss_vs_climatologia": -0.006155,
+      "bss_vs_050": -0.009076,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.0024,
+        "resolucion": 0.000649,
+        "incertidumbre": 0.249936,
+        "brier_murphy": 0.251687
+      },
+      "log_loss_nats": 0.697785,
+      "information_gain_bits_vs_climatologia": -0.004595,
+      "information_gain_bits_vs_050": -0.006691,
+      "calibracion": {
+        "ece": 0.039305,
+        "lambda_calibracion": -0.280753,
+        "intercepto_calibracion": 0.031252,
+        "pendiente_lineal": -0.288412,
+        "bins_detalle": [
+          {
+            "bin": 2,
+            "rango_min": 0.2,
+            "rango_max": 0.3,
+            "n": 4,
+            "prob_media": 0.256911,
+            "frecuencia_observada": 0.5
+          },
+          {
+            "bin": 3,
+            "rango_min": 0.3,
+            "rango_max": 0.4,
+            "n": 14,
+            "prob_media": 0.361056,
+            "frecuencia_observada": 0.428571
+          },
+          {
+            "bin": 4,
+            "rango_min": 0.4,
+            "rango_max": 0.5,
+            "n": 733,
+            "prob_media": 0.474118,
+            "frecuencia_observada": 0.52251
+          },
+          {
+            "bin": 5,
+            "rango_min": 0.5,
+            "rango_max": 0.6,
+            "n": 800,
+            "prob_media": 0.525213,
+            "frecuencia_observada": 0.49875
+          },
+          {
+            "bin": 6,
+            "rango_min": 0.6,
+            "rango_max": 0.7,
+            "n": 6,
+            "prob_media": 0.606418,
+            "frecuencia_observada": 0.166667
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 291,
+        "ic_medio": -0.0446,
+        "ic_std": 0.515937,
+        "ic_ir_anualizado": -0.6137,
+        "t_stat_hac": -0.9267,
+        "p_valor_hac": 0.3541
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": 0.001543,
+        "se_hac": 0.00173,
+        "dm_stat": 0.892035,
+        "p_valor_bilateral": 0.372374,
+        "p_valor_a_menor_perdida": 0.813813
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": 0.003185,
+        "se_hac": 0.003503,
+        "dm_stat": 0.90918,
+        "p_valor_bilateral": 0.363255,
+        "p_valor_a_menor_perdida": 0.818372
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": -0.001063,
+        "se_hac": 0.000415,
+        "dm_stat": -2.559696,
+        "p_valor_bilateral": 0.010476,
+        "p_valor_a_menor_perdida": 0.005238
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": 0.001543,
+        "ic_inferior": -0.001865,
+        "ic_superior": 0.004916,
+        "prob_a_menor_perdida": 0.197
+      }
+    },
+    "G2_V4": {
+      "n": 1557,
+      "n_efectivo_lag4": 623.2,
+      "aciertos": 776,
+      "exactitud_pct": 49.84,
+      "intervalo_wilson_95_pct": [
+        47.36,
+        52.32
+      ],
+      "brier": 0.250382,
+      "bss_vs_climatologia": 0.001369,
+      "bss_vs_050": -0.00153,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.001256,
+        "resolucion": 0.000458,
+        "incertidumbre": 0.249936,
+        "brier_murphy": 0.250733
+      },
+      "log_loss_nats": 0.693964,
+      "information_gain_bits_vs_climatologia": 0.000917,
+      "information_gain_bits_vs_050": -0.001178,
+      "calibracion": {
+        "ece": 0.029045,
+        "lambda_calibracion": 0.337999,
+        "intercepto_calibracion": 0.031693,
+        "pendiente_lineal": 0.346844,
+        "bins_detalle": [
+          {
+            "bin": 2,
+            "rango_min": 0.2,
+            "rango_max": 0.3,
+            "n": 1,
+            "prob_media": 0.276556,
+            "frecuencia_observada": 1.0
+          },
+          {
+            "bin": 3,
+            "rango_min": 0.3,
+            "rango_max": 0.4,
+            "n": 16,
+            "prob_media": 0.366492,
+            "frecuencia_observada": 0.4375
+          },
+          {
+            "bin": 4,
+            "rango_min": 0.4,
+            "rango_max": 0.5,
+            "n": 710,
+            "prob_media": 0.474811,
+            "frecuencia_observada": 0.511268
+          },
+          {
+            "bin": 5,
+            "rango_min": 0.5,
+            "rango_max": 0.6,
+            "n": 820,
+            "prob_media": 0.523956,
+            "frecuencia_observada": 0.503659
+          },
+          {
+            "bin": 6,
+            "rango_min": 0.6,
+            "rango_max": 0.7,
+            "n": 10,
+            "prob_media": 0.6164,
+            "frecuencia_observada": 0.7
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 291,
+        "ic_medio": -0.001865,
+        "ic_std": 0.490677,
+        "ic_ir_anualizado": -0.027,
+        "t_stat_hac": -0.0455,
+        "p_valor_hac": 0.9637
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": -0.000343,
+        "se_hac": 0.001576,
+        "dm_stat": -0.217899,
+        "p_valor_bilateral": 0.827508,
+        "p_valor_a_menor_perdida": 0.413754
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": -0.000636,
+        "se_hac": 0.003177,
+        "dm_stat": -0.200099,
+        "p_valor_bilateral": 0.841403,
+        "p_valor_a_menor_perdida": 0.420702
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": -0.00295,
+        "se_hac": 0.001322,
+        "dm_stat": -2.23178,
+        "p_valor_bilateral": 0.02563,
+        "p_valor_a_menor_perdida": 0.012815
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": -0.000343,
+        "ic_inferior": -0.003598,
+        "ic_superior": 0.002719,
+        "prob_a_menor_perdida": 0.6125
+      }
+    },
+    "G2_V5": {
+      "n": 1557,
+      "n_efectivo_lag4": 623.2,
+      "aciertos": 775,
+      "exactitud_pct": 49.78,
+      "intervalo_wilson_95_pct": [
+        47.3,
+        52.26
+      ],
+      "brier": 0.250836,
+      "bss_vs_climatologia": -0.000439,
+      "bss_vs_050": -0.003344,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.001665,
+        "resolucion": 0.000556,
+        "incertidumbre": 0.249936,
+        "brier_murphy": 0.251044
+      },
+      "log_loss_nats": 0.694875,
+      "information_gain_bits_vs_climatologia": -0.000398,
+      "information_gain_bits_vs_050": -0.002493,
+      "calibracion": {
+        "ece": 0.031847,
+        "lambda_calibracion": 0.253627,
+        "intercepto_calibracion": 0.040062,
+        "pendiente_lineal": 0.260504,
+        "bins_detalle": [
+          {
+            "bin": 2,
+            "rango_min": 0.2,
+            "rango_max": 0.3,
+            "n": 1,
+            "prob_media": 0.275707,
+            "frecuencia_observada": 1.0
+          },
+          {
+            "bin": 3,
+            "rango_min": 0.3,
+            "rango_max": 0.4,
+            "n": 23,
+            "prob_media": 0.374098,
+            "frecuencia_observada": 0.434783
+          },
+          {
+            "bin": 4,
+            "rango_min": 0.4,
+            "rango_max": 0.5,
+            "n": 800,
+            "prob_media": 0.468559,
+            "frecuencia_observada": 0.51125
+          },
+          {
+            "bin": 5,
+            "rango_min": 0.5,
+            "rango_max": 0.6,
+            "n": 731,
+            "prob_media": 0.521924,
+            "frecuencia_observada": 0.504788
+          },
+          {
+            "bin": 6,
+            "rango_min": 0.6,
+            "rango_max": 0.7,
+            "n": 2,
+            "prob_media": 0.606408,
+            "frecuencia_observada": 1.0
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 291,
+        "ic_medio": -0.025061,
+        "ic_std": 0.478595,
+        "ic_ir_anualizado": -0.3718,
+        "t_stat_hac": -0.5988,
+        "p_valor_hac": 0.5493
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": 0.00011,
+        "se_hac": 0.001466,
+        "dm_stat": 0.07516,
+        "p_valor_bilateral": 0.940087,
+        "p_valor_a_menor_perdida": 0.529956
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": 0.000276,
+        "se_hac": 0.002958,
+        "dm_stat": 0.093144,
+        "p_valor_bilateral": 0.925789,
+        "p_valor_a_menor_perdida": 0.537105
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": -0.002496,
+        "se_hac": 0.001328,
+        "dm_stat": -1.879688,
+        "p_valor_bilateral": 0.060151,
+        "p_valor_a_menor_perdida": 0.030075
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": 0.00011,
+        "ic_inferior": -0.002946,
+        "ic_superior": 0.002949,
+        "prob_a_menor_perdida": 0.503
+      }
+    }
+  },
+  "test_4_emisoras_foco": {
+    "CLIMATOLOGIA": {
+      "n": 1142,
+      "n_efectivo_lag4": 461.3,
+      "aciertos": 544,
+      "exactitud_pct": 47.64,
+      "intervalo_wilson_95_pct": [
+        44.75,
+        50.54
+      ],
+      "brier": 0.251353,
+      "bss_vs_climatologia": 0.0,
+      "bss_vs_050": -0.005412,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.001912,
+        "resolucion": 0.0,
+        "incertidumbre": 0.249441,
+        "brier_murphy": 0.251353
+      },
+      "log_loss_nats": 0.695855,
+      "information_gain_bits_vs_climatologia": 0.0,
+      "information_gain_bits_vs_050": -0.003906,
+      "calibracion": {
+        "ece": 0.043725,
+        "lambda_calibracion": 0.0,
+        "intercepto_calibracion": 0.0,
+        "pendiente_lineal": 0.0,
+        "bins_detalle": [
+          {
+            "bin": 4,
+            "rango_min": 0.4,
+            "rango_max": 0.5,
+            "n": 1142,
+            "prob_media": 0.479918,
+            "frecuencia_observada": 0.523643
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 0,
+        "ic_medio": 0.0,
+        "ic_std": 0.0,
+        "ic_ir_anualizado": 0.0,
+        "t_stat_hac": 0.0,
+        "p_valor_hac": 1.0
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": 0.0,
+        "se_hac": 0.0,
+        "dm_stat": 0.0,
+        "p_valor_bilateral": 1.0,
+        "p_valor_a_menor_perdida": 0.5
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": 0.0,
+        "se_hac": 0.0,
+        "dm_stat": 0.0,
+        "p_valor_bilateral": 1.0,
+        "p_valor_a_menor_perdida": 0.5
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": -0.00017,
+        "se_hac": 0.002039,
+        "dm_stat": -0.083437,
+        "p_valor_bilateral": 0.933504,
+        "p_valor_a_menor_perdida": 0.466752
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": 0.0,
+        "ic_inferior": 0.0,
+        "ic_superior": 0.0,
+        "prob_a_menor_perdida": 0.0
+      }
+    },
+    "SIEMPRE_SUBIDA": {
+      "n": 1142,
+      "n_efectivo_lag4": 461.3,
+      "aciertos": 598,
+      "exactitud_pct": 52.36,
+      "intervalo_wilson_95_pct": [
+        49.46,
+        55.25
+      ],
+      "brier": 0.250136,
+      "bss_vs_climatologia": 0.004843,
+      "bss_vs_050": -0.000543,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.000695,
+        "resolucion": 0.0,
+        "incertidumbre": 0.249441,
+        "brier_murphy": 0.250136
+      },
+      "log_loss_nats": 0.693428,
+      "information_gain_bits_vs_climatologia": 0.003501,
+      "information_gain_bits_vs_050": -0.000405,
+      "calibracion": {
+        "ece": 0.026357,
+        "lambda_calibracion": 0.0,
+        "intercepto_calibracion": 0.0,
+        "pendiente_lineal": 0.0,
+        "bins_detalle": [
+          {
+            "bin": 5,
+            "rango_min": 0.5,
+            "rango_max": 0.6,
+            "n": 1142,
+            "prob_media": 0.55,
+            "frecuencia_observada": 0.523643
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 0,
+        "ic_medio": 0.0,
+        "ic_std": 0.0,
+        "ic_ir_anualizado": 0.0,
+        "t_stat_hac": 0.0,
+        "p_valor_hac": 1.0
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": -0.001217,
+        "se_hac": 0.003259,
+        "dm_stat": -0.37346,
+        "p_valor_bilateral": 0.708806,
+        "p_valor_a_menor_perdida": 0.354403
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": -0.002427,
+        "se_hac": 0.006535,
+        "dm_stat": -0.371343,
+        "p_valor_bilateral": 0.710382,
+        "p_valor_a_menor_perdida": 0.355191
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": -0.001387,
+        "se_hac": 0.00286,
+        "dm_stat": -0.485144,
+        "p_valor_bilateral": 0.627574,
+        "p_valor_a_menor_perdida": 0.313787
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": -0.001217,
+        "ic_inferior": -0.007722,
+        "ic_superior": 0.005411,
+        "prob_a_menor_perdida": 0.6335
+      }
+    },
+    "MOMENTUM_INGENUO": {
+      "n": 1142,
+      "n_efectivo_lag4": 461.3,
+      "aciertos": 555,
+      "exactitud_pct": 48.6,
+      "intervalo_wilson_95_pct": [
+        45.71,
+        51.5
+      ],
+      "brier": 0.262881,
+      "bss_vs_climatologia": -0.045864,
+      "bss_vs_050": -0.051524,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.013586,
+        "resolucion": 0.000241,
+        "incertidumbre": 0.249441,
+        "brier_murphy": 0.262786
+      },
+      "log_loss_nats": 0.719399,
+      "information_gain_bits_vs_climatologia": -0.033967,
+      "information_gain_bits_vs_050": -0.037873,
+      "calibracion": {
+        "ece": 0.113923,
+        "lambda_calibracion": -0.158224,
+        "intercepto_calibracion": 0.09873,
+        "pendiente_lineal": -0.159941,
+        "bins_detalle": [
+          {
+            "bin": 4,
+            "rango_min": 0.4,
+            "rango_max": 0.5,
+            "n": 535,
+            "prob_media": 0.4,
+            "frecuencia_observada": 0.540187
+          },
+          {
+            "bin": 5,
+            "rango_min": 0.5,
+            "rango_max": 0.6,
+            "n": 607,
+            "prob_media": 0.599835,
+            "frecuencia_observada": 0.509061
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 216,
+        "ic_medio": 0.01892,
+        "ic_std": 0.607407,
+        "ic_ir_anualizado": 0.2211,
+        "t_stat_hac": 0.3487,
+        "p_valor_hac": 0.7273
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": 0.011528,
+        "se_hac": 0.00405,
+        "dm_stat": 2.846474,
+        "p_valor_bilateral": 0.004421,
+        "p_valor_a_menor_perdida": 0.99779
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": 0.023544,
+        "se_hac": 0.008204,
+        "dm_stat": 2.869681,
+        "p_valor_bilateral": 0.004109,
+        "p_valor_a_menor_perdida": 0.997946
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": 0.011358,
+        "se_hac": 0.005185,
+        "dm_stat": 2.190532,
+        "p_valor_bilateral": 0.028486,
+        "p_valor_a_menor_perdida": 0.985757
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": 0.011528,
+        "ic_inferior": 0.00284,
+        "ic_superior": 0.019475,
+        "prob_a_menor_perdida": 0.002
+      }
+    },
+    "G2_V1": {
+      "n": 1142,
+      "n_efectivo_lag4": 461.3,
+      "aciertos": 568,
+      "exactitud_pct": 49.74,
+      "intervalo_wilson_95_pct": [
+        46.84,
+        52.63
+      ],
+      "brier": 0.251523,
+      "bss_vs_climatologia": -0.000677,
+      "bss_vs_050": -0.006092,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.001731,
+        "resolucion": 0.000373,
+        "incertidumbre": 0.249441,
+        "brier_murphy": 0.250799
+      },
+      "log_loss_nats": 0.696215,
+      "information_gain_bits_vs_climatologia": -0.00052,
+      "information_gain_bits_vs_050": -0.004426,
+      "calibracion": {
+        "ece": 0.033829,
+        "lambda_calibracion": -0.026915,
+        "intercepto_calibracion": 0.09482,
+        "pendiente_lineal": -0.02929,
+        "bins_detalle": [
+          {
+            "bin": 3,
+            "rango_min": 0.3,
+            "rango_max": 0.4,
+            "n": 16,
+            "prob_media": 0.388921,
+            "frecuencia_observada": 0.4375
+          },
+          {
+            "bin": 4,
+            "rango_min": 0.4,
+            "rango_max": 0.5,
+            "n": 514,
+            "prob_media": 0.471894,
+            "frecuencia_observada": 0.531128
+          },
+          {
+            "bin": 5,
+            "rango_min": 0.5,
+            "rango_max": 0.6,
+            "n": 605,
+            "prob_media": 0.528532,
+            "frecuencia_observada": 0.517355
+          },
+          {
+            "bin": 6,
+            "rango_min": 0.6,
+            "rango_max": 0.7,
+            "n": 7,
+            "prob_media": 0.621773,
+            "frecuencia_observada": 0.714286
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 291,
+        "ic_medio": -0.023711,
+        "ic_std": 0.608918,
+        "ic_ir_anualizado": -0.2764,
+        "t_stat_hac": -0.4181,
+        "p_valor_hac": 0.6759
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": 0.00017,
+        "se_hac": 0.002039,
+        "dm_stat": 0.083437,
+        "p_valor_bilateral": 0.933504,
+        "p_valor_a_menor_perdida": 0.533248
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": 0.00036,
+        "se_hac": 0.004103,
+        "dm_stat": 0.087843,
+        "p_valor_bilateral": 0.930001,
+        "p_valor_a_menor_perdida": 0.534999
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": 0.0,
+        "se_hac": 0.0,
+        "dm_stat": 0.0,
+        "p_valor_bilateral": 1.0,
+        "p_valor_a_menor_perdida": 0.5
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": 0.00017,
+        "ic_inferior": -0.003824,
+        "ic_superior": 0.004498,
+        "prob_a_menor_perdida": 0.44
+      }
+    },
+    "G2_V2": {
+      "n": 1142,
+      "n_efectivo_lag4": 461.3,
+      "aciertos": 574,
+      "exactitud_pct": 50.26,
+      "intervalo_wilson_95_pct": [
+        47.37,
+        53.16
+      ],
+      "brier": 0.251614,
+      "bss_vs_climatologia": -0.00104,
+      "bss_vs_050": -0.006457,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.001393,
+        "resolucion": 0.000113,
+        "incertidumbre": 0.249441,
+        "brier_murphy": 0.250721
+      },
+      "log_loss_nats": 0.696402,
+      "information_gain_bits_vs_climatologia": -0.00079,
+      "information_gain_bits_vs_050": -0.004696,
+      "calibracion": {
+        "ece": 0.027847,
+        "lambda_calibracion": -0.022745,
+        "intercepto_calibracion": 0.094683,
+        "pendiente_lineal": -0.024757,
+        "bins_detalle": [
+          {
+            "bin": 3,
+            "rango_min": 0.3,
+            "rango_max": 0.4,
+            "n": 16,
+            "prob_media": 0.384845,
+            "frecuencia_observada": 0.4375
+          },
+          {
+            "bin": 4,
+            "rango_min": 0.4,
+            "rango_max": 0.5,
+            "n": 532,
+            "prob_media": 0.471254,
+            "frecuencia_observada": 0.524436
+          },
+          {
+            "bin": 5,
+            "rango_min": 0.5,
+            "rango_max": 0.6,
+            "n": 585,
+            "prob_media": 0.528398,
+            "frecuencia_observada": 0.524786
+          },
+          {
+            "bin": 6,
+            "rango_min": 0.6,
+            "rango_max": 0.7,
+            "n": 9,
+            "prob_media": 0.616954,
+            "frecuencia_observada": 0.555556
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 291,
+        "ic_medio": -0.02543,
+        "ic_std": 0.609556,
+        "ic_ir_anualizado": -0.2962,
+        "t_stat_hac": -0.4486,
+        "p_valor_hac": 0.6537
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": 0.000261,
+        "se_hac": 0.002039,
+        "dm_stat": 0.128179,
+        "p_valor_bilateral": 0.898007,
+        "p_valor_a_menor_perdida": 0.550997
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": 0.000548,
+        "se_hac": 0.004103,
+        "dm_stat": 0.133454,
+        "p_valor_bilateral": 0.893835,
+        "p_valor_a_menor_perdida": 0.553083
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": 9.1e-05,
+        "se_hac": 0.000104,
+        "dm_stat": 0.880632,
+        "p_valor_bilateral": 0.378517,
+        "p_valor_a_menor_perdida": 0.810741
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": 0.000261,
+        "ic_inferior": -0.00373,
+        "ic_superior": 0.004615,
+        "prob_a_menor_perdida": 0.423
+      }
+    },
+    "G2_V3": {
+      "n": 1142,
+      "n_efectivo_lag4": 461.3,
+      "aciertos": 573,
+      "exactitud_pct": 50.18,
+      "intervalo_wilson_95_pct": [
+        47.28,
+        53.07
+      ],
+      "brier": 0.250848,
+      "bss_vs_climatologia": 0.002009,
+      "bss_vs_050": -0.003392,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.001174,
+        "resolucion": 0.0002,
+        "incertidumbre": 0.249441,
+        "brier_murphy": 0.250415
+      },
+      "log_loss_nats": 0.69485,
+      "information_gain_bits_vs_climatologia": 0.001449,
+      "information_gain_bits_vs_050": -0.002457,
+      "calibracion": {
+        "ece": 0.022803,
+        "lambda_calibracion": 0.000783,
+        "intercepto_calibracion": 0.094634,
+        "pendiente_lineal": -0.00075,
+        "bins_detalle": [
+          {
+            "bin": 3,
+            "rango_min": 0.3,
+            "rango_max": 0.4,
+            "n": 2,
+            "prob_media": 0.397164,
+            "frecuencia_observada": 0.5
+          },
+          {
+            "bin": 4,
+            "rango_min": 0.4,
+            "rango_max": 0.5,
+            "n": 519,
+            "prob_media": 0.47659,
+            "frecuencia_observada": 0.524085
+          },
+          {
+            "bin": 5,
+            "rango_min": 0.5,
+            "rango_max": 0.6,
+            "n": 620,
+            "prob_media": 0.523873,
+            "frecuencia_observada": 0.522581
+          },
+          {
+            "bin": 6,
+            "rango_min": 0.6,
+            "rango_max": 0.7,
+            "n": 1,
+            "prob_media": 0.615141,
+            "frecuencia_observada": 1.0
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 291,
+        "ic_medio": -0.02268,
+        "ic_std": 0.608419,
+        "ic_ir_anualizado": -0.2646,
+        "t_stat_hac": -0.4018,
+        "p_valor_hac": 0.6878
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": -0.000505,
+        "se_hac": 0.001741,
+        "dm_stat": -0.289953,
+        "p_valor_bilateral": 0.771852,
+        "p_valor_a_menor_perdida": 0.385926
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": -0.001004,
+        "se_hac": 0.003494,
+        "dm_stat": -0.287382,
+        "p_valor_bilateral": 0.77382,
+        "p_valor_a_menor_perdida": 0.38691
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": -0.000675,
+        "se_hac": 0.000418,
+        "dm_stat": -1.614315,
+        "p_valor_bilateral": 0.106459,
+        "p_valor_a_menor_perdida": 0.05323
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": -0.000505,
+        "ic_inferior": -0.003837,
+        "ic_superior": 0.003139,
+        "prob_a_menor_perdida": 0.584
+      }
+    },
+    "G2_V4": {
+      "n": 1142,
+      "n_efectivo_lag4": 461.3,
+      "aciertos": 580,
+      "exactitud_pct": 50.79,
+      "intervalo_wilson_95_pct": [
+        47.89,
+        53.68
+      ],
+      "brier": 0.249604,
+      "bss_vs_climatologia": 0.006956,
+      "bss_vs_050": 0.001582,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.001207,
+        "resolucion": 0.000712,
+        "incertidumbre": 0.249441,
+        "brier_murphy": 0.249936
+      },
+      "log_loss_nats": 0.69235,
+      "information_gain_bits_vs_climatologia": 0.005056,
+      "information_gain_bits_vs_050": 0.00115,
+      "calibracion": {
+        "ece": 0.022872,
+        "lambda_calibracion": 0.676681,
+        "intercepto_calibracion": 0.092259,
+        "pendiente_lineal": 0.675578,
+        "bins_detalle": [
+          {
+            "bin": 3,
+            "rango_min": 0.3,
+            "rango_max": 0.4,
+            "n": 3,
+            "prob_media": 0.366882,
+            "frecuencia_observada": 0.333333
+          },
+          {
+            "bin": 4,
+            "rango_min": 0.4,
+            "rango_max": 0.5,
+            "n": 527,
+            "prob_media": 0.475597,
+            "frecuencia_observada": 0.518027
+          },
+          {
+            "bin": 5,
+            "rango_min": 0.5,
+            "rango_max": 0.6,
+            "n": 609,
+            "prob_media": 0.52292,
+            "frecuencia_observada": 0.527094
+          },
+          {
+            "bin": 6,
+            "rango_min": 0.6,
+            "rango_max": 0.7,
+            "n": 3,
+            "prob_media": 0.627734,
+            "frecuencia_observada": 1.0
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 291,
+        "ic_medio": -0.012371,
+        "ic_std": 0.595024,
+        "ic_ir_anualizado": -0.1476,
+        "t_stat_hac": -0.2532,
+        "p_valor_hac": 0.8001
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": -0.001748,
+        "se_hac": 0.001618,
+        "dm_stat": -1.080378,
+        "p_valor_bilateral": 0.279974,
+        "p_valor_a_menor_perdida": 0.139987
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": -0.003505,
+        "se_hac": 0.003247,
+        "dm_stat": -1.079466,
+        "p_valor_bilateral": 0.28038,
+        "p_valor_a_menor_perdida": 0.14019
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": -0.001919,
+        "se_hac": 0.001353,
+        "dm_stat": -1.418066,
+        "p_valor_bilateral": 0.156172,
+        "p_valor_a_menor_perdida": 0.078086
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": -0.001748,
+        "ic_inferior": -0.004886,
+        "ic_superior": 0.001625,
+        "prob_a_menor_perdida": 0.8465
+      }
+    },
+    "G2_V5": {
+      "n": 1142,
+      "n_efectivo_lag4": 461.3,
+      "aciertos": 572,
+      "exactitud_pct": 50.09,
+      "intervalo_wilson_95_pct": [
+        47.19,
+        52.98
+      ],
+      "brier": 0.250707,
+      "bss_vs_climatologia": 0.00257,
+      "bss_vs_050": -0.002828,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.001502,
+        "resolucion": 7e-06,
+        "incertidumbre": 0.249441,
+        "brier_murphy": 0.250936
+      },
+      "log_loss_nats": 0.694578,
+      "information_gain_bits_vs_climatologia": 0.001841,
+      "information_gain_bits_vs_050": -0.002065,
+      "calibracion": {
+        "ece": 0.029774,
+        "lambda_calibracion": 0.327366,
+        "intercepto_calibracion": 0.102788,
+        "pendiente_lineal": 0.328501,
+        "bins_detalle": [
+          {
+            "bin": 3,
+            "rango_min": 0.3,
+            "rango_max": 0.4,
+            "n": 8,
+            "prob_media": 0.380543,
+            "frecuencia_observada": 0.5
+          },
+          {
+            "bin": 4,
+            "rango_min": 0.4,
+            "rango_max": 0.5,
+            "n": 586,
+            "prob_media": 0.470105,
+            "frecuencia_observada": 0.522184
+          },
+          {
+            "bin": 5,
+            "rango_min": 0.5,
+            "rango_max": 0.6,
+            "n": 548,
+            "prob_media": 0.520934,
+            "frecuencia_observada": 0.525547
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 291,
+        "ic_medio": -0.013746,
+        "ic_std": 0.564114,
+        "ic_ir_anualizado": -0.173,
+        "t_stat_hac": -0.2996,
+        "p_valor_hac": 0.7645
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": -0.000646,
+        "se_hac": 0.001553,
+        "dm_stat": -0.415876,
+        "p_valor_bilateral": 0.677501,
+        "p_valor_a_menor_perdida": 0.33875
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": -0.001276,
+        "se_hac": 0.003118,
+        "dm_stat": -0.409284,
+        "p_valor_bilateral": 0.682331,
+        "p_valor_a_menor_perdida": 0.341166
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": -0.000816,
+        "se_hac": 0.00131,
+        "dm_stat": -0.623206,
+        "p_valor_bilateral": 0.533149,
+        "p_valor_a_menor_perdida": 0.266575
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": -0.000646,
+        "ic_inferior": -0.003681,
+        "ic_superior": 0.002412,
+        "prob_a_menor_perdida": 0.6565
+      }
+    }
+  },
+  "test_15_emisoras_ajustado_fase1": {
+    "CLIMATOLOGIA": {
+      "n": 1557,
+      "n_efectivo_lag4": 624.2,
+      "aciertos": 748,
+      "exactitud_pct": 48.04,
+      "intervalo_wilson_95_pct": [
+        45.57,
+        50.52
+      ],
+      "brier": 0.25088,
+      "bss_vs_climatologia": 0.0,
+      "bss_vs_050": -0.003521,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.001264,
+        "resolucion": 0.0,
+        "incertidumbre": 0.249616,
+        "brier_murphy": 0.25088
+      },
+      "log_loss_nats": 0.694908,
+      "information_gain_bits_vs_climatologia": 0.0,
+      "information_gain_bits_vs_050": -0.002541,
+      "calibracion": {
+        "ece": 0.035552,
+        "lambda_calibracion": 0.0,
+        "intercepto_calibracion": 0.0,
+        "pendiente_lineal": 0.0,
+        "bins_detalle": [
+          {
+            "bin": 4,
+            "rango_min": 0.4,
+            "rango_max": 0.5,
+            "n": 1557,
+            "prob_media": 0.484037,
+            "frecuencia_observada": 0.519589
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 0,
+        "ic_medio": 0.0,
+        "ic_std": 0.0,
+        "ic_ir_anualizado": 0.0,
+        "t_stat_hac": 0.0,
+        "p_valor_hac": 1.0
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": 0.0,
+        "se_hac": 0.0,
+        "dm_stat": 0.0,
+        "p_valor_bilateral": 1.0,
+        "p_valor_a_menor_perdida": 0.5
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": 0.0,
+        "se_hac": 0.0,
+        "dm_stat": 0.0,
+        "p_valor_bilateral": 1.0,
+        "p_valor_a_menor_perdida": 0.5
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": -0.001852,
+        "se_hac": 0.002078,
+        "dm_stat": -0.89138,
+        "p_valor_bilateral": 0.372725,
+        "p_valor_a_menor_perdida": 0.186363
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": 0.0,
+        "ic_inferior": 0.0,
+        "ic_superior": 0.0,
+        "prob_a_menor_perdida": 0.0
+      }
+    },
+    "SIEMPRE_SUBIDA": {
+      "n": 1557,
+      "n_efectivo_lag4": 624.2,
+      "aciertos": 809,
+      "exactitud_pct": 51.96,
+      "intervalo_wilson_95_pct": [
+        49.48,
+        54.43
+      ],
+      "brier": 0.250541,
+      "bss_vs_climatologia": 0.001352,
+      "bss_vs_050": -0.002164,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.000925,
+        "resolucion": 0.0,
+        "incertidumbre": 0.249616,
+        "brier_murphy": 0.250541
+      },
+      "log_loss_nats": 0.694241,
+      "information_gain_bits_vs_climatologia": 0.000962,
+      "information_gain_bits_vs_050": -0.001579,
+      "calibracion": {
+        "ece": 0.030411,
+        "lambda_calibracion": 0.0,
+        "intercepto_calibracion": 0.0,
+        "pendiente_lineal": 0.0,
+        "bins_detalle": [
+          {
+            "bin": 5,
+            "rango_min": 0.5,
+            "rango_max": 0.6,
+            "n": 1557,
+            "prob_media": 0.55,
+            "frecuencia_observada": 0.519589
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 0,
+        "ic_medio": 0.0,
+        "ic_std": 0.0,
+        "ic_ir_anualizado": 0.0,
+        "t_stat_hac": 0.0,
+        "p_valor_hac": 1.0
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": -0.000339,
+        "se_hac": 0.002638,
+        "dm_stat": -0.128539,
+        "p_valor_bilateral": 0.897722,
+        "p_valor_a_menor_perdida": 0.448861
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": -0.000667,
+        "se_hac": 0.00529,
+        "dm_stat": -0.126058,
+        "p_valor_bilateral": 0.899686,
+        "p_valor_a_menor_perdida": 0.449843
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": -0.002191,
+        "se_hac": 0.002497,
+        "dm_stat": -0.877419,
+        "p_valor_bilateral": 0.380259,
+        "p_valor_a_menor_perdida": 0.190129
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": -0.000339,
+        "ic_inferior": -0.005762,
+        "ic_superior": 0.004832,
+        "prob_a_menor_perdida": 0.56
+      }
+    },
+    "MOMENTUM_INGENUO": {
+      "n": 1557,
+      "n_efectivo_lag4": 624.2,
+      "aciertos": 773,
+      "exactitud_pct": 49.65,
+      "intervalo_wilson_95_pct": [
+        47.17,
+        52.13
+      ],
+      "brier": 0.260764,
+      "bss_vs_climatologia": -0.039398,
+      "bss_vs_050": -0.043057,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.011104,
+        "resolucion": 2.5e-05,
+        "incertidumbre": 0.249616,
+        "brier_murphy": 0.260696
+      },
+      "log_loss_nats": 0.715108,
+      "information_gain_bits_vs_climatologia": -0.029141,
+      "information_gain_bits_vs_050": -0.031682,
+      "calibracion": {
+        "ece": 0.103468,
+        "lambda_calibracion": -0.052306,
+        "intercepto_calibracion": 0.07993,
+        "pendiente_lineal": -0.052935,
+        "bins_detalle": [
+          {
+            "bin": 4,
+            "rango_min": 0.4,
+            "rango_max": 0.5,
+            "n": 722,
+            "prob_media": 0.4,
+            "frecuencia_observada": 0.524931
+          },
+          {
+            "bin": 5,
+            "rango_min": 0.5,
+            "rango_max": 0.6,
+            "n": 835,
+            "prob_media": 0.59988,
+            "frecuencia_observada": 0.51497
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 242,
+        "ic_medio": 0.032605,
+        "ic_std": 0.487742,
+        "ic_ir_anualizado": 0.4746,
+        "t_stat_hac": 0.7793,
+        "p_valor_hac": 0.4358
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": 0.009884,
+        "se_hac": 0.00344,
+        "dm_stat": 2.873113,
+        "p_valor_bilateral": 0.004064,
+        "p_valor_a_menor_perdida": 0.997968
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": 0.020199,
+        "se_hac": 0.006971,
+        "dm_stat": 2.897593,
+        "p_valor_bilateral": 0.00376,
+        "p_valor_a_menor_perdida": 0.99812
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": 0.008032,
+        "se_hac": 0.004712,
+        "dm_stat": 1.704691,
+        "p_valor_bilateral": 0.088252,
+        "p_valor_a_menor_perdida": 0.955874
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": 0.009884,
+        "ic_inferior": 0.002833,
+        "ic_superior": 0.01656,
+        "prob_a_menor_perdida": 0.003
+      }
+    },
+    "G2_V1_ADJ": {
+      "n": 1557,
+      "n_efectivo_lag4": 624.2,
+      "aciertos": 783,
+      "exactitud_pct": 50.29,
+      "intervalo_wilson_95_pct": [
+        47.81,
+        52.77
+      ],
+      "brier": 0.252732,
+      "bss_vs_climatologia": -0.007382,
+      "bss_vs_050": -0.010929,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.00291,
+        "resolucion": 0.000553,
+        "incertidumbre": 0.249616,
+        "brier_murphy": 0.251974
+      },
+      "log_loss_nats": 0.69881,
+      "information_gain_bits_vs_climatologia": -0.005628,
+      "information_gain_bits_vs_050": -0.008169,
+      "calibracion": {
+        "ece": 0.0319,
+        "lambda_calibracion": -0.154978,
+        "intercepto_calibracion": 0.081259,
+        "pendiente_lineal": -0.161539,
+        "bins_detalle": [
+          {
+            "bin": 2,
+            "rango_min": 0.2,
+            "rango_max": 0.3,
+            "n": 10,
+            "prob_media": 0.256302,
+            "frecuencia_observada": 0.6
+          },
+          {
+            "bin": 3,
+            "rango_min": 0.3,
+            "rango_max": 0.4,
+            "n": 21,
+            "prob_media": 0.3858,
+            "frecuencia_observada": 0.428571
+          },
+          {
+            "bin": 4,
+            "rango_min": 0.4,
+            "rango_max": 0.5,
+            "n": 635,
+            "prob_media": 0.470738,
+            "frecuencia_observada": 0.52126
+          },
+          {
+            "bin": 5,
+            "rango_min": 0.5,
+            "rango_max": 0.6,
+            "n": 864,
+            "prob_media": 0.531941,
+            "frecuencia_observada": 0.524306
+          },
+          {
+            "bin": 6,
+            "rango_min": 0.6,
+            "rango_max": 0.7,
+            "n": 27,
+            "prob_media": 0.616869,
+            "frecuencia_observada": 0.37037
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 291,
+        "ic_medio": -0.048748,
+        "ic_std": 0.512093,
+        "ic_ir_anualizado": -0.6758,
+        "t_stat_hac": -1.0349,
+        "p_valor_hac": 0.3007
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": 0.001852,
+        "se_hac": 0.002078,
+        "dm_stat": 0.89138,
+        "p_valor_bilateral": 0.372725,
+        "p_valor_a_menor_perdida": 0.813637
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": 0.003901,
+        "se_hac": 0.004238,
+        "dm_stat": 0.920597,
+        "p_valor_bilateral": 0.357261,
+        "p_valor_a_menor_perdida": 0.821369
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": 0.0,
+        "se_hac": 0.0,
+        "dm_stat": 0.0,
+        "p_valor_bilateral": 1.0,
+        "p_valor_a_menor_perdida": 0.5
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": 0.001852,
+        "ic_inferior": -0.002104,
+        "ic_superior": 0.006021,
+        "prob_a_menor_perdida": 0.1935
+      }
+    },
+    "G2_V2_ADJ": {
+      "n": 1557,
+      "n_efectivo_lag4": 624.2,
+      "aciertos": 780,
+      "exactitud_pct": 50.1,
+      "intervalo_wilson_95_pct": [
+        47.62,
+        52.58
+      ],
+      "brier": 0.252801,
+      "bss_vs_climatologia": -0.007657,
+      "bss_vs_050": -0.011205,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.003416,
+        "resolucion": 0.000921,
+        "incertidumbre": 0.249616,
+        "brier_murphy": 0.252111
+      },
+      "log_loss_nats": 0.698955,
+      "information_gain_bits_vs_climatologia": -0.005838,
+      "information_gain_bits_vs_050": -0.008379,
+      "calibracion": {
+        "ece": 0.034123,
+        "lambda_calibracion": -0.153443,
+        "intercepto_calibracion": 0.080886,
+        "pendiente_lineal": -0.159956,
+        "bins_detalle": [
+          {
+            "bin": 1,
+            "rango_min": 0.1,
+            "rango_max": 0.2,
+            "n": 1,
+            "prob_media": 0.198681,
+            "frecuencia_observada": 1.0
+          },
+          {
+            "bin": 2,
+            "rango_min": 0.2,
+            "rango_max": 0.3,
+            "n": 9,
+            "prob_media": 0.260871,
+            "frecuencia_observada": 0.555556
+          },
+          {
+            "bin": 3,
+            "rango_min": 0.3,
+            "rango_max": 0.4,
+            "n": 23,
+            "prob_media": 0.385658,
+            "frecuencia_observada": 0.391304
+          },
+          {
+            "bin": 4,
+            "rango_min": 0.4,
+            "rango_max": 0.5,
+            "n": 642,
+            "prob_media": 0.470413,
+            "frecuencia_observada": 0.524922
+          },
+          {
+            "bin": 5,
+            "rango_min": 0.5,
+            "rango_max": 0.6,
+            "n": 856,
+            "prob_media": 0.532109,
+            "frecuencia_observada": 0.523364
+          },
+          {
+            "bin": 6,
+            "rango_min": 0.6,
+            "rango_max": 0.7,
+            "n": 26,
+            "prob_media": 0.61794,
+            "frecuencia_observada": 0.346154
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 291,
+        "ic_medio": -0.042661,
+        "ic_std": 0.517607,
+        "ic_ir_anualizado": -0.5851,
+        "t_stat_hac": -0.9056,
+        "p_valor_hac": 0.3652
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": 0.001921,
+        "se_hac": 0.002086,
+        "dm_stat": 0.920753,
+        "p_valor_bilateral": 0.35718,
+        "p_valor_a_menor_perdida": 0.82141
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": 0.004047,
+        "se_hac": 0.004258,
+        "dm_stat": 0.950368,
+        "p_valor_bilateral": 0.341925,
+        "p_valor_a_menor_perdida": 0.829037
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": 6.9e-05,
+        "se_hac": 7.2e-05,
+        "dm_stat": 0.95273,
+        "p_valor_bilateral": 0.340727,
+        "p_valor_a_menor_perdida": 0.829637
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": 0.001921,
+        "ic_inferior": -0.002003,
+        "ic_superior": 0.006109,
+        "prob_a_menor_perdida": 0.1845
+      }
+    },
+    "G2_V3_ADJ": {
+      "n": 1557,
+      "n_efectivo_lag4": 624.2,
+      "aciertos": 779,
+      "exactitud_pct": 50.03,
+      "intervalo_wilson_95_pct": [
+        47.55,
+        52.51
+      ],
+      "brier": 0.251773,
+      "bss_vs_climatologia": -0.003557,
+      "bss_vs_050": -0.00709,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.001513,
+        "resolucion": 5.1e-05,
+        "incertidumbre": 0.249616,
+        "brier_murphy": 0.251079
+      },
+      "log_loss_nats": 0.69678,
+      "information_gain_bits_vs_climatologia": -0.0027,
+      "information_gain_bits_vs_050": -0.00524,
+      "calibracion": {
+        "ece": 0.027814,
+        "lambda_calibracion": -0.198415,
+        "intercepto_calibracion": 0.083328,
+        "pendiente_lineal": -0.20283,
+        "bins_detalle": [
+          {
+            "bin": 2,
+            "rango_min": 0.2,
+            "rango_max": 0.3,
+            "n": 4,
+            "prob_media": 0.265749,
+            "frecuencia_observada": 0.5
+          },
+          {
+            "bin": 3,
+            "rango_min": 0.3,
+            "rango_max": 0.4,
+            "n": 9,
+            "prob_media": 0.349029,
+            "frecuencia_observada": 0.555556
+          },
+          {
+            "bin": 4,
+            "rango_min": 0.4,
+            "rango_max": 0.5,
+            "n": 611,
+            "prob_media": 0.475859,
+            "frecuencia_observada": 0.523732
+          },
+          {
+            "bin": 5,
+            "rango_min": 0.5,
+            "rango_max": 0.6,
+            "n": 924,
+            "prob_media": 0.52788,
+            "frecuencia_observada": 0.517316
+          },
+          {
+            "bin": 6,
+            "rango_min": 0.6,
+            "rango_max": 0.7,
+            "n": 9,
+            "prob_media": 0.610982,
+            "frecuencia_observada": 0.444444
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 291,
+        "ic_medio": -0.044035,
+        "ic_std": 0.515548,
+        "ic_ir_anualizado": -0.6064,
+        "t_stat_hac": -0.9305,
+        "p_valor_hac": 0.3521
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": 0.000892,
+        "se_hac": 0.001774,
+        "dm_stat": 0.503129,
+        "p_valor_bilateral": 0.614874,
+        "p_valor_a_menor_perdida": 0.692563
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": 0.001871,
+        "se_hac": 0.003586,
+        "dm_stat": 0.521836,
+        "p_valor_bilateral": 0.601785,
+        "p_valor_a_menor_perdida": 0.699108
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": -0.00096,
+        "se_hac": 0.000412,
+        "dm_stat": -2.328417,
+        "p_valor_bilateral": 0.01989,
+        "p_valor_a_menor_perdida": 0.009945
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": 0.000892,
+        "ic_inferior": -0.002541,
+        "ic_superior": 0.004396,
+        "prob_a_menor_perdida": 0.3265
+      }
+    },
+    "G2_V4_ADJ": {
+      "n": 1557,
+      "n_efectivo_lag4": 624.2,
+      "aciertos": 805,
+      "exactitud_pct": 51.7,
+      "intervalo_wilson_95_pct": [
+        49.22,
+        54.18
+      ],
+      "brier": 0.249668,
+      "bss_vs_climatologia": 0.004831,
+      "bss_vs_050": 0.001327,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.000659,
+        "resolucion": 0.000613,
+        "incertidumbre": 0.249616,
+        "brier_murphy": 0.249662
+      },
+      "log_loss_nats": 0.692522,
+      "information_gain_bits_vs_climatologia": 0.003443,
+      "information_gain_bits_vs_050": 0.000902,
+      "calibracion": {
+        "ece": 0.012334,
+        "lambda_calibracion": 0.532662,
+        "intercepto_calibracion": 0.063027,
+        "pendiente_lineal": 0.54191,
+        "bins_detalle": [
+          {
+            "bin": 2,
+            "rango_min": 0.2,
+            "rango_max": 0.3,
+            "n": 1,
+            "prob_media": 0.289067,
+            "frecuencia_observada": 1.0
+          },
+          {
+            "bin": 3,
+            "rango_min": 0.3,
+            "rango_max": 0.4,
+            "n": 15,
+            "prob_media": 0.376239,
+            "frecuencia_observada": 0.4
+          },
+          {
+            "bin": 4,
+            "rango_min": 0.4,
+            "rango_max": 0.5,
+            "n": 578,
+            "prob_media": 0.477394,
+            "frecuencia_observada": 0.50519
+          },
+          {
+            "bin": 5,
+            "rango_min": 0.5,
+            "rango_max": 0.6,
+            "n": 953,
+            "prob_media": 0.526474,
+            "frecuencia_observada": 0.527807
+          },
+          {
+            "bin": 6,
+            "rango_min": 0.6,
+            "rango_max": 0.7,
+            "n": 10,
+            "prob_media": 0.619977,
+            "frecuencia_observada": 0.7
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 291,
+        "ic_medio": -0.012003,
+        "ic_std": 0.506539,
+        "ic_ir_anualizado": -0.1682,
+        "t_stat_hac": -0.2847,
+        "p_valor_hac": 0.7758
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": -0.001212,
+        "se_hac": 0.001607,
+        "dm_stat": -0.754165,
+        "p_valor_bilateral": 0.45075,
+        "p_valor_a_menor_perdida": 0.225375
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": -0.002386,
+        "se_hac": 0.003236,
+        "dm_stat": -0.73749,
+        "p_valor_bilateral": 0.460824,
+        "p_valor_a_menor_perdida": 0.230412
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": -0.003064,
+        "se_hac": 0.001318,
+        "dm_stat": -2.324865,
+        "p_valor_bilateral": 0.020079,
+        "p_valor_a_menor_perdida": 0.01004
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": -0.001212,
+        "ic_inferior": -0.004444,
+        "ic_superior": 0.001985,
+        "prob_a_menor_perdida": 0.771
+      }
+    },
+    "G2_V5_ADJ": {
+      "n": 1557,
+      "n_efectivo_lag4": 624.2,
+      "aciertos": 797,
+      "exactitud_pct": 51.19,
+      "intervalo_wilson_95_pct": [
+        48.71,
+        53.67
+      ],
+      "brier": 0.250235,
+      "bss_vs_climatologia": 0.002572,
+      "bss_vs_050": -0.00094,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.001284,
+        "resolucion": 0.000561,
+        "incertidumbre": 0.249616,
+        "brier_murphy": 0.250338
+      },
+      "log_loss_nats": 0.693657,
+      "information_gain_bits_vs_climatologia": 0.001805,
+      "information_gain_bits_vs_050": -0.000735,
+      "calibracion": {
+        "ece": 0.020853,
+        "lambda_calibracion": 0.423158,
+        "intercepto_calibracion": 0.080685,
+        "pendiente_lineal": 0.429864,
+        "bins_detalle": [
+          {
+            "bin": 2,
+            "rango_min": 0.2,
+            "rango_max": 0.3,
+            "n": 1,
+            "prob_media": 0.287651,
+            "frecuencia_observada": 1.0
+          },
+          {
+            "bin": 3,
+            "rango_min": 0.3,
+            "rango_max": 0.4,
+            "n": 19,
+            "prob_media": 0.380183,
+            "frecuencia_observada": 0.473684
+          },
+          {
+            "bin": 4,
+            "rango_min": 0.4,
+            "rango_max": 0.5,
+            "n": 694,
+            "prob_media": 0.470429,
+            "frecuencia_observada": 0.508646
+          },
+          {
+            "bin": 5,
+            "rango_min": 0.5,
+            "rango_max": 0.6,
+            "n": 841,
+            "prob_media": 0.524758,
+            "frecuencia_observada": 0.527943
+          },
+          {
+            "bin": 6,
+            "rango_min": 0.6,
+            "rango_max": 0.7,
+            "n": 2,
+            "prob_media": 0.610745,
+            "frecuencia_observada": 1.0
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 291,
+        "ic_medio": -0.026215,
+        "ic_std": 0.480368,
+        "ic_ir_anualizado": -0.3874,
+        "t_stat_hac": -0.6461,
+        "p_valor_hac": 0.5182
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": -0.000645,
+        "se_hac": 0.001472,
+        "dm_stat": -0.438373,
+        "p_valor_bilateral": 0.661116,
+        "p_valor_a_menor_perdida": 0.330558
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": -0.001251,
+        "se_hac": 0.002965,
+        "dm_stat": -0.422051,
+        "p_valor_bilateral": 0.672988,
+        "p_valor_a_menor_perdida": 0.336494
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": -0.002497,
+        "se_hac": 0.001342,
+        "dm_stat": -1.861451,
+        "p_valor_bilateral": 0.062681,
+        "p_valor_a_menor_perdida": 0.03134
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": -0.000645,
+        "ic_inferior": -0.00361,
+        "ic_superior": 0.002194,
+        "prob_a_menor_perdida": 0.6795
+      }
+    }
+  },
+  "test_4_emisoras_foco_ajustado_fase1": {
+    "CLIMATOLOGIA": {
+      "n": 1142,
+      "n_efectivo_lag4": 463.5,
+      "aciertos": 528,
+      "exactitud_pct": 46.23,
+      "intervalo_wilson_95_pct": [
+        43.36,
+        49.13
+      ],
+      "brier": 0.251457,
+      "bss_vs_climatologia": 0.0,
+      "bss_vs_050": -0.005828,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.002875,
+        "resolucion": 0.0,
+        "incertidumbre": 0.248582,
+        "brier_murphy": 0.251457
+      },
+      "log_loss_nats": 0.696062,
+      "information_gain_bits_vs_climatologia": 0.0,
+      "information_gain_bits_vs_050": -0.004205,
+      "calibracion": {
+        "ece": 0.053616,
+        "lambda_calibracion": 0.0,
+        "intercepto_calibracion": 0.0,
+        "pendiente_lineal": 0.0,
+        "bins_detalle": [
+          {
+            "bin": 4,
+            "rango_min": 0.4,
+            "rango_max": 0.5,
+            "n": 1142,
+            "prob_media": 0.484037,
+            "frecuencia_observada": 0.537653
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 0,
+        "ic_medio": 0.0,
+        "ic_std": 0.0,
+        "ic_ir_anualizado": 0.0,
+        "t_stat_hac": 0.0,
+        "p_valor_hac": 1.0
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": 0.0,
+        "se_hac": 0.0,
+        "dm_stat": 0.0,
+        "p_valor_bilateral": 1.0,
+        "p_valor_a_menor_perdida": 0.5
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": 0.0,
+        "se_hac": 0.0,
+        "dm_stat": 0.0,
+        "p_valor_bilateral": 1.0,
+        "p_valor_a_menor_perdida": 0.5
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": 0.000586,
+        "se_hac": 0.002103,
+        "dm_stat": 0.278688,
+        "p_valor_bilateral": 0.780485,
+        "p_valor_a_menor_perdida": 0.609758
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": 0.0,
+        "ic_inferior": 0.0,
+        "ic_superior": 0.0,
+        "prob_a_menor_perdida": 0.0
+      }
+    },
+    "SIEMPRE_SUBIDA": {
+      "n": 1142,
+      "n_efectivo_lag4": 463.5,
+      "aciertos": 614,
+      "exactitud_pct": 53.77,
+      "intervalo_wilson_95_pct": [
+        50.87,
+        56.64
+      ],
+      "brier": 0.248735,
+      "bss_vs_climatologia": 0.010826,
+      "bss_vs_050": 0.005061,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.000152,
+        "resolucion": 0.0,
+        "incertidumbre": 0.248582,
+        "brier_murphy": 0.248735
+      },
+      "log_loss_nats": 0.690616,
+      "information_gain_bits_vs_climatologia": 0.007856,
+      "information_gain_bits_vs_050": 0.003651,
+      "calibracion": {
+        "ece": 0.012347,
+        "lambda_calibracion": 0.0,
+        "intercepto_calibracion": 0.0,
+        "pendiente_lineal": 0.0,
+        "bins_detalle": [
+          {
+            "bin": 5,
+            "rango_min": 0.5,
+            "rango_max": 0.6,
+            "n": 1142,
+            "prob_media": 0.55,
+            "frecuencia_observada": 0.537653
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 0,
+        "ic_medio": 0.0,
+        "ic_std": 0.0,
+        "ic_ir_anualizado": 0.0,
+        "t_stat_hac": 0.0,
+        "p_valor_hac": 1.0
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": -0.002722,
+        "se_hac": 0.003055,
+        "dm_stat": -0.891015,
+        "p_valor_bilateral": 0.372921,
+        "p_valor_a_menor_perdida": 0.186461
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": -0.005446,
+        "se_hac": 0.006126,
+        "dm_stat": -0.888873,
+        "p_valor_bilateral": 0.374072,
+        "p_valor_a_menor_perdida": 0.187036
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": -0.002136,
+        "se_hac": 0.002587,
+        "dm_stat": -0.825578,
+        "p_valor_bilateral": 0.409043,
+        "p_valor_a_menor_perdida": 0.204522
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": -0.002722,
+        "ic_inferior": -0.008729,
+        "ic_superior": 0.003516,
+        "prob_a_menor_perdida": 0.8155
+      }
+    },
+    "MOMENTUM_INGENUO": {
+      "n": 1142,
+      "n_efectivo_lag4": 463.5,
+      "aciertos": 556,
+      "exactitud_pct": 48.69,
+      "intervalo_wilson_95_pct": [
+        45.8,
+        51.58
+      ],
+      "brier": 0.262706,
+      "bss_vs_climatologia": -0.044735,
+      "bss_vs_050": -0.050823,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.014301,
+        "resolucion": 0.00027,
+        "incertidumbre": 0.248582,
+        "brier_murphy": 0.262613
+      },
+      "log_loss_nats": 0.719044,
+      "information_gain_bits_vs_climatologia": -0.033155,
+      "information_gain_bits_vs_050": -0.037361,
+      "calibracion": {
+        "ece": 0.113047,
+        "lambda_calibracion": -0.16789,
+        "intercepto_calibracion": 0.156858,
+        "pendiente_lineal": -0.169077,
+        "bins_detalle": [
+          {
+            "bin": 4,
+            "rango_min": 0.4,
+            "rango_max": 0.5,
+            "n": 522,
+            "prob_media": 0.4,
+            "frecuencia_observada": 0.555556
+          },
+          {
+            "bin": 5,
+            "rango_min": 0.5,
+            "rango_max": 0.6,
+            "n": 620,
+            "prob_media": 0.599839,
+            "frecuencia_observada": 0.522581
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 217,
+        "ic_medio": 0.023017,
+        "ic_std": 0.613449,
+        "ic_ir_anualizado": 0.2664,
+        "t_stat_hac": 0.4128,
+        "p_valor_hac": 0.6798
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": 0.011249,
+        "se_hac": 0.004009,
+        "dm_stat": 2.806075,
+        "p_valor_bilateral": 0.005015,
+        "p_valor_a_menor_perdida": 0.997493
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": 0.022981,
+        "se_hac": 0.008123,
+        "dm_stat": 2.829277,
+        "p_valor_bilateral": 0.004665,
+        "p_valor_a_menor_perdida": 0.997667
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": 0.011835,
+        "se_hac": 0.005173,
+        "dm_stat": 2.287735,
+        "p_valor_bilateral": 0.022153,
+        "p_valor_a_menor_perdida": 0.988924
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": 0.011249,
+        "ic_inferior": 0.002456,
+        "ic_superior": 0.019029,
+        "prob_a_menor_perdida": 0.0055
+      }
+    },
+    "G2_V1_ADJ": {
+      "n": 1142,
+      "n_efectivo_lag4": 463.5,
+      "aciertos": 586,
+      "exactitud_pct": 51.31,
+      "intervalo_wilson_95_pct": [
+        48.42,
+        54.2
+      ],
+      "brier": 0.250871,
+      "bss_vs_climatologia": 0.002331,
+      "bss_vs_050": -0.003483,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.001679,
+        "resolucion": 3.7e-05,
+        "incertidumbre": 0.248582,
+        "brier_murphy": 0.250225
+      },
+      "log_loss_nats": 0.694906,
+      "information_gain_bits_vs_climatologia": 0.001669,
+      "information_gain_bits_vs_050": -0.002537,
+      "calibracion": {
+        "ece": 0.031759,
+        "lambda_calibracion": 0.024189,
+        "intercepto_calibracion": 0.150079,
+        "pendiente_lineal": 0.022391,
+        "bins_detalle": [
+          {
+            "bin": 3,
+            "rango_min": 0.3,
+            "rango_max": 0.4,
+            "n": 9,
+            "prob_media": 0.391353,
+            "frecuencia_observada": 0.555556
+          },
+          {
+            "bin": 4,
+            "rango_min": 0.4,
+            "rango_max": 0.5,
+            "n": 443,
+            "prob_media": 0.473102,
+            "frecuencia_observada": 0.530474
+          },
+          {
+            "bin": 5,
+            "rango_min": 0.5,
+            "rango_max": 0.6,
+            "n": 673,
+            "prob_media": 0.530572,
+            "frecuencia_observada": 0.542348
+          },
+          {
+            "bin": 6,
+            "rango_min": 0.6,
+            "rango_max": 0.7,
+            "n": 17,
+            "prob_media": 0.614728,
+            "frecuencia_observada": 0.529412
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 291,
+        "ic_medio": -0.040206,
+        "ic_std": 0.608218,
+        "ic_ir_anualizado": -0.4693,
+        "t_stat_hac": -0.7034,
+        "p_valor_hac": 0.4818
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": -0.000586,
+        "se_hac": 0.002103,
+        "dm_stat": -0.278688,
+        "p_valor_bilateral": 0.780485,
+        "p_valor_a_menor_perdida": 0.390242
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": -0.001157,
+        "se_hac": 0.004232,
+        "dm_stat": -0.273308,
+        "p_valor_bilateral": 0.784616,
+        "p_valor_a_menor_perdida": 0.392308
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": 0.0,
+        "se_hac": 0.0,
+        "dm_stat": 0.0,
+        "p_valor_bilateral": 1.0,
+        "p_valor_a_menor_perdida": 0.5
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": -0.000586,
+        "ic_inferior": -0.004678,
+        "ic_superior": 0.003784,
+        "prob_a_menor_perdida": 0.5855
+      }
+    },
+    "G2_V2_ADJ": {
+      "n": 1142,
+      "n_efectivo_lag4": 463.5,
+      "aciertos": 585,
+      "exactitud_pct": 51.23,
+      "intervalo_wilson_95_pct": [
+        48.33,
+        54.12
+      ],
+      "brier": 0.250913,
+      "bss_vs_climatologia": 0.002163,
+      "bss_vs_050": -0.003653,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.001751,
+        "resolucion": 6e-05,
+        "incertidumbre": 0.248582,
+        "brier_murphy": 0.250274
+      },
+      "log_loss_nats": 0.694993,
+      "information_gain_bits_vs_climatologia": 0.001543,
+      "information_gain_bits_vs_050": -0.002662,
+      "calibracion": {
+        "ece": 0.032865,
+        "lambda_calibracion": 0.02499,
+        "intercepto_calibracion": 0.150091,
+        "pendiente_lineal": 0.023448,
+        "bins_detalle": [
+          {
+            "bin": 3,
+            "rango_min": 0.3,
+            "rango_max": 0.4,
+            "n": 10,
+            "prob_media": 0.390618,
+            "frecuencia_observada": 0.5
+          },
+          {
+            "bin": 4,
+            "rango_min": 0.4,
+            "rango_max": 0.5,
+            "n": 451,
+            "prob_media": 0.473157,
+            "frecuencia_observada": 0.532151
+          },
+          {
+            "bin": 5,
+            "rango_min": 0.5,
+            "rango_max": 0.6,
+            "n": 665,
+            "prob_media": 0.530863,
+            "frecuencia_observada": 0.542857
+          },
+          {
+            "bin": 6,
+            "rango_min": 0.6,
+            "rango_max": 0.7,
+            "n": 16,
+            "prob_media": 0.61594,
+            "frecuencia_observada": 0.5
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 291,
+        "ic_medio": -0.035395,
+        "ic_std": 0.610781,
+        "ic_ir_anualizado": -0.4114,
+        "t_stat_hac": -0.6184,
+        "p_valor_hac": 0.5363
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": -0.000544,
+        "se_hac": 0.002106,
+        "dm_stat": -0.258265,
+        "p_valor_bilateral": 0.796202,
+        "p_valor_a_menor_perdida": 0.398101
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": -0.001069,
+        "se_hac": 0.004238,
+        "dm_stat": -0.25236,
+        "p_valor_bilateral": 0.800763,
+        "p_valor_a_menor_perdida": 0.400381
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": 4.2e-05,
+        "se_hac": 7.7e-05,
+        "dm_stat": 0.550338,
+        "p_valor_bilateral": 0.582088,
+        "p_valor_a_menor_perdida": 0.708956
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": -0.000544,
+        "ic_inferior": -0.004622,
+        "ic_superior": 0.003879,
+        "prob_a_menor_perdida": 0.579
+      }
+    },
+    "G2_V3_ADJ": {
+      "n": 1142,
+      "n_efectivo_lag4": 463.5,
+      "aciertos": 589,
+      "exactitud_pct": 51.58,
+      "intervalo_wilson_95_pct": [
+        48.68,
+        54.46
+      ],
+      "brier": 0.250262,
+      "bss_vs_climatologia": 0.004751,
+      "bss_vs_050": -0.001049,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.001616,
+        "resolucion": 0.000774,
+        "incertidumbre": 0.248582,
+        "brier_murphy": 0.249424
+      },
+      "log_loss_nats": 0.693676,
+      "information_gain_bits_vs_climatologia": 0.003442,
+      "information_gain_bits_vs_050": -0.000764,
+      "calibracion": {
+        "ece": 0.0285,
+        "lambda_calibracion": 0.043376,
+        "intercepto_calibracion": 0.149306,
+        "pendiente_lineal": 0.042223,
+        "bins_detalle": [
+          {
+            "bin": 4,
+            "rango_min": 0.4,
+            "rango_max": 0.5,
+            "n": 419,
+            "prob_media": 0.478116,
+            "frecuencia_observada": 0.529833
+          },
+          {
+            "bin": 5,
+            "rango_min": 0.5,
+            "rango_max": 0.6,
+            "n": 719,
+            "prob_media": 0.52667,
+            "frecuencia_observada": 0.539638
+          },
+          {
+            "bin": 6,
+            "rango_min": 0.6,
+            "rango_max": 0.7,
+            "n": 4,
+            "prob_media": 0.611601,
+            "frecuencia_observada": 1.0
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 291,
+        "ic_medio": -0.035395,
+        "ic_std": 0.614496,
+        "ic_ir_anualizado": -0.4089,
+        "t_stat_hac": -0.6096,
+        "p_valor_hac": 0.5421
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": -0.001195,
+        "se_hac": 0.001827,
+        "dm_stat": -0.654078,
+        "p_valor_bilateral": 0.513062,
+        "p_valor_a_menor_perdida": 0.256531
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": -0.002386,
+        "se_hac": 0.003667,
+        "dm_stat": -0.650631,
+        "p_valor_bilateral": 0.515284,
+        "p_valor_a_menor_perdida": 0.257642
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": -0.000609,
+        "se_hac": 0.000418,
+        "dm_stat": -1.456205,
+        "p_valor_bilateral": 0.145336,
+        "p_valor_a_menor_perdida": 0.072668
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": -0.001195,
+        "ic_inferior": -0.004722,
+        "ic_superior": 0.002558,
+        "prob_a_menor_perdida": 0.728
+      }
+    },
+    "G2_V4_ADJ": {
+      "n": 1142,
+      "n_efectivo_lag4": 463.5,
+      "aciertos": 598,
+      "exactitud_pct": 52.36,
+      "intervalo_wilson_95_pct": [
+        49.46,
+        55.25
+      ],
+      "brier": 0.248752,
+      "bss_vs_climatologia": 0.010756,
+      "bss_vs_050": 0.004991,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.001307,
+        "resolucion": 0.000834,
+        "incertidumbre": 0.248582,
+        "brier_murphy": 0.249055
+      },
+      "log_loss_nats": 0.69064,
+      "information_gain_bits_vs_climatologia": 0.007823,
+      "information_gain_bits_vs_050": 0.003618,
+      "calibracion": {
+        "ece": 0.030047,
+        "lambda_calibracion": 0.883305,
+        "intercepto_calibracion": 0.12357,
+        "pendiente_lineal": 0.878596,
+        "bins_detalle": [
+          {
+            "bin": 3,
+            "rango_min": 0.3,
+            "rango_max": 0.4,
+            "n": 3,
+            "prob_media": 0.376717,
+            "frecuencia_observada": 0.333333
+          },
+          {
+            "bin": 4,
+            "rango_min": 0.4,
+            "rango_max": 0.5,
+            "n": 419,
+            "prob_media": 0.47784,
+            "frecuencia_observada": 0.520286
+          },
+          {
+            "bin": 5,
+            "rango_min": 0.5,
+            "rango_max": 0.6,
+            "n": 717,
+            "prob_media": 0.525389,
+            "frecuencia_observada": 0.546722
+          },
+          {
+            "bin": 6,
+            "rango_min": 0.6,
+            "rango_max": 0.7,
+            "n": 3,
+            "prob_media": 0.632411,
+            "frecuencia_observada": 1.0
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 291,
+        "ic_medio": -0.039863,
+        "ic_std": 0.613688,
+        "ic_ir_anualizado": -0.4611,
+        "t_stat_hac": -0.7846,
+        "p_valor_hac": 0.4327
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": -0.002705,
+        "se_hac": 0.001679,
+        "dm_stat": -1.610445,
+        "p_valor_bilateral": 0.107301,
+        "p_valor_a_menor_perdida": 0.05365
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": -0.005422,
+        "se_hac": 0.003369,
+        "dm_stat": -1.609314,
+        "p_valor_bilateral": 0.107548,
+        "p_valor_a_menor_perdida": 0.053774
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": -0.002119,
+        "se_hac": 0.001352,
+        "dm_stat": -1.567158,
+        "p_valor_bilateral": 0.117078,
+        "p_valor_a_menor_perdida": 0.058539
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": -0.002705,
+        "ic_inferior": -0.006013,
+        "ic_superior": 0.000754,
+        "prob_a_menor_perdida": 0.9395
+      }
+    },
+    "G2_V5_ADJ": {
+      "n": 1142,
+      "n_efectivo_lag4": 463.5,
+      "aciertos": 590,
+      "exactitud_pct": 51.66,
+      "intervalo_wilson_95_pct": [
+        48.76,
+        54.55
+      ],
+      "brier": 0.249831,
+      "bss_vs_climatologia": 0.006467,
+      "bss_vs_050": 0.000677,
+      "descomposicion_murphy": {
+        "confiabilidad": 0.00163,
+        "resolucion": 0.000154,
+        "incertidumbre": 0.248582,
+        "brier_murphy": 0.250058
+      },
+      "log_loss_nats": 0.692818,
+      "information_gain_bits_vs_climatologia": 0.004681,
+      "information_gain_bits_vs_050": 0.000475,
+      "calibracion": {
+        "ece": 0.03754,
+        "lambda_calibracion": 0.574832,
+        "intercepto_calibracion": 0.150895,
+        "pendiente_lineal": 0.57464,
+        "bins_detalle": [
+          {
+            "bin": 3,
+            "rango_min": 0.3,
+            "rango_max": 0.4,
+            "n": 6,
+            "prob_media": 0.384621,
+            "frecuencia_observada": 0.5
+          },
+          {
+            "bin": 4,
+            "rango_min": 0.4,
+            "rango_max": 0.5,
+            "n": 498,
+            "prob_media": 0.471374,
+            "frecuencia_observada": 0.524096
+          },
+          {
+            "bin": 5,
+            "rango_min": 0.5,
+            "rango_max": 0.6,
+            "n": 638,
+            "prob_media": 0.523633,
+            "frecuencia_observada": 0.548589
+          }
+        ]
+      },
+      "rank_ic": {
+        "n_fechas_ic": 291,
+        "ic_medio": -0.034021,
+        "ic_std": 0.570218,
+        "ic_ir_anualizado": -0.4236,
+        "t_stat_hac": -0.7398,
+        "p_valor_hac": 0.4594
+      },
+      "diebold_mariano_brier_vs_climatologia": {
+        "diff_media": -0.001626,
+        "se_hac": 0.001575,
+        "dm_stat": -1.032317,
+        "p_valor_bilateral": 0.301924,
+        "p_valor_a_menor_perdida": 0.150962
+      },
+      "diebold_mariano_logloss_vs_climatologia": {
+        "diff_media": -0.003244,
+        "se_hac": 0.00316,
+        "dm_stat": -1.026612,
+        "p_valor_bilateral": 0.304603,
+        "p_valor_a_menor_perdida": 0.152302
+      },
+      "diebold_mariano_brier_vs_v1": {
+        "diff_media": -0.00104,
+        "se_hac": 0.001349,
+        "dm_stat": -0.771044,
+        "p_valor_bilateral": 0.440681,
+        "p_valor_a_menor_perdida": 0.22034
+      },
+      "block_bootstrap_brier_vs_climatologia": {
+        "diff_media": -0.001626,
+        "ic_inferior": -0.004663,
+        "ic_superior": 0.00152,
+        "prob_a_menor_perdida": 0.839
+      }
+    }
+  },
+  "integridad_archivos_protegidos_intacta": true
+}
