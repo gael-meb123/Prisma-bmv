@@ -1,18 +1,21 @@
 {
   "version_monitor_g2": "MONITOR_PROSPECTIVO_PANEL_G2_V2_MULTIESCALA_SECTORIAL",
   "fecha_congelamiento_modelos": "2026-11-06",
-  "timestamp_actualizacion_utc": "2026-11-06T20:25:27.584224+00:00",
+  "timestamp_actualizacion_utc": "2026-11-10T01:11:00.202524+00:00",
   "fechas_procesadas": [
     "2026-10-28",
     "2026-10-29",
     "2026-10-30",
     "2026-11-03",
     "2026-11-04",
-    "2026-11-05"
+    "2026-11-05",
+    "2026-11-06",
+    "2026-11-09"
   ],
-  "total_senales_emitidas_g2": 125,
+  "total_senales_emitidas_g2": 175,
   "conteo_por_muestra_evaluacion": {
-    "IN_SAMPLE_DISENO": 125
+    "IN_SAMPLE_DISENO": 125,
+    "OUT_OF_SAMPLE_PRE_REGISTRADO": 50
   },
   "emisoras_con_ventana_21_completa": [
     "AMX",
@@ -23,34 +26,34 @@
   ],
   "evaluacion_oficial_resuelta_t5": {
     "G2_V1_POOLED_REL3_CALIBRADO": {
-      "n_resueltas_t5": 0,
-      "aciertos_t5": 0,
-      "tasa_acierto_t5_pct": null,
-      "brier_medio_t5": null
+      "n_resueltas_t5": 8,
+      "aciertos_t5": 1,
+      "tasa_acierto_t5_pct": 12.5,
+      "brier_medio_t5": 0.287804
     },
     "G2_V2_POOLED_REL3_ZONA_NEUTRAL": {
-      "n_resueltas_t5": 0,
-      "aciertos_t5": 0,
-      "tasa_acierto_t5_pct": null,
-      "brier_medio_t5": null
+      "n_resueltas_t5": 8,
+      "aciertos_t5": 2,
+      "tasa_acierto_t5_pct": 25.0,
+      "brier_medio_t5": 0.28949
     },
     "G2_V3_POOLED_REL3_ALTA_DISC_EXPANDIDO": {
-      "n_resueltas_t5": 0,
-      "aciertos_t5": 0,
-      "tasa_acierto_t5_pct": null,
-      "brier_medio_t5": null
+      "n_resueltas_t5": 8,
+      "aciertos_t5": 2,
+      "tasa_acierto_t5_pct": 25.0,
+      "brier_medio_t5": 0.273856
     },
     "G2_V4_POOLED_DM5_REL_CORTO_PLAZO": {
-      "n_resueltas_t5": 0,
-      "aciertos_t5": 0,
-      "tasa_acierto_t5_pct": null,
-      "brier_medio_t5": null
+      "n_resueltas_t5": 8,
+      "aciertos_t5": 3,
+      "tasa_acierto_t5_pct": 37.5,
+      "brier_medio_t5": 0.260604
     },
     "G2_V5_ADAPTATIVO_REGIMEN_SECTORIAL": {
-      "n_resueltas_t5": 0,
-      "aciertos_t5": 0,
-      "tasa_acierto_t5_pct": null,
-      "brier_medio_t5": null
+      "n_resueltas_t5": 8,
+      "aciertos_t5": 7,
+      "tasa_acierto_t5_pct": 87.5,
+      "brier_medio_t5": 0.217287
     }
   },
   "evaluacion_pendiente_reconciliacion_t5": {
@@ -87,29 +90,29 @@
   },
   "seguimiento_parcial_en_curso": {
     "G2_V1_POOLED_REL3_CALIBRADO": {
-      "emisoras_en_seguimiento_parcial": 20,
-      "aciertos_parciales_t1": 5,
-      "tasa_acierto_parcial_pct": 25.0
-    },
-    "G2_V2_POOLED_REL3_ZONA_NEUTRAL": {
-      "emisoras_en_seguimiento_parcial": 20,
-      "aciertos_parciales_t1": 6,
-      "tasa_acierto_parcial_pct": 30.0
-    },
-    "G2_V3_POOLED_REL3_ALTA_DISC_EXPANDIDO": {
-      "emisoras_en_seguimiento_parcial": 20,
-      "aciertos_parciales_t1": 7,
-      "tasa_acierto_parcial_pct": 35.0
-    },
-    "G2_V4_POOLED_DM5_REL_CORTO_PLAZO": {
-      "emisoras_en_seguimiento_parcial": 20,
-      "aciertos_parciales_t1": 8,
+      "emisoras_en_seguimiento_parcial": 30,
+      "aciertos_parciales_t1": 12,
       "tasa_acierto_parcial_pct": 40.0
     },
+    "G2_V2_POOLED_REL3_ZONA_NEUTRAL": {
+      "emisoras_en_seguimiento_parcial": 30,
+      "aciertos_parciales_t1": 12,
+      "tasa_acierto_parcial_pct": 40.0
+    },
+    "G2_V3_POOLED_REL3_ALTA_DISC_EXPANDIDO": {
+      "emisoras_en_seguimiento_parcial": 30,
+      "aciertos_parciales_t1": 14,
+      "tasa_acierto_parcial_pct": 46.67
+    },
+    "G2_V4_POOLED_DM5_REL_CORTO_PLAZO": {
+      "emisoras_en_seguimiento_parcial": 30,
+      "aciertos_parciales_t1": 13,
+      "tasa_acierto_parcial_pct": 43.33
+    },
     "G2_V5_ADAPTATIVO_REGIMEN_SECTORIAL": {
-      "emisoras_en_seguimiento_parcial": 20,
-      "aciertos_parciales_t1": 18,
-      "tasa_acierto_parcial_pct": 90.0
+      "emisoras_en_seguimiento_parcial": 30,
+      "aciertos_parciales_t1": 21,
+      "tasa_acierto_parcial_pct": 70.0
     }
   },
   "detalle_senales": [
@@ -486,9 +489,9 @@
       "probabilidad_subida": 0.400186,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+4",
-      "ppp_parcial_reciente": 23.67,
-      "retorno_parcial_pct": 4.1355,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 23.97,
+      "retorno_parcial_pct": 5.4553,
       "acierto_parcial_en_curso": false
     },
     {
@@ -504,9 +507,9 @@
       "probabilidad_subida": 0.39709,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+4",
-      "ppp_parcial_reciente": 23.67,
-      "retorno_parcial_pct": 4.1355,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 23.97,
+      "retorno_parcial_pct": 5.4553,
       "acierto_parcial_en_curso": false
     },
     {
@@ -522,9 +525,9 @@
       "probabilidad_subida": 0.44281,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+4",
-      "ppp_parcial_reciente": 23.67,
-      "retorno_parcial_pct": 4.1355,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 23.97,
+      "retorno_parcial_pct": 5.4553,
       "acierto_parcial_en_curso": false
     },
     {
@@ -540,9 +543,9 @@
       "probabilidad_subida": 0.491628,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+4",
-      "ppp_parcial_reciente": 23.67,
-      "retorno_parcial_pct": 4.1355,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 23.97,
+      "retorno_parcial_pct": 5.4553,
       "acierto_parcial_en_curso": false
     },
     {
@@ -558,9 +561,9 @@
       "probabilidad_subida": 0.590623,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+4",
-      "ppp_parcial_reciente": 23.67,
-      "retorno_parcial_pct": 4.1355,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 23.97,
+      "retorno_parcial_pct": 5.4553,
       "acierto_parcial_en_curso": true
     },
     {
@@ -576,9 +579,9 @@
       "probabilidad_subida": 0.467825,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+4",
-      "ppp_parcial_reciente": 210.51,
-      "retorno_parcial_pct": -0.2275,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 208.46,
+      "retorno_parcial_pct": -1.1991,
       "acierto_parcial_en_curso": true
     },
     {
@@ -594,9 +597,9 @@
       "probabilidad_subida": 0.466811,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+4",
-      "ppp_parcial_reciente": 210.51,
-      "retorno_parcial_pct": -0.2275,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 208.46,
+      "retorno_parcial_pct": -1.1991,
       "acierto_parcial_en_curso": true
     },
     {
@@ -612,9 +615,9 @@
       "probabilidad_subida": 0.478772,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+4",
-      "ppp_parcial_reciente": 210.51,
-      "retorno_parcial_pct": -0.2275,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 208.46,
+      "retorno_parcial_pct": -1.1991,
       "acierto_parcial_en_curso": true
     },
     {
@@ -630,9 +633,9 @@
       "probabilidad_subida": 0.517699,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+4",
-      "ppp_parcial_reciente": 210.51,
-      "retorno_parcial_pct": -0.2275,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 208.46,
+      "retorno_parcial_pct": -1.1991,
       "acierto_parcial_en_curso": false
     },
     {
@@ -648,9 +651,9 @@
       "probabilidad_subida": 0.472772,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+4",
-      "ppp_parcial_reciente": 210.51,
-      "retorno_parcial_pct": -0.2275,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 208.46,
+      "retorno_parcial_pct": -1.1991,
       "acierto_parcial_en_curso": true
     },
     {
@@ -666,9 +669,9 @@
       "probabilidad_subida": 0.526514,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+4",
-      "ppp_parcial_reciente": 219.39,
-      "retorno_parcial_pct": -6.1152,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 217.63,
+      "retorno_parcial_pct": -6.8684,
       "acierto_parcial_en_curso": false
     },
     {
@@ -684,9 +687,9 @@
       "probabilidad_subida": 0.527861,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+4",
-      "ppp_parcial_reciente": 219.39,
-      "retorno_parcial_pct": -6.1152,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 217.63,
+      "retorno_parcial_pct": -6.8684,
       "acierto_parcial_en_curso": false
     },
     {
@@ -702,9 +705,9 @@
       "probabilidad_subida": 0.524565,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+4",
-      "ppp_parcial_reciente": 219.39,
-      "retorno_parcial_pct": -6.1152,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 217.63,
+      "retorno_parcial_pct": -6.8684,
       "acierto_parcial_en_curso": false
     },
     {
@@ -720,9 +723,9 @@
       "probabilidad_subida": 0.492906,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+4",
-      "ppp_parcial_reciente": 219.39,
-      "retorno_parcial_pct": -6.1152,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 217.63,
+      "retorno_parcial_pct": -6.8684,
       "acierto_parcial_en_curso": true
     },
     {
@@ -738,9 +741,9 @@
       "probabilidad_subida": 0.442655,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+4",
-      "ppp_parcial_reciente": 219.39,
-      "retorno_parcial_pct": -6.1152,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 217.63,
+      "retorno_parcial_pct": -6.8684,
       "acierto_parcial_en_curso": true
     },
     {
@@ -756,9 +759,9 @@
       "probabilidad_subida": 0.499926,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+4",
-      "ppp_parcial_reciente": 53.32,
-      "retorno_parcial_pct": 9.3295,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 54.14,
+      "retorno_parcial_pct": 11.0109,
       "acierto_parcial_en_curso": false
     },
     {
@@ -774,9 +777,9 @@
       "probabilidad_subida": 0.500916,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+4",
-      "ppp_parcial_reciente": 53.32,
-      "retorno_parcial_pct": 9.3295,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 54.14,
+      "retorno_parcial_pct": 11.0109,
       "acierto_parcial_en_curso": true
     },
     {
@@ -792,9 +795,9 @@
       "probabilidad_subida": 0.501974,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+4",
-      "ppp_parcial_reciente": 53.32,
-      "retorno_parcial_pct": 9.3295,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 54.14,
+      "retorno_parcial_pct": 11.0109,
       "acierto_parcial_en_curso": true
     },
     {
@@ -810,9 +813,9 @@
       "probabilidad_subida": 0.53116,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+4",
-      "ppp_parcial_reciente": 53.32,
-      "retorno_parcial_pct": 9.3295,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 54.14,
+      "retorno_parcial_pct": 11.0109,
       "acierto_parcial_en_curso": true
     },
     {
@@ -828,9 +831,9 @@
       "probabilidad_subida": 0.532782,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+4",
-      "ppp_parcial_reciente": 53.32,
-      "retorno_parcial_pct": 9.3295,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 54.14,
+      "retorno_parcial_pct": 11.0109,
       "acierto_parcial_en_curso": true
     },
     {
@@ -846,9 +849,9 @@
       "probabilidad_subida": 0.404351,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+3",
-      "ppp_parcial_reciente": 23.67,
-      "retorno_parcial_pct": 2.6898,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 24.17,
+      "retorno_parcial_pct": 4.859,
       "acierto_parcial_en_curso": false
     },
     {
@@ -864,9 +867,9 @@
       "probabilidad_subida": 0.399643,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+3",
-      "ppp_parcial_reciente": 23.67,
-      "retorno_parcial_pct": 2.6898,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 24.17,
+      "retorno_parcial_pct": 4.859,
       "acierto_parcial_en_curso": false
     },
     {
@@ -882,9 +885,9 @@
       "probabilidad_subida": 0.443168,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+3",
-      "ppp_parcial_reciente": 23.67,
-      "retorno_parcial_pct": 2.6898,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 24.17,
+      "retorno_parcial_pct": 4.859,
       "acierto_parcial_en_curso": false
     },
     {
@@ -900,9 +903,9 @@
       "probabilidad_subida": 0.462974,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+3",
-      "ppp_parcial_reciente": 23.67,
-      "retorno_parcial_pct": 2.6898,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 24.17,
+      "retorno_parcial_pct": 4.859,
       "acierto_parcial_en_curso": false
     },
     {
@@ -918,9 +921,9 @@
       "probabilidad_subida": 0.574558,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+3",
-      "ppp_parcial_reciente": 23.67,
-      "retorno_parcial_pct": 2.6898,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 24.17,
+      "retorno_parcial_pct": 4.859,
       "acierto_parcial_en_curso": true
     },
     {
@@ -936,9 +939,9 @@
       "probabilidad_subida": 0.495383,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+3",
-      "ppp_parcial_reciente": 210.51,
-      "retorno_parcial_pct": 0.7032,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 209.31,
+      "retorno_parcial_pct": 0.1292,
       "acierto_parcial_en_curso": false
     },
     {
@@ -954,9 +957,9 @@
       "probabilidad_subida": 0.493964,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+3",
-      "ppp_parcial_reciente": 210.51,
-      "retorno_parcial_pct": 0.7032,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 209.31,
+      "retorno_parcial_pct": 0.1292,
       "acierto_parcial_en_curso": false
     },
     {
@@ -972,9 +975,9 @@
       "probabilidad_subida": 0.496475,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+3",
-      "ppp_parcial_reciente": 210.51,
-      "retorno_parcial_pct": 0.7032,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 209.31,
+      "retorno_parcial_pct": 0.1292,
       "acierto_parcial_en_curso": false
     },
     {
@@ -990,9 +993,9 @@
       "probabilidad_subida": 0.525895,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+3",
-      "ppp_parcial_reciente": 210.51,
-      "retorno_parcial_pct": 0.7032,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 209.31,
+      "retorno_parcial_pct": 0.1292,
       "acierto_parcial_en_curso": true
     },
     {
@@ -1008,9 +1011,9 @@
       "probabilidad_subida": 0.521482,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+3",
-      "ppp_parcial_reciente": 210.51,
-      "retorno_parcial_pct": 0.7032,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 209.31,
+      "retorno_parcial_pct": 0.1292,
       "acierto_parcial_en_curso": true
     },
     {
@@ -1026,9 +1029,9 @@
       "probabilidad_subida": 0.563472,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+3",
-      "ppp_parcial_reciente": 219.39,
-      "retorno_parcial_pct": -2.1934,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 223.57,
+      "retorno_parcial_pct": -0.3299,
       "acierto_parcial_en_curso": false
     },
     {
@@ -1044,9 +1047,9 @@
       "probabilidad_subida": 0.565134,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+3",
-      "ppp_parcial_reciente": 219.39,
-      "retorno_parcial_pct": -2.1934,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 223.57,
+      "retorno_parcial_pct": -0.3299,
       "acierto_parcial_en_curso": false
     },
     {
@@ -1062,9 +1065,9 @@
       "probabilidad_subida": 0.549156,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+3",
-      "ppp_parcial_reciente": 219.39,
-      "retorno_parcial_pct": -2.1934,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 223.57,
+      "retorno_parcial_pct": -0.3299,
       "acierto_parcial_en_curso": false
     },
     {
@@ -1080,9 +1083,9 @@
       "probabilidad_subida": 0.541452,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+3",
-      "ppp_parcial_reciente": 219.39,
-      "retorno_parcial_pct": -2.1934,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 223.57,
+      "retorno_parcial_pct": -0.3299,
       "acierto_parcial_en_curso": false
     },
     {
@@ -1098,9 +1101,9 @@
       "probabilidad_subida": 0.487607,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+3",
-      "ppp_parcial_reciente": 219.39,
-      "retorno_parcial_pct": -2.1934,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 223.57,
+      "retorno_parcial_pct": -0.3299,
       "acierto_parcial_en_curso": true
     },
     {
@@ -1116,9 +1119,9 @@
       "probabilidad_subida": 0.480802,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
-      "estado_resolucion": "EN_CURSO_T+3",
-      "ppp_parcial_reciente": 53.32,
-      "retorno_parcial_pct": 5.8146,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 54.59,
+      "retorno_parcial_pct": 8.335,
       "acierto_parcial_en_curso": false
     },
     {
@@ -1134,9 +1137,9 @@
       "probabilidad_subida": 0.479513,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
-      "estado_resolucion": "EN_CURSO_T+3",
-      "ppp_parcial_reciente": 53.32,
-      "retorno_parcial_pct": 5.8146,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 54.59,
+      "retorno_parcial_pct": 8.335,
       "acierto_parcial_en_curso": false
     },
     {
@@ -1152,9 +1155,9 @@
       "probabilidad_subida": 0.487362,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
-      "estado_resolucion": "EN_CURSO_T+3",
-      "ppp_parcial_reciente": 53.32,
-      "retorno_parcial_pct": 5.8146,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 54.59,
+      "retorno_parcial_pct": 8.335,
       "acierto_parcial_en_curso": false
     },
     {
@@ -1170,9 +1173,9 @@
       "probabilidad_subida": 0.462163,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
-      "estado_resolucion": "EN_CURSO_T+3",
-      "ppp_parcial_reciente": 53.32,
-      "retorno_parcial_pct": 5.8146,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 54.59,
+      "retorno_parcial_pct": 8.335,
       "acierto_parcial_en_curso": false
     },
     {
@@ -1188,9 +1191,9 @@
       "probabilidad_subida": 0.465943,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
-      "estado_resolucion": "EN_CURSO_T+3",
-      "ppp_parcial_reciente": 53.32,
-      "retorno_parcial_pct": 5.8146,
+      "estado_resolucion": "RESUELTA_OFICIAL_T5",
+      "ppp_parcial_reciente": 54.59,
+      "retorno_parcial_pct": 8.335,
       "acierto_parcial_en_curso": false
     },
     {
@@ -1206,9 +1209,9 @@
       "probabilidad_subida": 0.386356,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+2",
-      "ppp_parcial_reciente": 23.67,
-      "retorno_parcial_pct": 1.3271,
+      "estado_resolucion": "EN_CURSO_T+4",
+      "ppp_parcial_reciente": 24.17,
+      "retorno_parcial_pct": 3.4675,
       "acierto_parcial_en_curso": false
     },
     {
@@ -1224,9 +1227,9 @@
       "probabilidad_subida": 0.381082,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+2",
-      "ppp_parcial_reciente": 23.67,
-      "retorno_parcial_pct": 1.3271,
+      "estado_resolucion": "EN_CURSO_T+4",
+      "ppp_parcial_reciente": 24.17,
+      "retorno_parcial_pct": 3.4675,
       "acierto_parcial_en_curso": false
     },
     {
@@ -1242,9 +1245,9 @@
       "probabilidad_subida": 0.430124,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+2",
-      "ppp_parcial_reciente": 23.67,
-      "retorno_parcial_pct": 1.3271,
+      "estado_resolucion": "EN_CURSO_T+4",
+      "ppp_parcial_reciente": 24.17,
+      "retorno_parcial_pct": 3.4675,
       "acierto_parcial_en_curso": false
     },
     {
@@ -1260,9 +1263,9 @@
       "probabilidad_subida": 0.448971,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+2",
-      "ppp_parcial_reciente": 23.67,
-      "retorno_parcial_pct": 1.3271,
+      "estado_resolucion": "EN_CURSO_T+4",
+      "ppp_parcial_reciente": 24.17,
+      "retorno_parcial_pct": 3.4675,
       "acierto_parcial_en_curso": false
     },
     {
@@ -1278,9 +1281,9 @@
       "probabilidad_subida": 0.569686,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+2",
-      "ppp_parcial_reciente": 23.67,
-      "retorno_parcial_pct": 1.3271,
+      "estado_resolucion": "EN_CURSO_T+4",
+      "ppp_parcial_reciente": 24.17,
+      "retorno_parcial_pct": 3.4675,
       "acierto_parcial_en_curso": true
     },
     {
@@ -1296,9 +1299,9 @@
       "probabilidad_subida": 0.487482,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+2",
-      "ppp_parcial_reciente": 210.51,
-      "retorno_parcial_pct": -0.2795,
+      "estado_resolucion": "EN_CURSO_T+4",
+      "ppp_parcial_reciente": 209.31,
+      "retorno_parcial_pct": -0.8479,
       "acierto_parcial_en_curso": true
     },
     {
@@ -1314,9 +1317,9 @@
       "probabilidad_subida": 0.485869,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+2",
-      "ppp_parcial_reciente": 210.51,
-      "retorno_parcial_pct": -0.2795,
+      "estado_resolucion": "EN_CURSO_T+4",
+      "ppp_parcial_reciente": 209.31,
+      "retorno_parcial_pct": -0.8479,
       "acierto_parcial_en_curso": true
     },
     {
@@ -1332,9 +1335,9 @@
       "probabilidad_subida": 0.490665,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+2",
-      "ppp_parcial_reciente": 210.51,
-      "retorno_parcial_pct": -0.2795,
+      "estado_resolucion": "EN_CURSO_T+4",
+      "ppp_parcial_reciente": 209.31,
+      "retorno_parcial_pct": -0.8479,
       "acierto_parcial_en_curso": true
     },
     {
@@ -1350,9 +1353,9 @@
       "probabilidad_subida": 0.508,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+2",
-      "ppp_parcial_reciente": 210.51,
-      "retorno_parcial_pct": -0.2795,
+      "estado_resolucion": "EN_CURSO_T+4",
+      "ppp_parcial_reciente": 209.31,
+      "retorno_parcial_pct": -0.8479,
       "acierto_parcial_en_curso": false
     },
     {
@@ -1368,9 +1371,9 @@
       "probabilidad_subida": 0.484665,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+2",
-      "ppp_parcial_reciente": 210.51,
-      "retorno_parcial_pct": -0.2795,
+      "estado_resolucion": "EN_CURSO_T+4",
+      "ppp_parcial_reciente": 209.31,
+      "retorno_parcial_pct": -0.8479,
       "acierto_parcial_en_curso": true
     },
     {
@@ -1386,10 +1389,10 @@
       "probabilidad_subida": 0.564831,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+2",
-      "ppp_parcial_reciente": 219.39,
-      "retorno_parcial_pct": -1.8389,
-      "acierto_parcial_en_curso": false
+      "estado_resolucion": "EN_CURSO_T+4",
+      "ppp_parcial_reciente": 223.57,
+      "retorno_parcial_pct": 0.0313,
+      "acierto_parcial_en_curso": true
     },
     {
       "fecha_senal": "2026-11-03",
@@ -1404,10 +1407,10 @@
       "probabilidad_subida": 0.566659,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+2",
-      "ppp_parcial_reciente": 219.39,
-      "retorno_parcial_pct": -1.8389,
-      "acierto_parcial_en_curso": false
+      "estado_resolucion": "EN_CURSO_T+4",
+      "ppp_parcial_reciente": 223.57,
+      "retorno_parcial_pct": 0.0313,
+      "acierto_parcial_en_curso": true
     },
     {
       "fecha_senal": "2026-11-03",
@@ -1422,10 +1425,10 @@
       "probabilidad_subida": 0.550173,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+2",
-      "ppp_parcial_reciente": 219.39,
-      "retorno_parcial_pct": -1.8389,
-      "acierto_parcial_en_curso": false
+      "estado_resolucion": "EN_CURSO_T+4",
+      "ppp_parcial_reciente": 223.57,
+      "retorno_parcial_pct": 0.0313,
+      "acierto_parcial_en_curso": true
     },
     {
       "fecha_senal": "2026-11-03",
@@ -1440,10 +1443,10 @@
       "probabilidad_subida": 0.543855,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+2",
-      "ppp_parcial_reciente": 219.39,
-      "retorno_parcial_pct": -1.8389,
-      "acierto_parcial_en_curso": false
+      "estado_resolucion": "EN_CURSO_T+4",
+      "ppp_parcial_reciente": 223.57,
+      "retorno_parcial_pct": 0.0313,
+      "acierto_parcial_en_curso": true
     },
     {
       "fecha_senal": "2026-11-03",
@@ -1458,10 +1461,10 @@
       "probabilidad_subida": 0.489802,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+2",
-      "ppp_parcial_reciente": 219.39,
-      "retorno_parcial_pct": -1.8389,
-      "acierto_parcial_en_curso": true
+      "estado_resolucion": "EN_CURSO_T+4",
+      "ppp_parcial_reciente": 223.57,
+      "retorno_parcial_pct": 0.0313,
+      "acierto_parcial_en_curso": false
     },
     {
       "fecha_senal": "2026-11-03",
@@ -1476,9 +1479,9 @@
       "probabilidad_subida": 0.504138,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+2",
-      "ppp_parcial_reciente": 53.32,
-      "retorno_parcial_pct": 6.1095,
+      "estado_resolucion": "EN_CURSO_T+4",
+      "ppp_parcial_reciente": 54.59,
+      "retorno_parcial_pct": 8.6368,
       "acierto_parcial_en_curso": true
     },
     {
@@ -1494,9 +1497,9 @@
       "probabilidad_subida": 0.5036,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+2",
-      "ppp_parcial_reciente": 53.32,
-      "retorno_parcial_pct": 6.1095,
+      "estado_resolucion": "EN_CURSO_T+4",
+      "ppp_parcial_reciente": 54.59,
+      "retorno_parcial_pct": 8.6368,
       "acierto_parcial_en_curso": true
     },
     {
@@ -1512,9 +1515,9 @@
       "probabilidad_subida": 0.503408,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+2",
-      "ppp_parcial_reciente": 53.32,
-      "retorno_parcial_pct": 6.1095,
+      "estado_resolucion": "EN_CURSO_T+4",
+      "ppp_parcial_reciente": 54.59,
+      "retorno_parcial_pct": 8.6368,
       "acierto_parcial_en_curso": true
     },
     {
@@ -1530,9 +1533,9 @@
       "probabilidad_subida": 0.462247,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+2",
-      "ppp_parcial_reciente": 53.32,
-      "retorno_parcial_pct": 6.1095,
+      "estado_resolucion": "EN_CURSO_T+4",
+      "ppp_parcial_reciente": 54.59,
+      "retorno_parcial_pct": 8.6368,
       "acierto_parcial_en_curso": false
     },
     {
@@ -1548,9 +1551,9 @@
       "probabilidad_subida": 0.509408,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+2",
-      "ppp_parcial_reciente": 53.32,
-      "retorno_parcial_pct": 6.1095,
+      "estado_resolucion": "EN_CURSO_T+4",
+      "ppp_parcial_reciente": 54.59,
+      "retorno_parcial_pct": 8.6368,
       "acierto_parcial_en_curso": true
     },
     {
@@ -1566,9 +1569,9 @@
       "probabilidad_subida": 0.398176,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+1",
-      "ppp_parcial_reciente": 23.67,
-      "retorno_parcial_pct": 2.3789,
+      "estado_resolucion": "EN_CURSO_T+3",
+      "ppp_parcial_reciente": 24.17,
+      "retorno_parcial_pct": 4.5415,
       "acierto_parcial_en_curso": false
     },
     {
@@ -1584,9 +1587,9 @@
       "probabilidad_subida": 0.393932,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+1",
-      "ppp_parcial_reciente": 23.67,
-      "retorno_parcial_pct": 2.3789,
+      "estado_resolucion": "EN_CURSO_T+3",
+      "ppp_parcial_reciente": 24.17,
+      "retorno_parcial_pct": 4.5415,
       "acierto_parcial_en_curso": false
     },
     {
@@ -1602,9 +1605,9 @@
       "probabilidad_subida": 0.439432,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+1",
-      "ppp_parcial_reciente": 23.67,
-      "retorno_parcial_pct": 2.3789,
+      "estado_resolucion": "EN_CURSO_T+3",
+      "ppp_parcial_reciente": 24.17,
+      "retorno_parcial_pct": 4.5415,
       "acierto_parcial_en_curso": false
     },
     {
@@ -1620,9 +1623,9 @@
       "probabilidad_subida": 0.479702,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+1",
-      "ppp_parcial_reciente": 23.67,
-      "retorno_parcial_pct": 2.3789,
+      "estado_resolucion": "EN_CURSO_T+3",
+      "ppp_parcial_reciente": 24.17,
+      "retorno_parcial_pct": 4.5415,
       "acierto_parcial_en_curso": false
     },
     {
@@ -1638,9 +1641,9 @@
       "probabilidad_subida": 0.611865,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+1",
-      "ppp_parcial_reciente": 23.67,
-      "retorno_parcial_pct": 2.3789,
+      "estado_resolucion": "EN_CURSO_T+3",
+      "ppp_parcial_reciente": 24.17,
+      "retorno_parcial_pct": 4.5415,
       "acierto_parcial_en_curso": true
     },
     {
@@ -1656,9 +1659,9 @@
       "probabilidad_subida": 0.507321,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "CONSENSO_PANEL_G2_SUBIDA",
-      "estado_resolucion": "EN_CURSO_T+1",
-      "ppp_parcial_reciente": 210.51,
-      "retorno_parcial_pct": 2.3085,
+      "estado_resolucion": "EN_CURSO_T+3",
+      "ppp_parcial_reciente": 209.31,
+      "retorno_parcial_pct": 1.7253,
       "acierto_parcial_en_curso": true
     },
     {
@@ -1674,9 +1677,9 @@
       "probabilidad_subida": 0.506996,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "CONSENSO_PANEL_G2_SUBIDA",
-      "estado_resolucion": "EN_CURSO_T+1",
-      "ppp_parcial_reciente": 210.51,
-      "retorno_parcial_pct": 2.3085,
+      "estado_resolucion": "EN_CURSO_T+3",
+      "ppp_parcial_reciente": 209.31,
+      "retorno_parcial_pct": 1.7253,
       "acierto_parcial_en_curso": true
     },
     {
@@ -1692,9 +1695,9 @@
       "probabilidad_subida": 0.50606,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "CONSENSO_PANEL_G2_SUBIDA",
-      "estado_resolucion": "EN_CURSO_T+1",
-      "ppp_parcial_reciente": 210.51,
-      "retorno_parcial_pct": 2.3085,
+      "estado_resolucion": "EN_CURSO_T+3",
+      "ppp_parcial_reciente": 209.31,
+      "retorno_parcial_pct": 1.7253,
       "acierto_parcial_en_curso": true
     },
     {
@@ -1710,9 +1713,9 @@
       "probabilidad_subida": 0.531687,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "CONSENSO_PANEL_G2_SUBIDA",
-      "estado_resolucion": "EN_CURSO_T+1",
-      "ppp_parcial_reciente": 210.51,
-      "retorno_parcial_pct": 2.3085,
+      "estado_resolucion": "EN_CURSO_T+3",
+      "ppp_parcial_reciente": 209.31,
+      "retorno_parcial_pct": 1.7253,
       "acierto_parcial_en_curso": true
     },
     {
@@ -1728,9 +1731,9 @@
       "probabilidad_subida": 0.533843,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "CONSENSO_PANEL_G2_SUBIDA",
-      "estado_resolucion": "EN_CURSO_T+1",
-      "ppp_parcial_reciente": 210.51,
-      "retorno_parcial_pct": 2.3085,
+      "estado_resolucion": "EN_CURSO_T+3",
+      "ppp_parcial_reciente": 209.31,
+      "retorno_parcial_pct": 1.7253,
       "acierto_parcial_en_curso": true
     },
     {
@@ -1746,9 +1749,9 @@
       "probabilidad_subida": 0.552056,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+1",
-      "ppp_parcial_reciente": 219.39,
-      "retorno_parcial_pct": -2.6448,
+      "estado_resolucion": "EN_CURSO_T+3",
+      "ppp_parcial_reciente": 223.57,
+      "retorno_parcial_pct": -0.7899,
       "acierto_parcial_en_curso": false
     },
     {
@@ -1764,9 +1767,9 @@
       "probabilidad_subida": 0.553746,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+1",
-      "ppp_parcial_reciente": 219.39,
-      "retorno_parcial_pct": -2.6448,
+      "estado_resolucion": "EN_CURSO_T+3",
+      "ppp_parcial_reciente": 223.57,
+      "retorno_parcial_pct": -0.7899,
       "acierto_parcial_en_curso": false
     },
     {
@@ -1782,9 +1785,9 @@
       "probabilidad_subida": 0.541635,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+1",
-      "ppp_parcial_reciente": 219.39,
-      "retorno_parcial_pct": -2.6448,
+      "estado_resolucion": "EN_CURSO_T+3",
+      "ppp_parcial_reciente": 223.57,
+      "retorno_parcial_pct": -0.7899,
       "acierto_parcial_en_curso": false
     },
     {
@@ -1800,9 +1803,9 @@
       "probabilidad_subida": 0.523863,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+1",
-      "ppp_parcial_reciente": 219.39,
-      "retorno_parcial_pct": -2.6448,
+      "estado_resolucion": "EN_CURSO_T+3",
+      "ppp_parcial_reciente": 223.57,
+      "retorno_parcial_pct": -0.7899,
       "acierto_parcial_en_curso": false
     },
     {
@@ -1818,9 +1821,9 @@
       "probabilidad_subida": 0.471529,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "EN_CURSO_T+1",
-      "ppp_parcial_reciente": 219.39,
-      "retorno_parcial_pct": -2.6448,
+      "estado_resolucion": "EN_CURSO_T+3",
+      "ppp_parcial_reciente": 223.57,
+      "retorno_parcial_pct": -0.7899,
       "acierto_parcial_en_curso": true
     },
     {
@@ -1836,9 +1839,9 @@
       "probabilidad_subida": 0.453261,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
-      "estado_resolucion": "EN_CURSO_T+1",
-      "ppp_parcial_reciente": 53.32,
-      "retorno_parcial_pct": 2.126,
+      "estado_resolucion": "EN_CURSO_T+3",
+      "ppp_parcial_reciente": 54.59,
+      "retorno_parcial_pct": 4.5585,
       "acierto_parcial_en_curso": false
     },
     {
@@ -1854,9 +1857,9 @@
       "probabilidad_subida": 0.452026,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
-      "estado_resolucion": "EN_CURSO_T+1",
-      "ppp_parcial_reciente": 53.32,
-      "retorno_parcial_pct": 2.126,
+      "estado_resolucion": "EN_CURSO_T+3",
+      "ppp_parcial_reciente": 54.59,
+      "retorno_parcial_pct": 4.5585,
       "acierto_parcial_en_curso": false
     },
     {
@@ -1872,9 +1875,9 @@
       "probabilidad_subida": 0.471135,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
-      "estado_resolucion": "EN_CURSO_T+1",
-      "ppp_parcial_reciente": 53.32,
-      "retorno_parcial_pct": 2.126,
+      "estado_resolucion": "EN_CURSO_T+3",
+      "ppp_parcial_reciente": 54.59,
+      "retorno_parcial_pct": 4.5585,
       "acierto_parcial_en_curso": false
     },
     {
@@ -1890,9 +1893,9 @@
       "probabilidad_subida": 0.41436,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
-      "estado_resolucion": "EN_CURSO_T+1",
-      "ppp_parcial_reciente": 53.32,
-      "retorno_parcial_pct": 2.126,
+      "estado_resolucion": "EN_CURSO_T+3",
+      "ppp_parcial_reciente": 54.59,
+      "retorno_parcial_pct": 4.5585,
       "acierto_parcial_en_curso": false
     },
     {
@@ -1908,9 +1911,9 @@
       "probabilidad_subida": 0.416876,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
-      "estado_resolucion": "EN_CURSO_T+1",
-      "ppp_parcial_reciente": 53.32,
-      "retorno_parcial_pct": 2.126,
+      "estado_resolucion": "EN_CURSO_T+3",
+      "ppp_parcial_reciente": 54.59,
+      "retorno_parcial_pct": 4.5585,
       "acierto_parcial_en_curso": false
     },
     {
@@ -1926,10 +1929,10 @@
       "probabilidad_subida": 0.451995,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "PENDIENTE_T+5",
-      "ppp_parcial_reciente": NaN,
-      "retorno_parcial_pct": NaN,
-      "acierto_parcial_en_curso": NaN
+      "estado_resolucion": "EN_CURSO_T+2",
+      "ppp_parcial_reciente": 24.17,
+      "retorno_parcial_pct": 2.1124,
+      "acierto_parcial_en_curso": false
     },
     {
       "fecha_senal": "2026-11-05",
@@ -1944,10 +1947,10 @@
       "probabilidad_subida": 0.449085,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "PENDIENTE_T+5",
-      "ppp_parcial_reciente": NaN,
-      "retorno_parcial_pct": NaN,
-      "acierto_parcial_en_curso": NaN
+      "estado_resolucion": "EN_CURSO_T+2",
+      "ppp_parcial_reciente": 24.17,
+      "retorno_parcial_pct": 2.1124,
+      "acierto_parcial_en_curso": false
     },
     {
       "fecha_senal": "2026-11-05",
@@ -1962,10 +1965,10 @@
       "probabilidad_subida": 0.475591,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "PENDIENTE_T+5",
-      "ppp_parcial_reciente": NaN,
-      "retorno_parcial_pct": NaN,
-      "acierto_parcial_en_curso": NaN
+      "estado_resolucion": "EN_CURSO_T+2",
+      "ppp_parcial_reciente": 24.17,
+      "retorno_parcial_pct": 2.1124,
+      "acierto_parcial_en_curso": false
     },
     {
       "fecha_senal": "2026-11-05",
@@ -1980,10 +1983,10 @@
       "probabilidad_subida": 0.458684,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "PENDIENTE_T+5",
-      "ppp_parcial_reciente": NaN,
-      "retorno_parcial_pct": NaN,
-      "acierto_parcial_en_curso": NaN
+      "estado_resolucion": "EN_CURSO_T+2",
+      "ppp_parcial_reciente": 24.17,
+      "retorno_parcial_pct": 2.1124,
+      "acierto_parcial_en_curso": false
     },
     {
       "fecha_senal": "2026-11-05",
@@ -1998,10 +2001,10 @@
       "probabilidad_subida": 0.606379,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
-      "estado_resolucion": "PENDIENTE_T+5",
-      "ppp_parcial_reciente": NaN,
-      "retorno_parcial_pct": NaN,
-      "acierto_parcial_en_curso": NaN
+      "estado_resolucion": "EN_CURSO_T+2",
+      "ppp_parcial_reciente": 24.17,
+      "retorno_parcial_pct": 2.1124,
+      "acierto_parcial_en_curso": true
     },
     {
       "fecha_senal": "2026-11-05",
@@ -2016,10 +2019,10 @@
       "probabilidad_subida": 0.50011,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=NO_SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "PENDIENTE_T+5",
-      "ppp_parcial_reciente": NaN,
-      "retorno_parcial_pct": NaN,
-      "acierto_parcial_en_curso": NaN
+      "estado_resolucion": "EN_CURSO_T+2",
+      "ppp_parcial_reciente": 242.33,
+      "retorno_parcial_pct": 0.6396,
+      "acierto_parcial_en_curso": true
     },
     {
       "fecha_senal": "2026-11-05",
@@ -2034,10 +2037,10 @@
       "probabilidad_subida": 0.498327,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=NO_SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "PENDIENTE_T+5",
-      "ppp_parcial_reciente": NaN,
-      "retorno_parcial_pct": NaN,
-      "acierto_parcial_en_curso": NaN
+      "estado_resolucion": "EN_CURSO_T+2",
+      "ppp_parcial_reciente": 242.33,
+      "retorno_parcial_pct": 0.6396,
+      "acierto_parcial_en_curso": false
     },
     {
       "fecha_senal": "2026-11-05",
@@ -2052,10 +2055,10 @@
       "probabilidad_subida": 0.502149,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=NO_SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "PENDIENTE_T+5",
-      "ppp_parcial_reciente": NaN,
-      "retorno_parcial_pct": NaN,
-      "acierto_parcial_en_curso": NaN
+      "estado_resolucion": "EN_CURSO_T+2",
+      "ppp_parcial_reciente": 242.33,
+      "retorno_parcial_pct": 0.6396,
+      "acierto_parcial_en_curso": true
     },
     {
       "fecha_senal": "2026-11-05",
@@ -2070,10 +2073,10 @@
       "probabilidad_subida": 0.474181,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=NO_SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "PENDIENTE_T+5",
-      "ppp_parcial_reciente": NaN,
-      "retorno_parcial_pct": NaN,
-      "acierto_parcial_en_curso": NaN
+      "estado_resolucion": "EN_CURSO_T+2",
+      "ppp_parcial_reciente": 242.33,
+      "retorno_parcial_pct": 0.6396,
+      "acierto_parcial_en_curso": false
     },
     {
       "fecha_senal": "2026-11-05",
@@ -2088,10 +2091,10 @@
       "probabilidad_subida": 0.478376,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=NO_SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "PENDIENTE_T+5",
-      "ppp_parcial_reciente": NaN,
-      "retorno_parcial_pct": NaN,
-      "acierto_parcial_en_curso": NaN
+      "estado_resolucion": "EN_CURSO_T+2",
+      "ppp_parcial_reciente": 242.33,
+      "retorno_parcial_pct": 0.6396,
+      "acierto_parcial_en_curso": false
     },
     {
       "fecha_senal": "2026-11-05",
@@ -2106,10 +2109,10 @@
       "probabilidad_subida": 0.496142,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
-      "estado_resolucion": "PENDIENTE_T+5",
-      "ppp_parcial_reciente": NaN,
-      "retorno_parcial_pct": NaN,
-      "acierto_parcial_en_curso": NaN
+      "estado_resolucion": "EN_CURSO_T+2",
+      "ppp_parcial_reciente": 209.31,
+      "retorno_parcial_pct": -0.57,
+      "acierto_parcial_en_curso": true
     },
     {
       "fecha_senal": "2026-11-05",
@@ -2124,10 +2127,10 @@
       "probabilidad_subida": 0.494642,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
-      "estado_resolucion": "PENDIENTE_T+5",
-      "ppp_parcial_reciente": NaN,
-      "retorno_parcial_pct": NaN,
-      "acierto_parcial_en_curso": NaN
+      "estado_resolucion": "EN_CURSO_T+2",
+      "ppp_parcial_reciente": 209.31,
+      "retorno_parcial_pct": -0.57,
+      "acierto_parcial_en_curso": true
     },
     {
       "fecha_senal": "2026-11-05",
@@ -2142,10 +2145,10 @@
       "probabilidad_subida": 0.496946,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
-      "estado_resolucion": "PENDIENTE_T+5",
-      "ppp_parcial_reciente": NaN,
-      "retorno_parcial_pct": NaN,
-      "acierto_parcial_en_curso": NaN
+      "estado_resolucion": "EN_CURSO_T+2",
+      "ppp_parcial_reciente": 209.31,
+      "retorno_parcial_pct": -0.57,
+      "acierto_parcial_en_curso": true
     },
     {
       "fecha_senal": "2026-11-05",
@@ -2160,10 +2163,10 @@
       "probabilidad_subida": 0.497399,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
-      "estado_resolucion": "PENDIENTE_T+5",
-      "ppp_parcial_reciente": NaN,
-      "retorno_parcial_pct": NaN,
-      "acierto_parcial_en_curso": NaN
+      "estado_resolucion": "EN_CURSO_T+2",
+      "ppp_parcial_reciente": 209.31,
+      "retorno_parcial_pct": -0.57,
+      "acierto_parcial_en_curso": true
     },
     {
       "fecha_senal": "2026-11-05",
@@ -2178,10 +2181,10 @@
       "probabilidad_subida": 0.497331,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
-      "estado_resolucion": "PENDIENTE_T+5",
-      "ppp_parcial_reciente": NaN,
-      "retorno_parcial_pct": NaN,
-      "acierto_parcial_en_curso": NaN
+      "estado_resolucion": "EN_CURSO_T+2",
+      "ppp_parcial_reciente": 209.31,
+      "retorno_parcial_pct": -0.57,
+      "acierto_parcial_en_curso": true
     },
     {
       "fecha_senal": "2026-11-05",
@@ -2196,10 +2199,10 @@
       "probabilidad_subida": 0.570383,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "PENDIENTE_T+5",
-      "ppp_parcial_reciente": NaN,
-      "retorno_parcial_pct": NaN,
-      "acierto_parcial_en_curso": NaN
+      "estado_resolucion": "EN_CURSO_T+2",
+      "ppp_parcial_reciente": 223.57,
+      "retorno_parcial_pct": 1.9053,
+      "acierto_parcial_en_curso": true
     },
     {
       "fecha_senal": "2026-11-05",
@@ -2214,10 +2217,10 @@
       "probabilidad_subida": 0.572248,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "PENDIENTE_T+5",
-      "ppp_parcial_reciente": NaN,
-      "retorno_parcial_pct": NaN,
-      "acierto_parcial_en_curso": NaN
+      "estado_resolucion": "EN_CURSO_T+2",
+      "ppp_parcial_reciente": 223.57,
+      "retorno_parcial_pct": 1.9053,
+      "acierto_parcial_en_curso": true
     },
     {
       "fecha_senal": "2026-11-05",
@@ -2232,10 +2235,10 @@
       "probabilidad_subida": 0.554135,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "PENDIENTE_T+5",
-      "ppp_parcial_reciente": NaN,
-      "retorno_parcial_pct": NaN,
-      "acierto_parcial_en_curso": NaN
+      "estado_resolucion": "EN_CURSO_T+2",
+      "ppp_parcial_reciente": 223.57,
+      "retorno_parcial_pct": 1.9053,
+      "acierto_parcial_en_curso": true
     },
     {
       "fecha_senal": "2026-11-05",
@@ -2250,10 +2253,10 @@
       "probabilidad_subida": 0.536746,
       "prediccion_etiqueta": "SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "PENDIENTE_T+5",
-      "ppp_parcial_reciente": NaN,
-      "retorno_parcial_pct": NaN,
-      "acierto_parcial_en_curso": NaN
+      "estado_resolucion": "EN_CURSO_T+2",
+      "ppp_parcial_reciente": 223.57,
+      "retorno_parcial_pct": 1.9053,
+      "acierto_parcial_en_curso": true
     },
     {
       "fecha_senal": "2026-11-05",
@@ -2268,10 +2271,10 @@
       "probabilidad_subida": 0.484354,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
-      "estado_resolucion": "PENDIENTE_T+5",
-      "ppp_parcial_reciente": NaN,
-      "retorno_parcial_pct": NaN,
-      "acierto_parcial_en_curso": NaN
+      "estado_resolucion": "EN_CURSO_T+2",
+      "ppp_parcial_reciente": 223.57,
+      "retorno_parcial_pct": 1.9053,
+      "acierto_parcial_en_curso": false
     },
     {
       "fecha_senal": "2026-11-05",
@@ -2286,10 +2289,10 @@
       "probabilidad_subida": 0.41519,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
-      "estado_resolucion": "PENDIENTE_T+5",
-      "ppp_parcial_reciente": NaN,
-      "retorno_parcial_pct": NaN,
-      "acierto_parcial_en_curso": NaN
+      "estado_resolucion": "EN_CURSO_T+2",
+      "ppp_parcial_reciente": 54.59,
+      "retorno_parcial_pct": 2.3818,
+      "acierto_parcial_en_curso": false
     },
     {
       "fecha_senal": "2026-11-05",
@@ -2304,10 +2307,10 @@
       "probabilidad_subida": 0.412181,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
-      "estado_resolucion": "PENDIENTE_T+5",
-      "ppp_parcial_reciente": NaN,
-      "retorno_parcial_pct": NaN,
-      "acierto_parcial_en_curso": NaN
+      "estado_resolucion": "EN_CURSO_T+2",
+      "ppp_parcial_reciente": 54.59,
+      "retorno_parcial_pct": 2.3818,
+      "acierto_parcial_en_curso": false
     },
     {
       "fecha_senal": "2026-11-05",
@@ -2322,10 +2325,10 @@
       "probabilidad_subida": 0.444131,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
-      "estado_resolucion": "PENDIENTE_T+5",
-      "ppp_parcial_reciente": NaN,
-      "retorno_parcial_pct": NaN,
-      "acierto_parcial_en_curso": NaN
+      "estado_resolucion": "EN_CURSO_T+2",
+      "ppp_parcial_reciente": 54.59,
+      "retorno_parcial_pct": 2.3818,
+      "acierto_parcial_en_curso": false
     },
     {
       "fecha_senal": "2026-11-05",
@@ -2340,10 +2343,10 @@
       "probabilidad_subida": 0.407665,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
-      "estado_resolucion": "PENDIENTE_T+5",
-      "ppp_parcial_reciente": NaN,
-      "retorno_parcial_pct": NaN,
-      "acierto_parcial_en_curso": NaN
+      "estado_resolucion": "EN_CURSO_T+2",
+      "ppp_parcial_reciente": 54.59,
+      "retorno_parcial_pct": 2.3818,
+      "acierto_parcial_en_curso": false
     },
     {
       "fecha_senal": "2026-11-05",
@@ -2358,15 +2361,915 @@
       "probabilidad_subida": 0.407134,
       "prediccion_etiqueta": "NO_SUBIDA",
       "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
+      "estado_resolucion": "EN_CURSO_T+2",
+      "ppp_parcial_reciente": 54.59,
+      "retorno_parcial_pct": 2.3818,
+      "acierto_parcial_en_curso": false
+    },
+    {
+      "fecha_senal": "2026-11-06",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-13",
+      "emisora": "AMX",
+      "modelo_g2": "G2_V1_POOLED_REL3_CALIBRADO",
+      "ppp_base_t": 23.97,
+      "ret_10": 0.025235243798118034,
+      "ret_10_rel_panel": 0.016057379648422153,
+      "volatilidad_20": 0.02307095001652582,
+      "probabilidad_subida": 0.469426,
+      "prediccion_etiqueta": "NO_SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
+      "estado_resolucion": "EN_CURSO_T+1",
+      "ppp_parcial_reciente": 24.17,
+      "retorno_parcial_pct": 0.8344,
+      "acierto_parcial_en_curso": false
+    },
+    {
+      "fecha_senal": "2026-11-06",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-13",
+      "emisora": "AMX",
+      "modelo_g2": "G2_V2_POOLED_REL3_ZONA_NEUTRAL",
+      "ppp_base_t": 23.97,
+      "ret_10": 0.025235243798118034,
+      "ret_10_rel_panel": 0.016057379648422153,
+      "volatilidad_20": 0.02307095001652582,
+      "probabilidad_subida": 0.467136,
+      "prediccion_etiqueta": "NO_SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
+      "estado_resolucion": "EN_CURSO_T+1",
+      "ppp_parcial_reciente": 24.17,
+      "retorno_parcial_pct": 0.8344,
+      "acierto_parcial_en_curso": false
+    },
+    {
+      "fecha_senal": "2026-11-06",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-13",
+      "emisora": "AMX",
+      "modelo_g2": "G2_V3_POOLED_REL3_ALTA_DISC_EXPANDIDO",
+      "ppp_base_t": 23.97,
+      "ret_10": 0.025235243798118034,
+      "ret_10_rel_panel": 0.016057379648422153,
+      "volatilidad_20": 0.02307095001652582,
+      "probabilidad_subida": 0.487323,
+      "prediccion_etiqueta": "NO_SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
+      "estado_resolucion": "EN_CURSO_T+1",
+      "ppp_parcial_reciente": 24.17,
+      "retorno_parcial_pct": 0.8344,
+      "acierto_parcial_en_curso": false
+    },
+    {
+      "fecha_senal": "2026-11-06",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-13",
+      "emisora": "AMX",
+      "modelo_g2": "G2_V4_POOLED_DM5_REL_CORTO_PLAZO",
+      "ppp_base_t": 23.97,
+      "ret_10": 0.025235243798118034,
+      "ret_10_rel_panel": 0.016057379648422153,
+      "volatilidad_20": 0.02307095001652582,
+      "probabilidad_subida": 0.453828,
+      "prediccion_etiqueta": "NO_SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
+      "estado_resolucion": "EN_CURSO_T+1",
+      "ppp_parcial_reciente": 24.17,
+      "retorno_parcial_pct": 0.8344,
+      "acierto_parcial_en_curso": false
+    },
+    {
+      "fecha_senal": "2026-11-06",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-13",
+      "emisora": "AMX",
+      "modelo_g2": "G2_V5_ADAPTATIVO_REGIMEN_SECTORIAL",
+      "ppp_base_t": 23.97,
+      "ret_10": 0.025235243798118034,
+      "ret_10_rel_panel": 0.016057379648422153,
+      "volatilidad_20": 0.02307095001652582,
+      "probabilidad_subida": 0.592995,
+      "prediccion_etiqueta": "SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
+      "estado_resolucion": "EN_CURSO_T+1",
+      "ppp_parcial_reciente": 24.17,
+      "retorno_parcial_pct": 0.8344,
+      "acierto_parcial_en_curso": true
+    },
+    {
+      "fecha_senal": "2026-11-06",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-13",
+      "emisora": "FEMSA",
+      "modelo_g2": "G2_V1_POOLED_REL3_CALIBRADO",
+      "ppp_base_t": 241.51,
+      "ret_10": 0.001866755164689149,
+      "ret_10_rel_panel": -0.007311108985006731,
+      "volatilidad_20": 0.01525041899139116,
+      "probabilidad_subida": 0.504315,
+      "prediccion_etiqueta": "SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=NO_SUBIDA)",
+      "estado_resolucion": "EN_CURSO_T+1",
+      "ppp_parcial_reciente": 242.33,
+      "retorno_parcial_pct": 0.3395,
+      "acierto_parcial_en_curso": true
+    },
+    {
+      "fecha_senal": "2026-11-06",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-13",
+      "emisora": "FEMSA",
+      "modelo_g2": "G2_V2_POOLED_REL3_ZONA_NEUTRAL",
+      "ppp_base_t": 241.51,
+      "ret_10": 0.001866755164689149,
+      "ret_10_rel_panel": -0.007311108985006731,
+      "volatilidad_20": 0.01525041899139116,
+      "probabilidad_subida": 0.502497,
+      "prediccion_etiqueta": "SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=NO_SUBIDA)",
+      "estado_resolucion": "EN_CURSO_T+1",
+      "ppp_parcial_reciente": 242.33,
+      "retorno_parcial_pct": 0.3395,
+      "acierto_parcial_en_curso": true
+    },
+    {
+      "fecha_senal": "2026-11-06",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-13",
+      "emisora": "FEMSA",
+      "modelo_g2": "G2_V3_POOLED_REL3_ALTA_DISC_EXPANDIDO",
+      "ppp_base_t": 241.51,
+      "ret_10": 0.001866755164689149,
+      "ret_10_rel_panel": -0.007311108985006731,
+      "volatilidad_20": 0.01525041899139116,
+      "probabilidad_subida": 0.504355,
+      "prediccion_etiqueta": "SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=NO_SUBIDA)",
+      "estado_resolucion": "EN_CURSO_T+1",
+      "ppp_parcial_reciente": 242.33,
+      "retorno_parcial_pct": 0.3395,
+      "acierto_parcial_en_curso": true
+    },
+    {
+      "fecha_senal": "2026-11-06",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-13",
+      "emisora": "FEMSA",
+      "modelo_g2": "G2_V4_POOLED_DM5_REL_CORTO_PLAZO",
+      "ppp_base_t": 241.51,
+      "ret_10": 0.001866755164689149,
+      "ret_10_rel_panel": -0.007311108985006731,
+      "volatilidad_20": 0.01525041899139116,
+      "probabilidad_subida": 0.483473,
+      "prediccion_etiqueta": "NO_SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=NO_SUBIDA)",
+      "estado_resolucion": "EN_CURSO_T+1",
+      "ppp_parcial_reciente": 242.33,
+      "retorno_parcial_pct": 0.3395,
+      "acierto_parcial_en_curso": false
+    },
+    {
+      "fecha_senal": "2026-11-06",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-13",
+      "emisora": "FEMSA",
+      "modelo_g2": "G2_V5_ADAPTATIVO_REGIMEN_SECTORIAL",
+      "ppp_base_t": 241.51,
+      "ret_10": 0.001866755164689149,
+      "ret_10_rel_panel": -0.007311108985006731,
+      "volatilidad_20": 0.01525041899139116,
+      "probabilidad_subida": 0.486606,
+      "prediccion_etiqueta": "NO_SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=NO_SUBIDA)",
+      "estado_resolucion": "EN_CURSO_T+1",
+      "ppp_parcial_reciente": 242.33,
+      "retorno_parcial_pct": 0.3395,
+      "acierto_parcial_en_curso": false
+    },
+    {
+      "fecha_senal": "2026-11-06",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-13",
+      "emisora": "GFNORTE",
+      "modelo_g2": "G2_V1_POOLED_REL3_CALIBRADO",
+      "ppp_base_t": 208.46,
+      "ret_10": 0.002645375402818617,
+      "ret_10_rel_panel": -0.006532488746877263,
+      "volatilidad_20": 0.01378547622645624,
+      "probabilidad_subida": 0.508008,
+      "prediccion_etiqueta": "SUBIDA",
+      "estado_consenso_g2": "CONSENSO_PANEL_G2_SUBIDA",
+      "estado_resolucion": "EN_CURSO_T+1",
+      "ppp_parcial_reciente": 209.31,
+      "retorno_parcial_pct": 0.4078,
+      "acierto_parcial_en_curso": true
+    },
+    {
+      "fecha_senal": "2026-11-06",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-13",
+      "emisora": "GFNORTE",
+      "modelo_g2": "G2_V2_POOLED_REL3_ZONA_NEUTRAL",
+      "ppp_base_t": 208.46,
+      "ret_10": 0.002645375402818617,
+      "ret_10_rel_panel": -0.006532488746877263,
+      "volatilidad_20": 0.01378547622645624,
+      "probabilidad_subida": 0.506889,
+      "prediccion_etiqueta": "SUBIDA",
+      "estado_consenso_g2": "CONSENSO_PANEL_G2_SUBIDA",
+      "estado_resolucion": "EN_CURSO_T+1",
+      "ppp_parcial_reciente": 209.31,
+      "retorno_parcial_pct": 0.4078,
+      "acierto_parcial_en_curso": true
+    },
+    {
+      "fecha_senal": "2026-11-06",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-13",
+      "emisora": "GFNORTE",
+      "modelo_g2": "G2_V3_POOLED_REL3_ALTA_DISC_EXPANDIDO",
+      "ppp_base_t": 208.46,
+      "ret_10": 0.002645375402818617,
+      "ret_10_rel_panel": -0.006532488746877263,
+      "volatilidad_20": 0.01378547622645624,
+      "probabilidad_subida": 0.505503,
+      "prediccion_etiqueta": "SUBIDA",
+      "estado_consenso_g2": "CONSENSO_PANEL_G2_SUBIDA",
+      "estado_resolucion": "EN_CURSO_T+1",
+      "ppp_parcial_reciente": 209.31,
+      "retorno_parcial_pct": 0.4078,
+      "acierto_parcial_en_curso": true
+    },
+    {
+      "fecha_senal": "2026-11-06",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-13",
+      "emisora": "GFNORTE",
+      "modelo_g2": "G2_V4_POOLED_DM5_REL_CORTO_PLAZO",
+      "ppp_base_t": 208.46,
+      "ret_10": 0.002645375402818617,
+      "ret_10_rel_panel": -0.006532488746877263,
+      "volatilidad_20": 0.01378547622645624,
+      "probabilidad_subida": 0.505787,
+      "prediccion_etiqueta": "SUBIDA",
+      "estado_consenso_g2": "CONSENSO_PANEL_G2_SUBIDA",
+      "estado_resolucion": "EN_CURSO_T+1",
+      "ppp_parcial_reciente": 209.31,
+      "retorno_parcial_pct": 0.4078,
+      "acierto_parcial_en_curso": true
+    },
+    {
+      "fecha_senal": "2026-11-06",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-13",
+      "emisora": "GFNORTE",
+      "modelo_g2": "G2_V5_ADAPTATIVO_REGIMEN_SECTORIAL",
+      "ppp_base_t": 208.46,
+      "ret_10": 0.002645375402818617,
+      "ret_10_rel_panel": -0.006532488746877263,
+      "volatilidad_20": 0.01378547622645624,
+      "probabilidad_subida": 0.511744,
+      "prediccion_etiqueta": "SUBIDA",
+      "estado_consenso_g2": "CONSENSO_PANEL_G2_SUBIDA",
+      "estado_resolucion": "EN_CURSO_T+1",
+      "ppp_parcial_reciente": 209.31,
+      "retorno_parcial_pct": 0.4078,
+      "acierto_parcial_en_curso": true
+    },
+    {
+      "fecha_senal": "2026-11-06",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-13",
+      "emisora": "GMEXICO",
+      "modelo_g2": "G2_V1_POOLED_REL3_CALIBRADO",
+      "ppp_base_t": 217.63,
+      "ret_10": -0.0593447441217152,
+      "ret_10_rel_panel": -0.06852260827141107,
+      "volatilidad_20": 0.021560106570225075,
+      "probabilidad_subida": 0.546831,
+      "prediccion_etiqueta": "SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
+      "estado_resolucion": "EN_CURSO_T+1",
+      "ppp_parcial_reciente": 223.57,
+      "retorno_parcial_pct": 2.7294,
+      "acierto_parcial_en_curso": true
+    },
+    {
+      "fecha_senal": "2026-11-06",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-13",
+      "emisora": "GMEXICO",
+      "modelo_g2": "G2_V2_POOLED_REL3_ZONA_NEUTRAL",
+      "ppp_base_t": 217.63,
+      "ret_10": -0.0593447441217152,
+      "ret_10_rel_panel": -0.06852260827141107,
+      "volatilidad_20": 0.021560106570225075,
+      "probabilidad_subida": 0.547603,
+      "prediccion_etiqueta": "SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
+      "estado_resolucion": "EN_CURSO_T+1",
+      "ppp_parcial_reciente": 223.57,
+      "retorno_parcial_pct": 2.7294,
+      "acierto_parcial_en_curso": true
+    },
+    {
+      "fecha_senal": "2026-11-06",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-13",
+      "emisora": "GMEXICO",
+      "modelo_g2": "G2_V3_POOLED_REL3_ALTA_DISC_EXPANDIDO",
+      "ppp_base_t": 217.63,
+      "ret_10": -0.0593447441217152,
+      "ret_10_rel_panel": -0.06852260827141107,
+      "volatilidad_20": 0.021560106570225075,
+      "probabilidad_subida": 0.53725,
+      "prediccion_etiqueta": "SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
+      "estado_resolucion": "EN_CURSO_T+1",
+      "ppp_parcial_reciente": 223.57,
+      "retorno_parcial_pct": 2.7294,
+      "acierto_parcial_en_curso": true
+    },
+    {
+      "fecha_senal": "2026-11-06",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-13",
+      "emisora": "GMEXICO",
+      "modelo_g2": "G2_V4_POOLED_DM5_REL_CORTO_PLAZO",
+      "ppp_base_t": 217.63,
+      "ret_10": -0.0593447441217152,
+      "ret_10_rel_panel": -0.06852260827141107,
+      "volatilidad_20": 0.021560106570225075,
+      "probabilidad_subida": 0.530765,
+      "prediccion_etiqueta": "SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
+      "estado_resolucion": "EN_CURSO_T+1",
+      "ppp_parcial_reciente": 223.57,
+      "retorno_parcial_pct": 2.7294,
+      "acierto_parcial_en_curso": true
+    },
+    {
+      "fecha_senal": "2026-11-06",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-13",
+      "emisora": "GMEXICO",
+      "modelo_g2": "G2_V5_ADAPTATIVO_REGIMEN_SECTORIAL",
+      "ppp_base_t": 217.63,
+      "ret_10": -0.0593447441217152,
+      "ret_10_rel_panel": -0.06852260827141107,
+      "volatilidad_20": 0.021560106570225075,
+      "probabilidad_subida": 0.476737,
+      "prediccion_etiqueta": "NO_SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=SUBIDA, V5=NO_SUBIDA)",
+      "estado_resolucion": "EN_CURSO_T+1",
+      "ppp_parcial_reciente": 223.57,
+      "retorno_parcial_pct": 2.7294,
+      "acierto_parcial_en_curso": false
+    },
+    {
+      "fecha_senal": "2026-11-06",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-13",
+      "emisora": "WALMEX",
+      "modelo_g2": "G2_V1_POOLED_REL3_CALIBRADO",
+      "ppp_base_t": 54.14,
+      "ret_10": 0.0754866905045688,
+      "ret_10_rel_panel": 0.06630882635487292,
+      "volatilidad_20": 0.01678085431350329,
+      "probabilidad_subida": 0.420479,
+      "prediccion_etiqueta": "NO_SUBIDA",
+      "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
+      "estado_resolucion": "EN_CURSO_T+1",
+      "ppp_parcial_reciente": 54.59,
+      "retorno_parcial_pct": 0.8312,
+      "acierto_parcial_en_curso": false
+    },
+    {
+      "fecha_senal": "2026-11-06",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-13",
+      "emisora": "WALMEX",
+      "modelo_g2": "G2_V2_POOLED_REL3_ZONA_NEUTRAL",
+      "ppp_base_t": 54.14,
+      "ret_10": 0.0754866905045688,
+      "ret_10_rel_panel": 0.06630882635487292,
+      "volatilidad_20": 0.01678085431350329,
+      "probabilidad_subida": 0.417477,
+      "prediccion_etiqueta": "NO_SUBIDA",
+      "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
+      "estado_resolucion": "EN_CURSO_T+1",
+      "ppp_parcial_reciente": 54.59,
+      "retorno_parcial_pct": 0.8312,
+      "acierto_parcial_en_curso": false
+    },
+    {
+      "fecha_senal": "2026-11-06",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-13",
+      "emisora": "WALMEX",
+      "modelo_g2": "G2_V3_POOLED_REL3_ALTA_DISC_EXPANDIDO",
+      "ppp_base_t": 54.14,
+      "ret_10": 0.0754866905045688,
+      "ret_10_rel_panel": 0.06630882635487292,
+      "volatilidad_20": 0.01678085431350329,
+      "probabilidad_subida": 0.44765,
+      "prediccion_etiqueta": "NO_SUBIDA",
+      "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
+      "estado_resolucion": "EN_CURSO_T+1",
+      "ppp_parcial_reciente": 54.59,
+      "retorno_parcial_pct": 0.8312,
+      "acierto_parcial_en_curso": false
+    },
+    {
+      "fecha_senal": "2026-11-06",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-13",
+      "emisora": "WALMEX",
+      "modelo_g2": "G2_V4_POOLED_DM5_REL_CORTO_PLAZO",
+      "ppp_base_t": 54.14,
+      "ret_10": 0.0754866905045688,
+      "ret_10_rel_panel": 0.06630882635487292,
+      "volatilidad_20": 0.01678085431350329,
+      "probabilidad_subida": 0.419697,
+      "prediccion_etiqueta": "NO_SUBIDA",
+      "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
+      "estado_resolucion": "EN_CURSO_T+1",
+      "ppp_parcial_reciente": 54.59,
+      "retorno_parcial_pct": 0.8312,
+      "acierto_parcial_en_curso": false
+    },
+    {
+      "fecha_senal": "2026-11-06",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-13",
+      "emisora": "WALMEX",
+      "modelo_g2": "G2_V5_ADAPTATIVO_REGIMEN_SECTORIAL",
+      "ppp_base_t": 54.14,
+      "ret_10": 0.0754866905045688,
+      "ret_10_rel_panel": 0.06630882635487292,
+      "volatilidad_20": 0.01678085431350329,
+      "probabilidad_subida": 0.41789,
+      "prediccion_etiqueta": "NO_SUBIDA",
+      "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
+      "estado_resolucion": "EN_CURSO_T+1",
+      "ppp_parcial_reciente": 54.59,
+      "retorno_parcial_pct": 0.8312,
+      "acierto_parcial_en_curso": false
+    },
+    {
+      "fecha_senal": "2026-11-09",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-17",
+      "emisora": "AMX",
+      "modelo_g2": "G2_V1_POOLED_REL3_CALIBRADO",
+      "ppp_base_t": 24.17,
+      "ret_10": 0.05315904139433569,
+      "ret_10_rel_panel": 0.03366001439480422,
+      "volatilidad_20": 0.021549394794257708,
+      "probabilidad_subida": 0.443987,
+      "prediccion_etiqueta": "NO_SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
       "estado_resolucion": "PENDIENTE_T+5",
       "ppp_parcial_reciente": NaN,
       "retorno_parcial_pct": NaN,
-      "acierto_parcial_en_curso": NaN
+      "acierto_parcial_en_curso": null
+    },
+    {
+      "fecha_senal": "2026-11-09",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-17",
+      "emisora": "AMX",
+      "modelo_g2": "G2_V2_POOLED_REL3_ZONA_NEUTRAL",
+      "ppp_base_t": 24.17,
+      "ret_10": 0.05315904139433569,
+      "ret_10_rel_panel": 0.03366001439480422,
+      "volatilidad_20": 0.021549394794257708,
+      "probabilidad_subida": 0.441387,
+      "prediccion_etiqueta": "NO_SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
+      "estado_resolucion": "PENDIENTE_T+5",
+      "ppp_parcial_reciente": NaN,
+      "retorno_parcial_pct": NaN,
+      "acierto_parcial_en_curso": null
+    },
+    {
+      "fecha_senal": "2026-11-09",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-17",
+      "emisora": "AMX",
+      "modelo_g2": "G2_V3_POOLED_REL3_ALTA_DISC_EXPANDIDO",
+      "ppp_base_t": 24.17,
+      "ret_10": 0.05315904139433569,
+      "ret_10_rel_panel": 0.03366001439480422,
+      "volatilidad_20": 0.021549394794257708,
+      "probabilidad_subida": 0.469949,
+      "prediccion_etiqueta": "NO_SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
+      "estado_resolucion": "PENDIENTE_T+5",
+      "ppp_parcial_reciente": NaN,
+      "retorno_parcial_pct": NaN,
+      "acierto_parcial_en_curso": null
+    },
+    {
+      "fecha_senal": "2026-11-09",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-17",
+      "emisora": "AMX",
+      "modelo_g2": "G2_V4_POOLED_DM5_REL_CORTO_PLAZO",
+      "ppp_base_t": 24.17,
+      "ret_10": 0.05315904139433569,
+      "ret_10_rel_panel": 0.03366001439480422,
+      "volatilidad_20": 0.021549394794257708,
+      "probabilidad_subida": 0.454602,
+      "prediccion_etiqueta": "NO_SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
+      "estado_resolucion": "PENDIENTE_T+5",
+      "ppp_parcial_reciente": NaN,
+      "retorno_parcial_pct": NaN,
+      "acierto_parcial_en_curso": null
+    },
+    {
+      "fecha_senal": "2026-11-09",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-17",
+      "emisora": "AMX",
+      "modelo_g2": "G2_V5_ADAPTATIVO_REGIMEN_SECTORIAL",
+      "ppp_base_t": 24.17,
+      "ret_10": 0.05315904139433569,
+      "ret_10_rel_panel": 0.03366001439480422,
+      "volatilidad_20": 0.021549394794257708,
+      "probabilidad_subida": 0.594072,
+      "prediccion_etiqueta": "SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=NO_SUBIDA, V4=NO_SUBIDA, V5=SUBIDA)",
+      "estado_resolucion": "PENDIENTE_T+5",
+      "ppp_parcial_reciente": NaN,
+      "retorno_parcial_pct": NaN,
+      "acierto_parcial_en_curso": null
+    },
+    {
+      "fecha_senal": "2026-11-09",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-17",
+      "emisora": "FEMSA",
+      "modelo_g2": "G2_V1_POOLED_REL3_CALIBRADO",
+      "ppp_base_t": 242.33,
+      "ret_10": 0.008825610923774985,
+      "ret_10_rel_panel": -0.010673416075756493,
+      "volatilidad_20": 0.015181599928844545,
+      "probabilidad_subida": 0.498605,
+      "prediccion_etiqueta": "NO_SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=NO_SUBIDA)",
+      "estado_resolucion": "PENDIENTE_T+5",
+      "ppp_parcial_reciente": NaN,
+      "retorno_parcial_pct": NaN,
+      "acierto_parcial_en_curso": null
+    },
+    {
+      "fecha_senal": "2026-11-09",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-17",
+      "emisora": "FEMSA",
+      "modelo_g2": "G2_V2_POOLED_REL3_ZONA_NEUTRAL",
+      "ppp_base_t": 242.33,
+      "ret_10": 0.008825610923774985,
+      "ret_10_rel_panel": -0.010673416075756493,
+      "volatilidad_20": 0.015181599928844545,
+      "probabilidad_subida": 0.497514,
+      "prediccion_etiqueta": "NO_SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=NO_SUBIDA)",
+      "estado_resolucion": "PENDIENTE_T+5",
+      "ppp_parcial_reciente": NaN,
+      "retorno_parcial_pct": NaN,
+      "acierto_parcial_en_curso": null
+    },
+    {
+      "fecha_senal": "2026-11-09",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-17",
+      "emisora": "FEMSA",
+      "modelo_g2": "G2_V3_POOLED_REL3_ALTA_DISC_EXPANDIDO",
+      "ppp_base_t": 242.33,
+      "ret_10": 0.008825610923774985,
+      "ret_10_rel_panel": -0.010673416075756493,
+      "volatilidad_20": 0.015181599928844545,
+      "probabilidad_subida": 0.501671,
+      "prediccion_etiqueta": "SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=NO_SUBIDA)",
+      "estado_resolucion": "PENDIENTE_T+5",
+      "ppp_parcial_reciente": NaN,
+      "retorno_parcial_pct": NaN,
+      "acierto_parcial_en_curso": null
+    },
+    {
+      "fecha_senal": "2026-11-09",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-17",
+      "emisora": "FEMSA",
+      "modelo_g2": "G2_V4_POOLED_DM5_REL_CORTO_PLAZO",
+      "ppp_base_t": 242.33,
+      "ret_10": 0.008825610923774985,
+      "ret_10_rel_panel": -0.010673416075756493,
+      "volatilidad_20": 0.015181599928844545,
+      "probabilidad_subida": 0.485762,
+      "prediccion_etiqueta": "NO_SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=NO_SUBIDA)",
+      "estado_resolucion": "PENDIENTE_T+5",
+      "ppp_parcial_reciente": NaN,
+      "retorno_parcial_pct": NaN,
+      "acierto_parcial_en_curso": null
+    },
+    {
+      "fecha_senal": "2026-11-09",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-17",
+      "emisora": "FEMSA",
+      "modelo_g2": "G2_V5_ADAPTATIVO_REGIMEN_SECTORIAL",
+      "ppp_base_t": 242.33,
+      "ret_10": 0.008825610923774985,
+      "ret_10_rel_panel": -0.010673416075756493,
+      "volatilidad_20": 0.015181599928844545,
+      "probabilidad_subida": 0.488149,
+      "prediccion_etiqueta": "NO_SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=NO_SUBIDA, V2=NO_SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=NO_SUBIDA)",
+      "estado_resolucion": "PENDIENTE_T+5",
+      "ppp_parcial_reciente": NaN,
+      "retorno_parcial_pct": NaN,
+      "acierto_parcial_en_curso": null
+    },
+    {
+      "fecha_senal": "2026-11-09",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-17",
+      "emisora": "GFNORTE",
+      "modelo_g2": "G2_V1_POOLED_REL3_CALIBRADO",
+      "ppp_base_t": 209.31,
+      "ret_10": -0.019441581560948218,
+      "ret_10_rel_panel": -0.03894060856047969,
+      "volatilidad_20": 0.013723882456251196,
+      "probabilidad_subida": 0.527231,
+      "prediccion_etiqueta": "SUBIDA",
+      "estado_consenso_g2": "CONSENSO_PANEL_G2_SUBIDA",
+      "estado_resolucion": "PENDIENTE_T+5",
+      "ppp_parcial_reciente": NaN,
+      "retorno_parcial_pct": NaN,
+      "acierto_parcial_en_curso": null
+    },
+    {
+      "fecha_senal": "2026-11-09",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-17",
+      "emisora": "GFNORTE",
+      "modelo_g2": "G2_V2_POOLED_REL3_ZONA_NEUTRAL",
+      "ppp_base_t": 209.31,
+      "ret_10": -0.019441581560948218,
+      "ret_10_rel_panel": -0.03894060856047969,
+      "volatilidad_20": 0.013723882456251196,
+      "probabilidad_subida": 0.52754,
+      "prediccion_etiqueta": "SUBIDA",
+      "estado_consenso_g2": "CONSENSO_PANEL_G2_SUBIDA",
+      "estado_resolucion": "PENDIENTE_T+5",
+      "ppp_parcial_reciente": NaN,
+      "retorno_parcial_pct": NaN,
+      "acierto_parcial_en_curso": null
+    },
+    {
+      "fecha_senal": "2026-11-09",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-17",
+      "emisora": "GFNORTE",
+      "modelo_g2": "G2_V3_POOLED_REL3_ALTA_DISC_EXPANDIDO",
+      "ppp_base_t": 209.31,
+      "ret_10": -0.019441581560948218,
+      "ret_10_rel_panel": -0.03894060856047969,
+      "volatilidad_20": 0.013723882456251196,
+      "probabilidad_subida": 0.520277,
+      "prediccion_etiqueta": "SUBIDA",
+      "estado_consenso_g2": "CONSENSO_PANEL_G2_SUBIDA",
+      "estado_resolucion": "PENDIENTE_T+5",
+      "ppp_parcial_reciente": NaN,
+      "retorno_parcial_pct": NaN,
+      "acierto_parcial_en_curso": null
+    },
+    {
+      "fecha_senal": "2026-11-09",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-17",
+      "emisora": "GFNORTE",
+      "modelo_g2": "G2_V4_POOLED_DM5_REL_CORTO_PLAZO",
+      "ppp_base_t": 209.31,
+      "ret_10": -0.019441581560948218,
+      "ret_10_rel_panel": -0.03894060856047969,
+      "volatilidad_20": 0.013723882456251196,
+      "probabilidad_subida": 0.500356,
+      "prediccion_etiqueta": "SUBIDA",
+      "estado_consenso_g2": "CONSENSO_PANEL_G2_SUBIDA",
+      "estado_resolucion": "PENDIENTE_T+5",
+      "ppp_parcial_reciente": NaN,
+      "retorno_parcial_pct": NaN,
+      "acierto_parcial_en_curso": null
+    },
+    {
+      "fecha_senal": "2026-11-09",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-17",
+      "emisora": "GFNORTE",
+      "modelo_g2": "G2_V5_ADAPTATIVO_REGIMEN_SECTORIAL",
+      "ppp_base_t": 209.31,
+      "ret_10": -0.019441581560948218,
+      "ret_10_rel_panel": -0.03894060856047969,
+      "volatilidad_20": 0.013723882456251196,
+      "probabilidad_subida": 0.503344,
+      "prediccion_etiqueta": "SUBIDA",
+      "estado_consenso_g2": "CONSENSO_PANEL_G2_SUBIDA",
+      "estado_resolucion": "PENDIENTE_T+5",
+      "ppp_parcial_reciente": NaN,
+      "retorno_parcial_pct": NaN,
+      "acierto_parcial_en_curso": null
+    },
+    {
+      "fecha_senal": "2026-11-09",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-17",
+      "emisora": "GMEXICO",
+      "modelo_g2": "G2_V1_POOLED_REL3_CALIBRADO",
+      "ppp_base_t": 223.57,
+      "ret_10": -0.020289219982471463,
+      "ret_10_rel_panel": -0.03978824698200294,
+      "volatilidad_20": 0.018707110311362143,
+      "probabilidad_subida": 0.522606,
+      "prediccion_etiqueta": "SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=NO_SUBIDA)",
+      "estado_resolucion": "PENDIENTE_T+5",
+      "ppp_parcial_reciente": NaN,
+      "retorno_parcial_pct": NaN,
+      "acierto_parcial_en_curso": null
+    },
+    {
+      "fecha_senal": "2026-11-09",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-17",
+      "emisora": "GMEXICO",
+      "modelo_g2": "G2_V2_POOLED_REL3_ZONA_NEUTRAL",
+      "ppp_base_t": 223.57,
+      "ret_10": -0.020289219982471463,
+      "ret_10_rel_panel": -0.03978824698200294,
+      "volatilidad_20": 0.018707110311362143,
+      "probabilidad_subida": 0.522844,
+      "prediccion_etiqueta": "SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=NO_SUBIDA)",
+      "estado_resolucion": "PENDIENTE_T+5",
+      "ppp_parcial_reciente": NaN,
+      "retorno_parcial_pct": NaN,
+      "acierto_parcial_en_curso": null
+    },
+    {
+      "fecha_senal": "2026-11-09",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-17",
+      "emisora": "GMEXICO",
+      "modelo_g2": "G2_V3_POOLED_REL3_ALTA_DISC_EXPANDIDO",
+      "ppp_base_t": 223.57,
+      "ret_10": -0.020289219982471463,
+      "ret_10_rel_panel": -0.03978824698200294,
+      "volatilidad_20": 0.018707110311362143,
+      "probabilidad_subida": 0.519609,
+      "prediccion_etiqueta": "SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=NO_SUBIDA)",
+      "estado_resolucion": "PENDIENTE_T+5",
+      "ppp_parcial_reciente": NaN,
+      "retorno_parcial_pct": NaN,
+      "acierto_parcial_en_curso": null
+    },
+    {
+      "fecha_senal": "2026-11-09",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-17",
+      "emisora": "GMEXICO",
+      "modelo_g2": "G2_V4_POOLED_DM5_REL_CORTO_PLAZO",
+      "ppp_base_t": 223.57,
+      "ret_10": -0.020289219982471463,
+      "ret_10_rel_panel": -0.03978824698200294,
+      "volatilidad_20": 0.018707110311362143,
+      "probabilidad_subida": 0.495416,
+      "prediccion_etiqueta": "NO_SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=NO_SUBIDA)",
+      "estado_resolucion": "PENDIENTE_T+5",
+      "ppp_parcial_reciente": NaN,
+      "retorno_parcial_pct": NaN,
+      "acierto_parcial_en_curso": null
+    },
+    {
+      "fecha_senal": "2026-11-09",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-17",
+      "emisora": "GMEXICO",
+      "modelo_g2": "G2_V5_ADAPTATIVO_REGIMEN_SECTORIAL",
+      "ppp_base_t": 223.57,
+      "ret_10": -0.020289219982471463,
+      "ret_10_rel_panel": -0.03978824698200294,
+      "volatilidad_20": 0.018707110311362143,
+      "probabilidad_subida": 0.499045,
+      "prediccion_etiqueta": "NO_SUBIDA",
+      "estado_consenso_g2": "DIVERGENCIA_G2 (V1=SUBIDA, V2=SUBIDA, V3=SUBIDA, V4=NO_SUBIDA, V5=NO_SUBIDA)",
+      "estado_resolucion": "PENDIENTE_T+5",
+      "ppp_parcial_reciente": NaN,
+      "retorno_parcial_pct": NaN,
+      "acierto_parcial_en_curso": null
+    },
+    {
+      "fecha_senal": "2026-11-09",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-17",
+      "emisora": "WALMEX",
+      "modelo_g2": "G2_V1_POOLED_REL3_CALIBRADO",
+      "ppp_base_t": 54.59,
+      "ret_10": 0.07524128422296639,
+      "ret_10_rel_panel": 0.05574225722343491,
+      "volatilidad_20": 0.016706938373862838,
+      "probabilidad_subida": 0.42263,
+      "prediccion_etiqueta": "NO_SUBIDA",
+      "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
+      "estado_resolucion": "PENDIENTE_T+5",
+      "ppp_parcial_reciente": NaN,
+      "retorno_parcial_pct": NaN,
+      "acierto_parcial_en_curso": null
+    },
+    {
+      "fecha_senal": "2026-11-09",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-17",
+      "emisora": "WALMEX",
+      "modelo_g2": "G2_V2_POOLED_REL3_ZONA_NEUTRAL",
+      "ppp_base_t": 54.59,
+      "ret_10": 0.07524128422296639,
+      "ret_10_rel_panel": 0.05574225722343491,
+      "volatilidad_20": 0.016706938373862838,
+      "probabilidad_subida": 0.420457,
+      "prediccion_etiqueta": "NO_SUBIDA",
+      "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
+      "estado_resolucion": "PENDIENTE_T+5",
+      "ppp_parcial_reciente": NaN,
+      "retorno_parcial_pct": NaN,
+      "acierto_parcial_en_curso": null
+    },
+    {
+      "fecha_senal": "2026-11-09",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-17",
+      "emisora": "WALMEX",
+      "modelo_g2": "G2_V3_POOLED_REL3_ALTA_DISC_EXPANDIDO",
+      "ppp_base_t": 54.59,
+      "ret_10": 0.07524128422296639,
+      "ret_10_rel_panel": 0.05574225722343491,
+      "volatilidad_20": 0.016706938373862838,
+      "probabilidad_subida": 0.450213,
+      "prediccion_etiqueta": "NO_SUBIDA",
+      "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
+      "estado_resolucion": "PENDIENTE_T+5",
+      "ppp_parcial_reciente": NaN,
+      "retorno_parcial_pct": NaN,
+      "acierto_parcial_en_curso": null
+    },
+    {
+      "fecha_senal": "2026-11-09",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-17",
+      "emisora": "WALMEX",
+      "modelo_g2": "G2_V4_POOLED_DM5_REL_CORTO_PLAZO",
+      "ppp_base_t": 54.59,
+      "ret_10": 0.07524128422296639,
+      "ret_10_rel_panel": 0.05574225722343491,
+      "volatilidad_20": 0.016706938373862838,
+      "probabilidad_subida": 0.434126,
+      "prediccion_etiqueta": "NO_SUBIDA",
+      "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
+      "estado_resolucion": "PENDIENTE_T+5",
+      "ppp_parcial_reciente": NaN,
+      "retorno_parcial_pct": NaN,
+      "acierto_parcial_en_curso": null
+    },
+    {
+      "fecha_senal": "2026-11-09",
+      "muestra_evaluacion": "OUT_OF_SAMPLE_PRE_REGISTRADO",
+      "fecha_objetivo_h5": "2026-11-17",
+      "emisora": "WALMEX",
+      "modelo_g2": "G2_V5_ADAPTATIVO_REGIMEN_SECTORIAL",
+      "ppp_base_t": 54.59,
+      "ret_10": 0.07524128422296639,
+      "ret_10_rel_panel": 0.05574225722343491,
+      "volatilidad_20": 0.016706938373862838,
+      "probabilidad_subida": 0.430539,
+      "prediccion_etiqueta": "NO_SUBIDA",
+      "estado_consenso_g2": "CONSENSO_PANEL_G2_NO_SUBIDA",
+      "estado_resolucion": "PENDIENTE_T+5",
+      "ppp_parcial_reciente": NaN,
+      "retorno_parcial_pct": NaN,
+      "acierto_parcial_en_curso": null
     }
   ],
   "hashes_archivos_generados": {
-    "registro_senales_prospectivas_panel_g2.csv": "5596c65878e2c60c92c053d71c4390f0d653a0588714a2e271fa42532a85dfaa",
-    "estado_ventanas_panel_g2.csv": "c3d9fdc1aed6a1d84016cb03b9935d963d8eef0c23d83a2c48e904c7a6f273c1"
+    "registro_senales_prospectivas_panel_g2.csv": "4cc7c0383f312589bda7fcadac0818f3601c7f83c1d52a78c9a5e49136c216a7",
+    "estado_ventanas_panel_g2.csv": "f09cd705334d24805d008d2f6a20bb2c6c36db6fe32b57379bf79cda5535ccde"
   },
   "integridad_archivos_protegidos_intacta": true
 }
