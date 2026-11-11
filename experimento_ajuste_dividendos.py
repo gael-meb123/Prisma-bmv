@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from metodologia_ppp import FEATURE_NAMES, calcular_features_ppp, localizar_insumo, validar_ventana_fechas
 
-DOWNLOADS = Path(r"C:\Users\GAELMENDOZABALLARDO\Downloads")
+DOWNLOADS = Path.home() / "Downloads"
 Z9D = localizar_insumo("etapa9D_WALMEX_PPP_20261028T153956182393Z.zip")
 Z9E = localizar_insumo("etapa9E_WALMEX_PPP_20261028T155304028544Z.zip")
 Z9F = localizar_insumo("etapa9F_WALMEX_PPP_20261028T160422494281Z.zip")
@@ -401,9 +401,9 @@ def main():
                 k: v.get("ex_div_inminente_5d") for k, v in details[r["mode"]]["coefs"].items()
             })
 
-    out_dir = Path(r"D:\Universidad\7mo Semestre\Big Data\Proyecto final")
-    pd.DataFrame(summary_rows).to_csv(out_dir / "resultados_experimento_dividendos.csv", index=False)
-    with open(out_dir / "detalle_experimento_dividendos.json", "w", encoding="utf-8") as f:
+    OUT_DIR = Path(__file__).resolve().parent
+    pd.DataFrame(summary_rows).to_csv(OUT_DIR / "resultados_experimento_dividendos.csv", index=False)
+    with open(OUT_DIR / "detalle_experimento_dividendos.json", "w", encoding="utf-8") as f:
         json.dump(
             {
                 k: {"global": v["global"], "folds": v["folds"], "coefs": v["coefs"]}

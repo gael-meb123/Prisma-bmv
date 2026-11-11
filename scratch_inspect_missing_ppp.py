@@ -1,8 +1,10 @@
 import re
 from pathlib import Path
 
-cache_dir = Path(r"D:\Universidad\7mo Semestre\Big Data\Proyecto final\cache_boletines")
+ROOT = Path(__file__).resolve().parent          # carpeta del proyecto
 
+cache_dir = ROOT / "cache_boletines"
+cache_dir.mkdir(exist_ok=True)
 # Let's inspect 20240820 and 20170919 table structure in raw HTML
 for dt in ['20170919', '20240820']:
     f = cache_dir / f"boletin_{dt}.html"

@@ -27,7 +27,7 @@ from metodologia_ppp import (
     add_bmv_sessions, timestamp_utc,
 )
 
-WORKSPACE = Path(r"D:\Universidad\7mo Semestre\Big Data\Proyecto final")
+WORKSPACE = Path(__file__).resolve().parent
 INPUT_FEATURES_CSV = WORKSPACE / "dataset_panel_15_emisoras_features.csv"
 OUTPUT_REPORTE_JSON = WORKSPACE / "reporte_investigacion_profunda_gmexico.json"
 

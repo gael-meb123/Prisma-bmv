@@ -1,8 +1,9 @@
 import re
 from pathlib import Path
+ROOT = Path(__file__).resolve().parent          # carpeta del proyecto
 
-cache_dir = Path(r"D:\Universidad\7mo Semestre\Big Data\Proyecto final\cache_boletines")
-
+cache_dir = ROOT / "cache_boletines"
+cache_dir.mkdir(exist_ok=True)
 for dt in ['20161027', '20170919', '20240820', '20261028']:
     f = cache_dir / f"boletin_{dt}.html"
     raw = f.read_bytes().decode('utf-8', errors='ignore')

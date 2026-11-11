@@ -1,0 +1,112 @@
+/* Prismi — animaciones del billete superhéroe */
+
+.prismi {
+  display: block;
+  overflow: visible;
+}
+.prismi * {
+  transform-box: view-box;
+}
+
+/* Flota suavemente */
+.prismi-float {
+  animation: prismi-bob 3.2s ease-in-out infinite;
+}
+@keyframes prismi-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+.prismi-shadow {
+  transform-origin: 60px 146px;
+  animation: prismi-shadow 3.2s ease-in-out infinite;
+}
+@keyframes prismi-shadow {
+  0%, 100% { transform: scaleX(1); opacity: 0.18; }
+  50% { transform: scaleX(0.82); opacity: 0.1; }
+}
+
+/* La capa ondea */
+.prismi-cape {
+  transform-origin: 60px 38px;
+  animation: prismi-cape 1.9s ease-in-out infinite;
+}
+@keyframes prismi-cape {
+  0%, 100% { transform: skewX(0deg) scaleY(1); }
+  50% { transform: skewX(5deg) scaleY(0.97); }
+}
+
+/* Parpadeo */
+.prismi-eyes {
+  transform-origin: 60px 42.4px;
+  animation: prismi-blink 4.8s infinite;
+}
+@keyframes prismi-blink {
+  0%, 93%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.12); }
+}
+
+/* Mirada: las pupilas siguen --gx / --gy */
+.prismi-pupils {
+  transform: translate(var(--gx, 0px), var(--gy, 0px));
+  transition: transform 0.35s ease;
+}
+
+/* Brillo que cruza el emblema */
+.prismi-glint {
+  animation: prismi-glint 3.6s ease-in-out infinite;
+}
+@keyframes prismi-glint {
+  0%, 60% { translate: 0 0; }
+  85%, 100% { translate: 60px 0; }
+}
+
+/* Brazos: giran desde el hombro */
+.prismi-arm {
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.prismi-arm-l { transform-origin: 34px 62px; }
+.prismi-arm-r { transform-origin: 86px 62px; }
+.prismi-leg-l, .prismi-leg-r { transition: transform 0.4s ease; }
+.prismi-leg-l { transform-origin: 50px 112px; }
+.prismi-leg-r { transform-origin: 70px 112px; }
+
+.prismi-pose-point-right .prismi-arm-r { transform: rotate(-58deg); }
+.prismi-pose-point-left .prismi-arm-l { transform: rotate(58deg); }
+.prismi-pose-point-up .prismi-arm-r { transform: rotate(-128deg); }
+.prismi-pose-point-down .prismi-arm-r { transform: rotate(28deg); }
+.prismi-pose-cheer .prismi-arm-r { transform: rotate(-125deg); }
+.prismi-pose-cheer .prismi-arm-l { transform: rotate(125deg); }
+.prismi-pose-cheer .prismi-float { animation: prismi-jump 0.7s ease-in-out infinite; }
+@keyframes prismi-jump {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-9px); }
+}
+
+.prismi-pose-wave .prismi-arm-r {
+  animation: prismi-wave 0.9s ease-in-out infinite;
+}
+@keyframes prismi-wave {
+  0%, 100% { transform: rotate(-112deg); }
+  50% { transform: rotate(-78deg); }
+}
+
+/* Pose de vuelo: puño al frente, piernas atrás, capa estirada */
+.prismi-pose-fly .prismi-arm-r { transform: rotate(-96deg); }
+.prismi-pose-fly .prismi-arm-l { transform: rotate(18deg); }
+.prismi-pose-fly .prismi-leg-l { transform: rotate(22deg); }
+.prismi-pose-fly .prismi-leg-r { transform: rotate(14deg); }
+.prismi-pose-fly .prismi-cape {
+  animation: prismi-cape-fly 0.32s ease-in-out infinite;
+}
+@keyframes prismi-cape-fly {
+  0%, 100% { transform: skewX(-9deg) scaleY(1.03); }
+  50% { transform: skewX(-15deg) scaleY(0.98); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prismi *,
+  .prismi-float {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -61,7 +61,7 @@ export function MarketSelection({
       </div>
 
       {/* Lista de Emisoras */}
-      <div className="table-scroll" style={{ border: "1px solid var(--line)", borderRadius: "10px", maxHeight: "360px", overflowY: "auto" }}>
+      <div className="table-scroll" data-tour="monitor" style={{ border: "1px solid var(--line)", borderRadius: "10px", maxHeight: "360px", overflowY: "auto" }}>
         <table className="comparison-table" style={{ width: "100%", fontSize: "12px" }}>
           <thead>
             <tr>
@@ -81,6 +81,7 @@ export function MarketSelection({
               return (
                 <tr
                   key={c.emisora}
+                  data-tour={c.emisora === "WALMEX" ? "emisora-walmex" : undefined}
                   onClick={() => onSelectTicker(c.emisora)}
                   style={{
                     cursor: "pointer",
@@ -113,6 +114,7 @@ export function MarketSelection({
 
       {/* Sello de Auditoría Criptográfica */}
       <div
+        data-tour="sello"
         style={{
           background: "#ffffff",
           border: "1px solid var(--line)",

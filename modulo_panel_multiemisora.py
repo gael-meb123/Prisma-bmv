@@ -23,7 +23,7 @@ from metodologia_ppp import (
     seleccionar_train_test, validar_ventana_fechas, add_bmv_sessions,
 )
 
-WORKSPACE = Path(r"D:\Universidad\7mo Semestre\Big Data\Proyecto final")
+WORKSPACE = Path(__file__).resolve().parent
 INPUT_SERIE_CSV = WORKSPACE / "serie_ppp_historica_15_emisoras_bmv.csv"
 OUTPUT_FEATURES_CSV = WORKSPACE / "dataset_panel_15_emisoras_features.csv"
 OUTPUT_METRICAS_JSON = WORKSPACE / "metricas_panel_15_emisoras.json"

@@ -1,6 +1,9 @@
 import zipfile, pandas as pd, io
+from pathlib import Path
 
-zpath = r'D:\Universidad\7mo Semestre\Big Data\Parcial 3\Prisma_BMV_Datos.zip'
+ROOT = Path(__file__).resolve().parent          # carpeta del proyecto
+
+zpath = ROOT / "Prisma_BMV_Datos.zip"
 with zipfile.ZipFile(zpath, 'r') as z:
     for name in z.namelist():
         df = pd.read_csv(io.BytesIO(z.read(name)))

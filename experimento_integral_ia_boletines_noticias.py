@@ -19,8 +19,8 @@ from experimento_ajuste_dividendos import (
     standard_scale,
 )
 
-DOWNLOADS = Path(r"C:\Users\GAELMENDOZABALLARDO\Downloads")
-OUT_DIR = Path(r"D:\Universidad\7mo Semestre\Big Data\Proyecto final")
+DOWNLOADS = Path.home() / "Downloads"
+OUT_DIR = Path(__file__).resolve().parent
 
 
 # ==============================================================================

@@ -2,8 +2,10 @@ import urllib.request, re
 from pathlib import Path
 
 # Let's inspect boletin_20240820.html and 20170919.html in cache!
-cache_dir = Path(r"D:\Universidad\7mo Semestre\Big Data\Proyecto final\cache_boletines")
+ROOT = Path(__file__).resolve().parent          # carpeta del proyecto
 
+cache_dir = ROOT / "cache_boletines"
+cache_dir.mkdir(exist_ok=True)
 for dt in ['20240820', '20170919']:
     f = cache_dir / f"boletin_{dt}.html"
     if f.exists():

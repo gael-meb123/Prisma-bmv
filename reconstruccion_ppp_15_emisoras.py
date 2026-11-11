@@ -29,8 +29,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import pandas as pd
 import numpy as np
 
-WORKSPACE = Path(r"D:\Universidad\7mo Semestre\Big Data\Proyecto final")
-PARCIAL3 = Path(r"D:\Universidad\7mo Semestre\Big Data\Parcial 3")
+WORKSPACE = Path(__file__).resolve().parent
+PARCIAL3 = WORKSPACE.parent / "Parcial 3"
 CACHE_DIR = WORKSPACE / "cache_boletines"
 CACHE_DIR.mkdir(exist_ok=True)
 

@@ -82,7 +82,7 @@ def render_terminal_auditoria() -> None:
         fig_w.add_trace(
             go.Scatter(
                 x=df_serie_w["fecha"],
-                y=df_serie_w["ppp_oficial_bmv"],
+                y=df_serie_w["ppp_bmv_mxn"],
                 mode="lines+markers",
                 name="PPP Oficial BMV",
                 line=dict(color="#10B981", width=2.5),

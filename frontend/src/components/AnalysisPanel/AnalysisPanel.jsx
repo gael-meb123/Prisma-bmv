@@ -56,7 +56,7 @@ export function AnalysisPanel({
       </div>
 
       {/* Tarjeta de Consenso y Precio Base */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "12px" }}>
+      <div data-tour="kpis" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "12px" }}>
         <div style={{ background: "#ffffff", border: "1px solid var(--line)", borderRadius: "10px", padding: "14px" }}>
           <small style={{ color: "var(--muted)", fontWeight: "700", textTransform: "uppercase", fontSize: "10px", letterSpacing: "0.5px" }}>
             ESTADO DE CONSENSO
@@ -95,7 +95,7 @@ export function AnalysisPanel({
       </div>
 
       {/* Barras de Probabilidad de los 3 Modelos G2 */}
-      <div style={{ background: "#ffffff", border: "1px solid var(--line)", borderRadius: "12px", padding: "16px" }}>
+      <div data-tour="modelos" style={{ background: "#ffffff", border: "1px solid var(--line)", borderRadius: "12px", padding: "16px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
           <strong style={{ fontSize: "13px", color: "var(--navy)", display: "flex", alignItems: "center", gap: "6px" }}>
             <Layers size={16} style={{ color: "#079baa" }} />
@@ -140,7 +140,7 @@ export function AnalysisPanel({
       </div>
 
       {/* Botones de Acción */}
-      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "4px" }}>
+      <div data-tour="acciones" style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "4px" }}>
         <Button variant="outline" icon={Layers} onClick={onOpenAudit}>
           Auditar Maduración Temporal (t+1 a t+5)
         </Button>
