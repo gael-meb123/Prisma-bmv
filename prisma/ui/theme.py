@@ -12,6 +12,8 @@ from __future__ import annotations
 import plotly.graph_objects as go
 import plotly.io as pio
 
+from prisma.ui import mascota
+
 COLORES = {
     "fondo": "#0D1117",
     "panel": "#141A22",
@@ -67,7 +69,6 @@ a {{ color: var(--info); }}
 @keyframes pbCinta {{ from {{ transform:translateX(0); }} to {{ transform:translateX(-100%); }} }}
 @media (prefers-reduced-motion: reduce) {{
   .pb-cinta-pista {{ animation:none; padding-left:0; }}
-  .prismi-baile {{ animation:none !important; }}
 }}
 
 .sube {{ color:var(--sube); }} .baja {{ color:var(--baja); }} .alerta {{ color:var(--alerta); }} .tenue {{ color:var(--tenue); }}
@@ -114,9 +115,6 @@ a {{ color: var(--info); }}
 .st-key-prismi_flotante {{ position:fixed; right:1.4rem; bottom:1.3rem; z-index:1000; width:auto !important; }}
 .st-key-prismi_flotante button {{ background:var(--panel-alto); border:1px solid var(--marca); color:var(--texto);
   font-family:var(--mono); border-radius:3px; }}
-.prismi-baile {{ animation: prismiBaile 2.6s ease-in-out infinite; transform-origin: 50% 100%; display:inline-block; }}
-@keyframes prismiBaile {{ 0%,100% {{ transform:translateY(0) rotate(0); }} 25% {{ transform:translateY(-5px) rotate(-4deg); }}
-  75% {{ transform:translateY(-3px) rotate(4deg); }} }}
 .prismi-msg {{ font-size:.88rem; line-height:1.5; padding:.45rem .6rem; border-radius:3px; margin-bottom:.4rem; }}
 .prismi-msg.u {{ background:var(--panel-alto); }}
 .prismi-msg.a {{ border-left:2px solid var(--marca); }}
@@ -130,6 +128,8 @@ div[data-testid="stDataFrame"] {{ border:1px solid var(--regla); border-radius:3
 :focus-visible {{ outline:2px solid var(--marca) !important; outline-offset:2px; }}
 </style>
 """
+
+CSS = CSS.replace("</style>", mascota.CSS + "</style>")
 
 
 def _plantilla_plotly() -> go.layout.Template:

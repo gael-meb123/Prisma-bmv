@@ -108,3 +108,13 @@ def test_sin_identidad_academica_en_codigo_entregado():
             entregado += list((RAIZ / carpeta).rglob(patron))
     for ruta in entregado:
         assert not prohibidas.search(ruta.read_text(encoding="utf-8")), ruta
+
+
+def test_mascota_svg_valido_y_con_ids_unicos():
+    from prisma.ui.mascota import mascota
+
+    a, b = mascota("happy", "wave"), mascota("idle", "point-right")
+    for svg in (a, b):
+        assert svg.count("<g") == svg.count("</g>") and "\n" not in svg  # Markdown no debe partirlo
+    assert 'id="prismi-bill-' in a and set(re.findall(r'id="([^"]+)"', a)).isdisjoint(re.findall(r'id="([^"]+)"', b))
+    assert "prismi-pose-idle" in mascota("happy", "pose-inexistente")

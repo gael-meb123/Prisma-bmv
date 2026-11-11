@@ -7,6 +7,7 @@ import streamlit as st
 
 from prisma.plans import EXPLORER, ORDEN_PLANES, PLANES, nivel
 from prisma.ui import components as ui
+from prisma.ui.mascota import mascota
 from prisma.ui.contexto import Servicios
 
 
@@ -119,14 +120,15 @@ PASOS = {
 
 @st.dialog("Recorrido de Prisma BMV", width="large")
 def recorrido(sv: Servicios, usuario: dict | None) -> None:
-    from prisma.ui.views.prismi import AVATAR
-
     tipo = st.session_state.get("tour_tipo", "visitante")
     pasos = PASOS[tipo]
     i = min(st.session_state.get("tour_paso", 0), len(pasos) - 1)
     a, b = st.columns([1, 3])
     with a:
-        ui.html(AVATAR)
+        # Saluda al inicio, señala el texto en los pasos intermedios y celebra al final.
+        expresion, pose = (("happy", "wave") if i == 0 else ("happy", "cheer") if i == len(pasos) - 1
+                           else ("idle", "point-right"))
+        ui.html(mascota(expresion, pose, tamano=112))
     with b:
         st.caption(f"Paso {i + 1} de {len(pasos)}")
         st.subheader(pasos[i][0])
