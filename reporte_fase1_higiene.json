@@ -1,0 +1,293 @@
+{
+  "fase": "FASE_1_HIGIENE_DE_ETIQUETAS",
+  "timestamp_utc": "2026-11-06T20:28:00.926402+00:00",
+  "catalogo_eventos_corporativos": {
+    "archivo": "eventos_corporativos_15_emisoras.csv",
+    "total_eventos": 284,
+    "dividendos": 282,
+    "splits": 2,
+    "eventos_por_emisora": {
+      "AC": 21,
+      "AMX": 16,
+      "ASUR": 14,
+      "BIMBO": 11,
+      "CEMEX": 10,
+      "FEMSA": 20,
+      "GAP": 23,
+      "GFINBUR": 5,
+      "GFNORTE": 15,
+      "GMEXICO": 40,
+      "GRUMA": 30,
+      "LIVEPOL": 19,
+      "PE&OLES": 8,
+      "VESTA": 25,
+      "WALMEX": 27
+    }
+  },
+  "auditoria_etiquetas_panel": {
+    "total_observaciones_con_target": 9679,
+    "observaciones_ventana_con_evento": 429,
+    "observaciones_ventana_sin_evento": 9250,
+    "cambios_etiqueta_en_ventana_sin_evento": 0,
+    "cambios_etiqueta_en_ventana_con_evento": 76,
+    "test_15_n_ventanas_con_evento": 86,
+    "test_4_foco_n_ventanas_con_evento": 60
+  },
+  "test_15_emisoras": {
+    "V1": {
+      "n": 1557,
+      "aciertos": 758,
+      "exactitud_pct": 48.68,
+      "brier": 0.253332,
+      "log_loss": 0.700037
+    },
+    "V1_ADJ": {
+      "n": 1557,
+      "aciertos": 783,
+      "exactitud_pct": 50.29,
+      "brier": 0.252732,
+      "log_loss": 0.69881
+    },
+    "V1_DELTA_ADJ_MENOS_ORIG": {
+      "delta_exactitud_pp": 1.61,
+      "delta_brier": -0.0006
+    },
+    "V2": {
+      "n": 1557,
+      "aciertos": 762,
+      "exactitud_pct": 48.94,
+      "brier": 0.253471,
+      "log_loss": 0.700336
+    },
+    "V2_ADJ": {
+      "n": 1557,
+      "aciertos": 780,
+      "exactitud_pct": 50.1,
+      "brier": 0.252801,
+      "log_loss": 0.698955
+    },
+    "V2_DELTA_ADJ_MENOS_ORIG": {
+      "delta_exactitud_pp": 1.16,
+      "delta_brier": -0.00067
+    },
+    "V3": {
+      "n": 1557,
+      "aciertos": 760,
+      "exactitud_pct": 48.81,
+      "brier": 0.252269,
+      "log_loss": 0.697785
+    },
+    "V3_ADJ": {
+      "n": 1557,
+      "aciertos": 779,
+      "exactitud_pct": 50.03,
+      "brier": 0.251773,
+      "log_loss": 0.69678
+    },
+    "V3_DELTA_ADJ_MENOS_ORIG": {
+      "delta_exactitud_pp": 1.22,
+      "delta_brier": -0.000496
+    },
+    "V4": {
+      "n": 1557,
+      "aciertos": 776,
+      "exactitud_pct": 49.84,
+      "brier": 0.250382,
+      "log_loss": 0.693964
+    },
+    "V4_ADJ": {
+      "n": 1557,
+      "aciertos": 805,
+      "exactitud_pct": 51.7,
+      "brier": 0.249668,
+      "log_loss": 0.692522
+    },
+    "V4_DELTA_ADJ_MENOS_ORIG": {
+      "delta_exactitud_pp": 1.86,
+      "delta_brier": -0.000714
+    },
+    "V5": {
+      "n": 1557,
+      "aciertos": 775,
+      "exactitud_pct": 49.78,
+      "brier": 0.250836,
+      "log_loss": 0.694875
+    },
+    "V5_ADJ": {
+      "n": 1557,
+      "aciertos": 797,
+      "exactitud_pct": 51.19,
+      "brier": 0.250235,
+      "log_loss": 0.693657
+    },
+    "V5_DELTA_ADJ_MENOS_ORIG": {
+      "delta_exactitud_pp": 1.41,
+      "delta_brier": -0.000601
+    }
+  },
+  "test_4_emisoras_foco": {
+    "V1": {
+      "n": 1142,
+      "aciertos": 568,
+      "exactitud_pct": 49.74,
+      "brier": 0.251523,
+      "log_loss": 0.696215
+    },
+    "V1_ADJ": {
+      "n": 1142,
+      "aciertos": 586,
+      "exactitud_pct": 51.31,
+      "brier": 0.250871,
+      "log_loss": 0.694906
+    },
+    "V1_DELTA_ADJ_MENOS_ORIG": {
+      "delta_exactitud_pp": 1.57,
+      "delta_brier": -0.000652
+    },
+    "V2": {
+      "n": 1142,
+      "aciertos": 574,
+      "exactitud_pct": 50.26,
+      "brier": 0.251614,
+      "log_loss": 0.696402
+    },
+    "V2_ADJ": {
+      "n": 1142,
+      "aciertos": 585,
+      "exactitud_pct": 51.23,
+      "brier": 0.250913,
+      "log_loss": 0.694993
+    },
+    "V2_DELTA_ADJ_MENOS_ORIG": {
+      "delta_exactitud_pp": 0.97,
+      "delta_brier": -0.000701
+    },
+    "V3": {
+      "n": 1142,
+      "aciertos": 573,
+      "exactitud_pct": 50.18,
+      "brier": 0.250848,
+      "log_loss": 0.69485
+    },
+    "V3_ADJ": {
+      "n": 1142,
+      "aciertos": 589,
+      "exactitud_pct": 51.58,
+      "brier": 0.250262,
+      "log_loss": 0.693676
+    },
+    "V3_DELTA_ADJ_MENOS_ORIG": {
+      "delta_exactitud_pp": 1.4,
+      "delta_brier": -0.000586
+    },
+    "V4": {
+      "n": 1142,
+      "aciertos": 580,
+      "exactitud_pct": 50.79,
+      "brier": 0.249604,
+      "log_loss": 0.69235
+    },
+    "V4_ADJ": {
+      "n": 1142,
+      "aciertos": 598,
+      "exactitud_pct": 52.36,
+      "brier": 0.248752,
+      "log_loss": 0.69064
+    },
+    "V4_DELTA_ADJ_MENOS_ORIG": {
+      "delta_exactitud_pp": 1.57,
+      "delta_brier": -0.000852
+    },
+    "V5": {
+      "n": 1142,
+      "aciertos": 572,
+      "exactitud_pct": 50.09,
+      "brier": 0.250707,
+      "log_loss": 0.694578
+    },
+    "V5_ADJ": {
+      "n": 1142,
+      "aciertos": 590,
+      "exactitud_pct": 51.66,
+      "brier": 0.249831,
+      "log_loss": 0.692818
+    },
+    "V5_DELTA_ADJ_MENOS_ORIG": {
+      "delta_exactitud_pp": 1.57,
+      "delta_brier": -0.000876
+    }
+  },
+  "test_15_solo_ventanas_con_evento": {
+    "V1": {
+      "n": 86,
+      "aciertos": 47,
+      "exactitud_pct": 54.65,
+      "brier": 0.248201,
+      "log_loss": 0.689551
+    },
+    "V1_ADJ": {
+      "n": 86,
+      "aciertos": 56,
+      "exactitud_pct": 65.12,
+      "brier": 0.246217,
+      "log_loss": 0.685597
+    },
+    "V2": {
+      "n": 86,
+      "aciertos": 48,
+      "exactitud_pct": 55.81,
+      "brier": 0.247924,
+      "log_loss": 0.688996
+    },
+    "V2_ADJ": {
+      "n": 86,
+      "aciertos": 54,
+      "exactitud_pct": 62.79,
+      "brier": 0.246536,
+      "log_loss": 0.686239
+    },
+    "V3": {
+      "n": 86,
+      "aciertos": 49,
+      "exactitud_pct": 56.98,
+      "brier": 0.248274,
+      "log_loss": 0.689696
+    },
+    "V3_ADJ": {
+      "n": 86,
+      "aciertos": 52,
+      "exactitud_pct": 60.47,
+      "brier": 0.246659,
+      "log_loss": 0.686476
+    },
+    "V4": {
+      "n": 86,
+      "aciertos": 37,
+      "exactitud_pct": 43.02,
+      "brier": 0.253159,
+      "log_loss": 0.699886
+    },
+    "V4_ADJ": {
+      "n": 86,
+      "aciertos": 51,
+      "exactitud_pct": 59.3,
+      "brier": 0.249308,
+      "log_loss": 0.692106
+    },
+    "V5": {
+      "n": 86,
+      "aciertos": 37,
+      "exactitud_pct": 43.02,
+      "brier": 0.253089,
+      "log_loss": 0.69956
+    },
+    "V5_ADJ": {
+      "n": 86,
+      "aciertos": 49,
+      "exactitud_pct": 56.98,
+      "brier": 0.249242,
+      "log_loss": 0.691821
+    }
+  },
+  "integridad_archivos_protegidos_intacta": true
+}

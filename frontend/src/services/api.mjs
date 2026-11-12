@@ -11,7 +11,13 @@
  */
 
 import { supabase } from "../lib/supabase.mjs";
-import { MOCK_FECHAS, MOCK_MERCADO_RESUMEN, MOCK_SENALES_PANEL, MOCK_SERIE_WALMEX } from "../mocks/mockData.js";
+import {
+  MOCK_FECHAS,
+  MOCK_MERCADO_RESUMEN,
+  MOCK_SENALES_PANEL,
+  MOCK_SERIE_WALMEX,
+  MOCK_METRICAS_MODELOS
+} from "../mocks/mockData.js";
 
 const API_BASE = import.meta.env.VITE_API_URL
   ? `${import.meta.env.VITE_API_URL}/api`
@@ -52,8 +58,8 @@ export async function request(path, { body, method, signal, timeoutMs = 8000, au
     }
 
     // Sin sesión, las rutas protegidas ni se piden: se devuelve null y el
-    // llamador usa su respaldo (mocks o respuesta local). Solo /mercado/* es público.
-    const esPublica = path.startsWith("/mercado/");
+    // llamador usa su respaldo (mocks o respuesta local). Solo /mercado/* y /metricas/modelos son públicos.
+    const esPublica = path.startsWith("/mercado/") || path.startsWith("/metricas/modelos");
     if (!tieneToken && !esPublica) return null;
 
     const httpMethod = method || (body ? "POST" : "GET");
@@ -115,8 +121,14 @@ export const api = {
     return data || MOCK_MERCADO_RESUMEN;
   },
 
+  // --- Métricas Institucionales y Asignación de Capital ¼-Kelly (público) ---
+  async getMetricasModelos(signal) {
+    const data = await request("/metricas/modelos", { signal, auth: false });
+    return data || MOCK_METRICAS_MODELOS;
+  },
+
   // --- Señales Panel G2 (requiere sesión, filtrado por plan en backend) ---
-  async getSenales(fecha = "2026-10-30", ticker = null, signal) {
+  async getSenales(fecha = "2026-11-05", ticker = null, signal) {
     const query = ticker ? `?fecha=${fecha}&emisora=${ticker}` : `?fecha=${fecha}`;
     const data = await request(`/senales/panel${query}`, { signal });
     const adaptar = (s) => ({
@@ -129,6 +141,11 @@ export const api = {
       ppp_base: s.ppp_base_t,
       ret_rel: s.ret_10_rel_panel,
       sector: s.sector,
+      muestra_evaluacion: s.muestra_evaluacion || "IN_SAMPLE_DISENO",
+      estado_resolucion: s.estado_resolucion || "PENDIENTE_RECONCILIACION",
+      sesiones_transcurridas: s.sesiones_transcurridas ?? 0,
+      retorno_parcial_pct: s.retorno_parcial_pct ?? null,
+      acierto_parcial_en_curso: s.acierto_parcial_en_curso ?? null,
     });
 
     if (data && data.senales) return data.senales.map(adaptar);

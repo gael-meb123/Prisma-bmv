@@ -53,16 +53,172 @@ EMISORAS_15 = [
 ]
 EMISORAS_15_IPC = EMISORAS_15  # alias de compatibilidad
 
+YF_TICKER_MAP = {
+    "GMEXICO": "GMEXICOB.MX",
+    "GFNORTE": "GFNORTEO.MX",
+    "FEMSA": "FEMSAUBD.MX",
+    "AMX": "AMXB.MX",
+    "WALMEX": "WALMEX.MX",
+    "CEMEX": "CEMEXCPO.MX",
+    "PE&OLES": "PE%26OLES.MX",
+    "GAP": "GAPB.MX",
+    "AC": "AC.MX",
+    "ASUR": "ASURB.MX",
+    "BIMBO": "BIMBOA.MX",
+    "GFINBUR": "GFINBURO.MX",
+    "VESTA": "VESTA.MX",
+    "LIVEPOL": "LIVEPOLC-1.MX",
+    "GRUMA": "GRUMAB.MX",
+}
 
-def fetch_and_verify_bmv_bulletin(date_yyyymmdd="20261028"):
+
+def fetch_secondary_contingency_bulletin(date_yyyymmdd: str) -> dict:
     """
-    Descarga el boletin publico oficial de la BMV y extrae el PPP de las 15 emisoras del IPC,
+    Fuente secundaria de contingencia cuando el boletin primario RSS de la BMV
+    aun no ha sido publicado (HTTP 404).
+    Extrae cotizaciones de cierre y VWAP de cierre (13:40-14:00 CDMX) para las 15
+    emisoras del IPC y las marca con estado 'CONTINGENCIA_FUENTE_SECUNDARIA' para
+    que sean reconciliadas y reemplazadas automaticamente en cuanto la BMV publique
+    el boletin primario oficial.
+    """
+    from zoneinfo import ZoneInfo
+
+    fecha_iso = f"{date_yyyymmdd[:4]}-{date_yyyymmdd[4:6]}-{date_yyyymmdd[6:]}"
+    cache_dir = OUT_DIR / "cache_boletines"
+    cache_dir.mkdir(exist_ok=True)
+    sec_cache_file = cache_dir / f"contingencia_{date_yyyymmdd}.json"
+
+    if sec_cache_file.exists():
+        cached_payload = json.loads(sec_cache_file.read_text(encoding="utf-8"))
+        return cached_payload
+
+    tz_mx = ZoneInfo("America/Mexico_City")
+    extracted = {}
+    no_publicadas = []
+
+    for ticker, serie, anillo, sector in EMISORAS_15:
+        serie_clean = serie.replace("\\", "")
+        yf_sym = YF_TICKER_MAP.get(ticker)
+        if not yf_sym:
+            no_publicadas.append(
+                {"emisora": ticker, "serie": serie_clean, "anillo_madurez": anillo, "sector_economico": sector}
+            )
+            continue
+
+        url_1d = f"https://query1.finance.yahoo.com/v8/finance/chart/{yf_sym}?interval=1d&range=1mo"
+        req_1d = urllib.request.Request(url_1d, headers={"User-Agent": "Mozilla/5.0 PrismaBMV-Contingencia/1.0"})
+        try:
+            with urllib.request.urlopen(req_1d, timeout=10) as r1:
+                data_1d = json.loads(r1.read().decode("utf-8"))["chart"]["result"][0]
+            ts_list = data_1d.get("timestamp", [])
+            closes = data_1d["indicators"]["quote"][0].get("close", [])
+            daily_pairs = []
+            for t_val, c_val in zip(ts_list, closes):
+                if c_val is not None and np.isfinite(c_val) and c_val > 0:
+                    d_str = datetime.fromtimestamp(t_val, tz=tz_mx).strftime("%Y-%m-%d")
+                    daily_pairs.append((d_str, round(float(c_val), 2)))
+
+            idx_match = next((i for i, (d_s, _) in enumerate(daily_pairs) if d_s == fecha_iso), None)
+            if idx_match is None:
+                no_publicadas.append(
+                    {"emisora": ticker, "serie": serie_clean, "anillo_madurez": anillo, "sector_economico": sector}
+                )
+                continue
+
+            ultimo_val = daily_pairs[idx_match][1]
+            anterior_val = daily_pairs[idx_match - 1][1] if idx_match > 0 else ultimo_val
+            ppp_val = ultimo_val
+
+            # Intentar calcular el VWAP de los ultimos 20 minutos (13:40 a 14:00 CDMX) con barras de 1m
+            try:
+                url_1m = f"https://query1.finance.yahoo.com/v8/finance/chart/{yf_sym}?interval=1m&range=5d"
+                req_1m = urllib.request.Request(url_1m, headers={"User-Agent": "Mozilla/5.0 PrismaBMV-Contingencia/1.0"})
+                with urllib.request.urlopen(req_1m, timeout=8) as r_m:
+                    data_1m = json.loads(r_m.read().decode("utf-8"))["chart"]["result"][0]
+                ts_m = data_1m.get("timestamp", [])
+                q_m = data_1m["indicators"]["quote"][0]
+                num_20m, den_20m = 0.0, 0.0
+                for t_i, c_i, h_i, l_i, v_i in zip(
+                    ts_m,
+                    q_m.get("close", []),
+                    q_m.get("high", []),
+                    q_m.get("low", []),
+                    q_m.get("volume", []),
+                ):
+                    if c_i is None or v_i is None or v_i <= 0:
+                        continue
+                    dt_mx = datetime.fromtimestamp(t_i, tz=tz_mx)
+                    if dt_mx.strftime("%Y-%m-%d") == fecha_iso:
+                        hm = dt_mx.hour * 60 + dt_mx.minute
+                        if 13 * 60 + 40 <= hm <= 14 * 60:
+                            typ = (h_i + l_i + c_i) / 3.0 if (h_i is not None and l_i is not None) else c_i
+                            num_20m += float(typ) * float(v_i)
+                            den_20m += float(v_i)
+                if den_20m > 0:
+                    ppp_val = round(num_20m / den_20m, 2)
+            except Exception:
+                pass
+
+            var_pct = round((ppp_val / anterior_val - 1.0) * 100.0, 2) if anterior_val > 0 else 0.0
+            extracted[ticker] = {
+                "emisora": ticker,
+                "serie": serie_clean,
+                "anillo_madurez": anillo,
+                "sector_economico": sector,
+                "ultimo": ultimo_val,
+                "anterior": anterior_val,
+                "ppp": ppp_val,
+                "variacion_ppp_vs_anterior_pct": var_pct,
+                "evidencia_exacta": f"{ticker} / {serie_clean} / CONTINGENCIA_SECUNDARIA / {ppp_val:.2f}",
+            }
+        except Exception:
+            no_publicadas.append(
+                {"emisora": ticker, "serie": serie_clean, "anillo_madurez": anillo, "sector_economico": sector}
+            )
+
+    if not extracted:
+        raise RuntimeError(f"Sin datos tanto en fuente primaria BMV como en secundaria para {fecha_iso}")
+
+    canonical_bytes = json.dumps(extracted, sort_keys=True, ensure_ascii=False).encode("utf-8")
+    sha256_sec = hashlib.sha256(canonical_bytes).hexdigest()
+    url_contingencia = f"https://query1.finance.yahoo.com/v8/finance/chart/WALMEX.MX?date={fecha_iso}#contingencia_bmv_404"
+
+    result = {
+        "fecha_boletin": fecha_iso,
+        "origen_fuente": "SECUNDARIA_CONTINGENCIA",
+        "estado_captura": "CONTINGENCIA_FUENTE_SECUNDARIA",
+        "url_fuente": url_contingencia,
+        "sha256_html": sha256_sec,
+        "bytes_html": len(canonical_bytes),
+        "timestamp_verificacion_utc": datetime.now(timezone.utc).isoformat(),
+        "cotizaciones": extracted,
+        "no_publicadas_en_boletin": no_publicadas,
+    }
+    sec_cache_file.write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")
+    return result
+
+
+def fetch_and_verify_bmv_bulletin(date_yyyymmdd="20261028", allow_secondary_fallback: bool = False):
+    """
+    Descarga el boletin publico oficial de la BMV (Fuente Primaria) y extrae el PPP de las 15 emisoras del IPC,
     clasificandolas en los 3 Anillos de Madurez de Datos del proyecto.
+    Si allow_secondary_fallback=True y el boletin primario aun no existe en la BMV (HTTP 404),
+    recurre temporalmente a la fuente secundaria marcando el estado como CONTINGENCIA_FUENTE_SECUNDARIA.
     """
     url = f"https://www.bmv.com.mx/docs-pub/rss/boletin{date_yyyymmdd}.html"
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 PrismaBMV-Nucleo/1.0"})
-    with urllib.request.urlopen(req, timeout=12) as r:
-        raw = r.read()
+    try:
+        with urllib.request.urlopen(req, timeout=12) as r:
+            raw = r.read()
+    except Exception as exc:
+        if not allow_secondary_fallback:
+            raise
+        print(
+            f"[CONTINGENCIA] Boletin primario BMV no disponible para {date_yyyymmdd} ({exc}). "
+            f"Consultando fuente secundaria..."
+        )
+        return fetch_secondary_contingency_bulletin(date_yyyymmdd)
+
     sha256_html = hashlib.sha256(raw).hexdigest()
     # Mismo parser estricto que la reconstruccion validada contra 9C/9G.
     from reconstruccion_ppp_15_emisoras import parse_bulletin_quotes
@@ -88,6 +244,8 @@ def fetch_and_verify_bmv_bulletin(date_yyyymmdd="20261028"):
 
     return {
         "fecha_boletin": f"{date_yyyymmdd[:4]}-{date_yyyymmdd[4:6]}-{date_yyyymmdd[6:]}",
+        "origen_fuente": "PRIMARIA_BOLETIN_OFICIAL_BMV",
+        "estado_captura": "PPP_PUBLICADO_VERIFICADO",
         "url_fuente": url,
         "sha256_html": sha256_html,
         "bytes_html": len(raw),

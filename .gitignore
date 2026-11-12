@@ -56,6 +56,7 @@ wheels/
 # Cache Local de Boletines y Scraping
 # ==========================================
 cache_boletines/
+cache_externo/
 
 # Copias locales de Bronze
 datos/bronze/

@@ -13,15 +13,21 @@ Sobre esos datos la plataforma ofrece:
 
 - **Monitor de mercado:** las 15 emisoras del IPC con su PPP oficial, el PPP anterior y la variación. Si una emisora no aparece en el boletín se muestra con guion; no se imputan datos.
 - **Verificación de integridad:** cada boletín tiene una huella **SHA-256** que se puede revisar desde la terminal («Ver evidencia»).
-- **Panel G2 (inferencia):** tres modelos de regresión logística agrupada (Pooled Logit, optimizados con Newton-Raphson IRLS) estiman la probabilidad de que el PPP suba en 5 sesiones (t+5):
-  - **V1** Calibrado
-  - **V2** Zona Neutral
-  - **V3** Alta Discriminación
+- **Panel G2 (inferencia):** cinco modelos oficiales de regresión logística agrupada y adaptativa (optimizados con Newton-Raphson IRLS en doble precisión `float64`) más el modelo campeón extendido con señal de subasta de cierre estiman la probabilidad de que el PPP ajustado por dividendos suba en 5 sesiones ($t+5$):
+  - **V1** Calibrado (`G2_V1_POOLED_REL3_CALIBRADO`)
+  - **V2** Zona Neutral (`G2_V2_POOLED_REL3_ZONA_NEUTRAL`)
+  - **V3** Alta Discriminación (`G2_V3_POOLED_REL3_ALTA_DISC_EXPANDIDO`)
+  - **V4** Agotamiento Corto DM5 (`G2_V4_POOLED_REL3_MAS_VELOCIDAD_CORTA_DM5`)
+  - **V5** Adaptativo por Régimen y Sector (`G2_V5_ADAPTATIVO_REGIMEN_Y_SECTOR`)
+  - **Campeón extendido (`G2_V4_F1_GAP`):** incorpora la señal intradiaria `gap_uh_ppp = (ultimo_bmv_mxn - ppp_bmv_mxn) / ppp_bmv_mxn` del propio boletín oficial BMV (acierto fuera de muestra `52.60%` en 15 emisoras y `52.71%` en emisoras foco, `Rank IC = +0.0202`, `BSS = +0.499%`).
+  - **Challengers V6 en Shadow (`G2_V6A_JERARQUICO`, `G2_V6B_DESCOMPUESTO`, `G2_V6C_RIDGE_CONTINUO`, `G2_LGBM_CHALLENGER`):** monitoreados fuera de muestra bajo regla pre-registrada de promoción.
 
-  Si los tres coinciden, hay **consenso**. Emisoras del panel: WALMEX, GMEXICO, GFNORTE, AMX.
-- **Auditoría temporal:** cinco sesiones después, cada señal se compara con el PPP real, sin borrar los errores.
+  Si los cinco modelos oficiales coinciden, hay **consenso unánime**. Emisoras foco del panel: `WALMEX`, `GMEXICO`, `GFNORTE`, `AMX` y `FEMSA` (entrenados sobre el panel completo de 15 emisoras del IPC).
+- **Higiene de etiquetas y gobernanza muestral:** ajuste del objetivo $Y_t = \mathbb{I}(\text{PPP}_{\text{adj}, t+5} > \text{PPP}_t)$ por 284 eventos corporativos verificados (282 dividendos y 2 splits) y separación estricta entre muestra de diseño (`IN_SAMPLE_DISENO < 2026-11-06`) y muestra prospectiva pre-registrada (`OUT_OF_SAMPLE_PRE_REGISTRADO >= 2026-11-06`).
+- **Política de asignación de capital ¼-Kelly:** dimensionamiento continuo consciente de costos de transacción (20 bps round-trip, zona de abstención $p < 0.52$, tope 25% por emisora y 75% de exposición bruta), con Retorno Neto `+6.94%`, Sharpe Bruto `+1.42`, Sharpe Neto `+1.04` y Max Drawdown `-3.46%` en TEST.
+- **Auditoría temporal:** cinco sesiones después, cada señal se compara con el PPP oficial verificado en $t+5$, sin borrar errores ni alterar coeficientes congelados.
 - **Ficha de la señal:** resumen exportable e imprimible.
-- **Prismi:** asistente con forma de billete superhéroe que guía al usuario, responde preguntas y da un recorrido guiado por la app.
+- **Prismi:** asistente cuantitativo interactivo que guía al usuario, responde preguntas sobre los 5 modelos G2, métricas de calibración y asignación ¼-Kelly, y ofrece un recorrido guiado por la aplicación.
 
 Prisma BMV no es asesoría de inversión.
 
@@ -213,9 +219,10 @@ Dependencias de FastAPI: `usuario_actual`, `requiere_admin`, y la función `exig
 |---|---|---|---|
 | GET | `/api/mercado/fechas` | Público | Fechas disponibles |
 | GET | `/api/mercado/resumen?fecha=` | Público | KPIs + cotizaciones |
+| GET | `/api/metricas/modelos` | Público | Métricas institucionales (`BSS`, `IC`, `ECE`, $\lambda_{\text{Cox}}$, $N_{\text{eff}}$), diagrama de confiabilidad, separación muestral y pesos ¼-Kelly |
 | GET | `/api/me` | Sesión | Perfil verificado: id, email, nombre, rol, plan, emisoras |
-| GET | `/api/senales/panel?fecha=&emisora=` | Sesión | Sin `emisora`: solo las de su plan. Emisora fuera del plan → **403** |
-| GET | `/api/serie/walmex` | Sesión | Incluida en todos los planes |
+| GET | `/api/senales/panel?fecha=&emisora=` | Sesión | Sin `emisora`: solo las de su plan (5 modelos G2 + estado de resolución y muestra). Emisora fuera del plan → **403** |
+| GET | `/api/serie/{ticker}` | Sesión | Serie histórica verificada |
 | POST | `/api/chat/prismi` | Sesión | Respuesta de Claude. Requiere `ANTHROPIC_API_KEY` |
 | GET | `/api/admin/usuarios` | Admin | Lista de perfiles |
 | POST | `/api/admin/usuarios` | Admin | Alta: nombre, email, password (mín. 8), rol, plan. Nace confirmado |
@@ -328,6 +335,7 @@ SUPABASE_ANON_KEY=...
 SUPABASE_SERVICE_ROLE_KEY=...        # SECRETA: solo backend, nunca al frontend ni a git
 CORS_ORIGINS=http://localhost:5173
 ANTHROPIC_API_KEY=...                 # solo para el chat de Prismi con Claude
+BANXICO_TOKEN=...                     # token SIE Banxico (SF43718 FIX USD/MXN, opcional con fallback local)
 ```
 
 `api.py` debe cargarlo al inicio:

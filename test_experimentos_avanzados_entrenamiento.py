@@ -74,6 +74,9 @@ class TestExperimentosAvanzadosEntrenamiento(unittest.TestCase):
         w_key = "registro_senales_prospectivas_walmex.csv"
         if hashes_actuales.get(w_key) != hashes_guardados.get(w_key):
             df_w = pd.read_csv(ROOT / w_key, dtype=str, keep_default_na=False)
+            m_val = df_w["estado_validez"] == "VALIDA"
+            df_w.loc[m_val, "estado_resolucion"] = "PENDIENTE_FECHA_OBJETIVO"
+            df_w.loc[m_val, ["fecha_resolucion_real", "ppp_t5_mxn", "retorno_real_h5_pct", "y_real_h5", "acierto", "log_loss_individual", "brier_individual"]] = ""
             sub_w = df_w[df_w["fecha_senal"] <= "2026-10-29"]
             hashes_actuales[w_key] = hashlib.sha256(
                 sub_w.to_csv(index=False, lineterminator="\r\n").encode("utf-8-sig")

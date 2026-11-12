@@ -8,21 +8,25 @@ export function useCatalog() {
   const [mercado, setMercado] = useState(null);
   const [senales, setSenales] = useState([]);
   const [serie, setSerie] = useState([]);
+  const [metricas, setMetricas] = useState(null);
 
-  async function load(fecha = "2026-10-30") {
+  async function load(fecha = null) {
     setLoading(true);
     setError(null);
     try {
-      const [fList, mData, sData, serData] = await Promise.all([
-        api.getFechas(),
-        api.getMercado(fecha),
-        api.getSenales(fecha),
-        api.getSerie("WALMEX")
+      const fList = await api.getFechas();
+      const targetFecha = fecha || (Array.isArray(fList) && fList.length > 0 ? fList[0] : "2026-11-05");
+      const [mData, sData, serData, metData] = await Promise.all([
+        api.getMercado(targetFecha),
+        api.getSenales(targetFecha),
+        api.getSerie("WALMEX"),
+        api.getMetricasModelos()
       ]);
       setFechas(fList);
       setMercado(mData);
       setSenales(sData);
       setSerie(serData);
+      setMetricas(metData);
     } catch (err) {
       setError("No se pudo conectar con el catálogo de mercado.");
     } finally {
@@ -41,6 +45,7 @@ export function useCatalog() {
     mercado,
     senales,
     serie,
+    metricas,
     refresh: load
   };
 }

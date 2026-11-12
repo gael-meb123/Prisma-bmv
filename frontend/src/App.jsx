@@ -176,6 +176,9 @@ function AppInner() {
             {phase === "select" && (
               <MarketSelection
                 cotizaciones={catalog.mercado?.cotizaciones || []}
+                fechas={catalog.fechas || []}
+                fechaActiva={catalog.mercado?.fecha || ""}
+                onChangeFecha={(f) => catalog.refresh(f)}
                 selectedTicker={selectedTicker}
                 onSelectTicker={handleSelectTicker}
                 onShowEvidence={handleOpenEvidence}
@@ -188,6 +191,8 @@ function AppInner() {
               <AnalysisPanel
                 ticker={selectedTicker}
                 senales={senalesTicker}
+                metricas={catalog.metricas}
+                fechaActiva={catalog.mercado?.fecha || "2026-11-05"}
                 userRole={account.role}
                 onPlanGate={(t) => setPlanGateTicker(t)}
                 onOpenAudit={() => setPhase("audit")}
@@ -200,6 +205,8 @@ function AppInner() {
             {phase === "audit" && (
               <ComparisonAudit
                 ticker={selectedTicker}
+                senales={senalesTicker}
+                metricas={catalog.metricas}
                 onBack={() => setPhase("analysis")}
                 onOpenReport={() => {
                   window.location.hash = "/ficha";
@@ -246,8 +253,8 @@ function AppInner() {
         detail="Ponderando cotizaciones oficiales e inferencia matricial IRLS…"
         steps={[
           { id: "quote", label: "Cotización oficial verificada", status: "complete" },
-          { id: "g2", label: "Ejecución de los 3 modelos G2", status: "complete" },
-          { id: "consensus", label: "Evaluación de consenso unánime", status: "active" }
+          { id: "g2", label: "Ejecución de los 5 modelos G2 (V1-V5)", status: "complete" },
+          { id: "consensus", label: "Evaluación de consenso y ¼-Kelly", status: "active" }
         ]}
         onCancel={() => setBusy(false)}
       />

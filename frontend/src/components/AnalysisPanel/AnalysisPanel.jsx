@@ -7,6 +7,8 @@ import { canAccessTicker } from "../../plans.mjs";
 export function AnalysisPanel({
   ticker = "WALMEX",
   senales = [],
+  metricas = null,
+  fechaActiva = "2026-11-05",
   userRole = "explorer",
   onPlanGate,
   onOpenAudit,
@@ -26,7 +28,7 @@ export function AnalysisPanel({
             Emisora {ticker} Bloqueada en el Plan Explorer
           </h3>
           <p style={{ fontSize: "13px", color: "var(--muted)", maxWidth: "420px", margin: "0 auto 18px auto", lineHeight: "1.5" }}>
-            El plan gratuito Explorer incluye el análisis cuantitativo completo de <strong>WALMEX</strong>. Para consultar las probabilidades de {ticker} en los 3 modelos G2, actualiza tu cuenta.
+            El plan gratuito Explorer incluye el análisis cuantitativo completo de <strong>WALMEX</strong>. Para consultar las probabilidades de {ticker} en los 5 modelos G2 (V1–V5), actualiza tu cuenta.
           </p>
           <Button variant="primary" icon={ArrowRight} onClick={() => onPlanGate(ticker)}>
             Ver Planes para Desbloquear
@@ -40,7 +42,14 @@ export function AnalysisPanel({
   const consenso = primera.consenso || "CONSENSO_PANEL_G2_NO_SUBIDA";
   const pppBase = primera.ppp_base || 50.39;
   const retRel = primera.ret_rel || 0;
-  const statusInfo = STATUS[consenso] || STATUS.CONSENSO_PANEL_G2_NO_SUBIDA;
+  const muestraEvaluacion = primera.muestra_evaluacion || "IN_SAMPLE_DISENO";
+  const estadoResolucion = primera.estado_resolucion || "PENDIENTE_RECONCILIACION";
+  const normalizedConsensoKey =
+    typeof consenso === "string" && consenso.startsWith("DIVERGENCIA_G2")
+      ? "DIVERGENCIA_PANEL_G2"
+      : consenso;
+  const statusInfo = STATUS[normalizedConsensoKey] || STATUS.CONSENSO_PANEL_G2_NO_SUBIDA;
+  const pesoKellyTicker = metricas?.politica_asignacion_capital?.pesos_sugeridos_Recientes?.[ticker] ?? null;
 
   return (
     <div className="analysis-panel" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -77,7 +86,7 @@ export function AnalysisPanel({
             {formatMoney(pppBase)}
           </div>
           <p style={{ fontSize: "11px", color: "var(--muted)", margin: "4px 0 0 0" }}>
-            PPP oficial auditado en sesión del 30 Oct 2026.
+            PPP oficial auditado en sesión ({fechaActiva}).
           </p>
         </div>
 
@@ -92,16 +101,29 @@ export function AnalysisPanel({
             {retRel < -5 ? "Rezagada frente al panel (impulso de rebote)." : "Sobreextendida frente al panel."}
           </p>
         </div>
+
+        <div style={{ background: "#ffffff", border: "1px solid var(--line)", borderRadius: "10px", padding: "14px" }}>
+          <small style={{ color: "var(--muted)", fontWeight: "700", textTransform: "uppercase", fontSize: "10px", letterSpacing: "0.5px" }}>
+            ASIGNACIÓN ¼-KELLY & MUESTRA
+          </small>
+          <div style={{ fontSize: "20px", fontWeight: "800", fontFamily: "monospace", marginTop: "4px", color: pesoKellyTicker && pesoKellyTicker > 0 ? "#079baa" : "var(--navy)" }}>
+            {pesoKellyTicker != null ? `${Number(pesoKellyTicker).toFixed(2)}%` : "0.00%"}
+          </div>
+          <div style={{ marginTop: "6px", display: "flex", gap: "6px", flexWrap: "wrap" }}>
+            <Badge status={muestraEvaluacion} />
+            <Badge status={estadoResolucion} />
+          </div>
+        </div>
       </div>
 
-      {/* Barras de Probabilidad de los 3 Modelos G2 */}
+      {/* Barras de Probabilidad de los 5 Modelos G2 */}
       <div data-tour="modelos" style={{ background: "#ffffff", border: "1px solid var(--line)", borderRadius: "12px", padding: "16px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
           <strong style={{ fontSize: "13px", color: "var(--navy)", display: "flex", alignItems: "center", gap: "6px" }}>
             <Layers size={16} style={{ color: "#079baa" }} />
-            Distribución de Probabilidades de Subida (Panel G2)
+            Distribución de Probabilidades de Subida (Panel G2 · 5 Modelos V1–V5)
           </strong>
-          <span style={{ fontSize: "11px", color: "var(--muted)", fontFamily: "monospace" }}>Umbral neutral: 50.0%</span>
+          <span style={{ fontSize: "11px", color: "var(--muted)", fontFamily: "monospace" }}>Umbral neutral: 50.0% · Kelly: 52.0%</span>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
@@ -111,6 +133,8 @@ export function AnalysisPanel({
             let alias = "V1 Calibrado";
             if (s.modelo.includes("V2")) alias = "V2 Zona Neutral";
             if (s.modelo.includes("V3")) alias = "V3 Alta Discriminación";
+            if (s.modelo.includes("V4")) alias = "V4 Agotamiento Corto DM5 (Campeón Base)";
+            if (s.modelo.includes("V5")) alias = "V5 Adaptativo Régimen y Sector";
 
             return (
               <div key={s.id} style={{ background: "#f8fafc", padding: "10px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>

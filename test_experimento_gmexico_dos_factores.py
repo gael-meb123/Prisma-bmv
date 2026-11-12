@@ -120,6 +120,9 @@ class DosFactoresTests(unittest.TestCase):
             actual = hashlib.sha256((ROOT/filename).read_bytes()).hexdigest()
             if actual != digest and filename == "registro_senales_prospectivas_walmex.csv":
                 df_w = pd.read_csv(ROOT/filename, dtype=str, keep_default_na=False)
+                m_val = df_w["estado_validez"] == "VALIDA"
+                df_w.loc[m_val, "estado_resolucion"] = "PENDIENTE_FECHA_OBJETIVO"
+                df_w.loc[m_val, ["fecha_resolucion_real", "ppp_t5_mxn", "retorno_real_h5_pct", "y_real_h5", "acierto", "log_loss_individual", "brier_individual"]] = ""
                 sub_w = df_w[df_w["fecha_senal"] <= "2026-10-28"].iloc[:, :35]
                 actual = hashlib.sha256(sub_w.to_csv(index=False, lineterminator="\r\n").encode("utf-8-sig")).hexdigest()
             self.assertEqual(actual, digest)

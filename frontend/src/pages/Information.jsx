@@ -19,26 +19,26 @@ export function Methodology() {
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "20px" }}>
           <div style={{ background: "#ffffff", border: "1px solid var(--line)", borderRadius: "12px", padding: "20px" }}>
-            <span style={{ fontSize: "12px", fontWeight: "700", color: "#079baa", textTransform: "uppercase" }}>01 · Variable Objetivo Prospectiva</span>
-            <h3 style={{ fontSize: "16px", color: "var(--navy)", margin: "8px 0" }}>Horizonte a 5 Sesiones (t+5)</h3>
+            <span style={{ fontSize: "12px", fontWeight: "700", color: "#079baa", textTransform: "uppercase" }}>01 · Variable Objetivo Ajustada</span>
+            <h3 style={{ fontSize: "16px", color: "var(--navy)", margin: "8px 0" }}>Retorno Total a 5 Sesiones (t+5)</h3>
             <p style={{ fontSize: "13px", color: "var(--muted)", lineHeight: "1.5" }}>
-              Y_t = 1 si PPP(t+5) &gt; PPP(t), 0 de lo contrario. Evita el ruido intradiario al evaluar el rendimiento acumulado neto en una semana bursátil completa.
+              Y_t = 1 si PPP_adj(t+5) &gt; PPP(t), integrando 284 eventos corporativos verificados (dividendos y splits) para eliminar falsos negativos en ventanas ex-dividendo.
             </p>
           </div>
 
           <div style={{ background: "#ffffff", border: "1px solid var(--line)", borderRadius: "12px", padding: "20px" }}>
-            <span style={{ fontSize: "12px", fontWeight: "700", color: "#10b981", textTransform: "uppercase" }}>02 · Regresor Ortogonal Clave</span>
-            <h3 style={{ fontSize: "16px", color: "var(--navy)", margin: "8px 0" }}>ret_10_rel_panel</h3>
+            <span style={{ fontSize: "12px", fontWeight: "700", color: "#10b981", textTransform: "uppercase" }}>02 · Cinco Variantes G2 + Gap Intradiario</span>
+            <h3 style={{ fontSize: "16px", color: "var(--navy)", margin: "8px 0" }}>V1–V5 y G2_V4_F1_GAP</h3>
             <p style={{ fontSize: "13px", color: "var(--muted)", lineHeight: "1.5" }}>
-              Diferencial relativo frente a las demás emisoras del panel a 10 sesiones. Captura anomalías de sobreventa extrema donde la media estadística ejerce presión de reversión alcista.
+              Combina reversión relativa transversal (ret_10_rel_panel), agotamiento corto DM5 (V4), adaptación por régimen/sector (V5) y el diferencial intradiario Último Hecho vs PPP (gap_uh_ppp).
             </p>
           </div>
 
           <div style={{ background: "#ffffff", border: "1px solid var(--line)", borderRadius: "12px", padding: "20px" }}>
-            <span style={{ fontSize: "12px", fontWeight: "700", color: "#d97706", textTransform: "uppercase" }}>03 · Optimización Matricial Pura</span>
-            <h3 style={{ fontSize: "16px", color: "var(--navy)", margin: "8px 0" }}>IRLS Newton-Raphson</h3>
+            <span style={{ fontSize: "12px", fontWeight: "700", color: "#d97706", textTransform: "uppercase" }}>03 · Calibración y Asignación ¼-Kelly</span>
+            <h3 style={{ fontSize: "16px", color: "var(--navy)", margin: "8px 0" }}>IRLS + Kelly Fraccional</h3>
             <p style={{ fontSize: "13px", color: "var(--muted)", lineHeight: "1.5" }}>
-              Cálculo iterativo directo sobre matrices NumPy sin librerías externas opacas. Convergencia garantizada con tolerancia estricta de 10^-7.
+              Probabilidades calibradas (ECE = 0.0123, BSS &gt; 0) acopladas a una política ¼-Kelly con zona de abstención p &lt; 0.52 y costos de 20 bps round-trip (Sharpe Neto +1.04 en TEST).
             </p>
           </div>
         </div>

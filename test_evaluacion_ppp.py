@@ -19,6 +19,8 @@ from metodologia_ppp import (
     seleccionar_train_test, validar_ventana_fechas,
 )
 
+TEMP_ROOT = None
+
 
 class EvaluacionPPPTests(unittest.TestCase):
     @classmethod
@@ -223,6 +225,45 @@ class EvaluacionPPPTests(unittest.TestCase):
         p = model.predict_proba(X)
         self.assertLess(np.mean((p - y) ** 2), np.mean((y.mean() - y) ** 2))
         self.assertTrue(any(leaf < 0 for leaf in model.trees[0].predict(X)))
+
+    def test_contingencia_secundaria_y_reconciliacion_primaria(self):
+        original = self.series[self.series.fecha.le("2026-11-03")].copy()
+        sec_bulletin = {
+            "fecha_boletin": "2026-11-04",
+            "origen_fuente": "SECUNDARIA_CONTINGENCIA",
+            "estado_captura": "CONTINGENCIA_FUENTE_SECUNDARIA",
+            "cotizaciones": {"WALMEX": {"ppp": 52.10, "ultimo": 52.22, "anterior": 50.04, "variacion_ppp_vs_anterior_pct": 4.12}},
+            "url_fuente": "https://query1.finance.yahoo.com/v8/finance/chart/WALMEX.MX?date=2026-11-04#contingencia_bmv_404",
+            "sha256_html": "sec_hash_1104",
+        }
+        prim_bulletin = {
+            "fecha_boletin": "2026-11-04",
+            "origen_fuente": "PRIMARIA_BOLETIN_OFICIAL_BMV",
+            "estado_captura": "PPP_PUBLICADO_VERIFICADO",
+            "cotizaciones": {"WALMEX": {"ppp": 52.18, "ultimo": 52.22, "anterior": 50.04, "variacion_ppp_vs_anterior_pct": 4.28}},
+            "url_fuente": "https://www.bmv.com.mx/docs-pub/rss/boletin20261104.html",
+            "sha256_html": "prim_hash_1104",
+        }
+        with tempfile.TemporaryDirectory(dir=TEMP_ROOT) as tmp:
+            s_path = Path(tmp) / "serie.csv"
+            m_path = Path(tmp) / "multi.csv"
+            original.to_csv(s_path, index=False)
+            res_sec = diario.init_or_update_master_ppp_series(sec_bulletin, s_path)
+            self.assertEqual(res_sec.iloc[-1].estado, "CONTINGENCIA_FUENTE_SECUNDARIA")
+            self.assertAlmostEqual(float(res_sec.iloc[-1].ppp_bmv_mxn), 52.10)
+
+            # En el siguiente dia (20261105), la cola debe incluir automaticamente 20261104 por ser secundaria + 20261105
+            cola = diario.obtener_cola_fechas_reconciliacion("20261105", s_path, m_path)
+            self.assertEqual(cola, ["20261104", "20261105"])
+
+            # Al llegar el boletin primario de 2026-11-04, debe promoverse y sobreescribir a la secundaria sin error
+            res_prim = diario.init_or_update_master_ppp_series(prim_bulletin, s_path)
+            self.assertEqual(res_prim.iloc[-1].estado, "PPP_PUBLICADO_VERIFICADO")
+            self.assertAlmostEqual(float(res_prim.iloc[-1].ppp_bmv_mxn), 52.18)
+
+            # Una vez promovida 20261104 a primaria, la cola para 20261105 ya solo pide 20261105
+            cola_post = diario.obtener_cola_fechas_reconciliacion("20261105", s_path, m_path)
+            self.assertEqual(cola_post, ["20261105"])
 
 
 if __name__ == "__main__":
