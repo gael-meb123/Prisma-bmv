@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { supabase } from "../lib/supabase.mjs";
 import { planById } from "../plans.mjs";
+import { setAuthToken } from "../services/api.mjs";
 
 const AccountContext = createContext(null);
 
@@ -93,6 +94,9 @@ export function AccountProvider({ children }) {
   async function refreshProfile() {
     if (session) await fetchProfile(session.access_token);
   }
+
+  // El cliente de API toma el token de aquí (ver setAuthToken en services/api.mjs).
+  setAuthToken(session?.access_token);
 
   const role = profile?.plan || "explorer";
 

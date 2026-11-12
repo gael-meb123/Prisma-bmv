@@ -23,6 +23,14 @@ const API_BASE = import.meta.env.VITE_API_URL
   ? `${import.meta.env.VITE_API_URL}/api`
   : "http://localhost:8000/api";
 
+// Token de la sesión activa. Lo fija useAccount en cada cambio de sesión (login, refresh, logout).
+// Leerlo de aquí evita llamar a supabase.auth.getSession() en cada petición: varias llamadas
+// concurrentes compiten por el mismo candado de Supabase y pueden dejar peticiones colgadas.
+let tokenSesion = null;
+export function setAuthToken(token) {
+  tokenSesion = token || null;
+}
+
 export class APIError extends Error {
   constructor(message, code, status) {
     super(message);
@@ -50,16 +58,24 @@ export async function request(path, { body, method, signal, timeoutMs = 8000, au
     let tieneToken = false;
 
     if (auth) {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.access_token) {
-        headers["Authorization"] = `Bearer ${session.access_token}`;
+      let token = tokenSesion;
+      if (!token) {
+        const { data: { session } } = await supabase.auth.getSession();
+        token = session?.access_token || null;
+      }
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
         tieneToken = true;
       }
     }
 
     // Sin sesión, las rutas protegidas ni se piden: se devuelve null y el
     // llamador usa su respaldo (mocks o respuesta local). Solo /mercado/* y /metricas/modelos son públicos.
-    const esPublica = path.startsWith("/mercado/") || path.startsWith("/metricas/modelos");
+    const esPublica =
+      path.startsWith("/mercado/") ||
+      path.startsWith("/metricas/modelos") ||
+      path.startsWith("/terminal/sectores") ||
+      path.startsWith("/terminal/gobernanza");
     if (!tieneToken && !esPublica) return null;
 
     const httpMethod = method || (body ? "POST" : "GET");
@@ -116,10 +132,11 @@ export const api = {
     return data || MOCK_FECHAS;
   },
 
-  async getMercado(fecha = "2026-10-30", signal) {
-    const data = await request(`/mercado/resumen?fecha=${fecha}`, { signal, auth: false });
+  async getMercado(fecha = null, signal) {
+    const data = await request(`/mercado/resumen${fecha ? `?fecha=${fecha}` : ""}`, { signal, auth: false });
     return data || MOCK_MERCADO_RESUMEN;
   },
+
 
   // --- Métricas Institucionales y Asignación de Capital ¼-Kelly (público) ---
   async getMetricasModelos(signal) {
@@ -161,41 +178,70 @@ export const api = {
     return data || MOCK_SERIE_WALMEX;
   },
 
-  // --- Chat Prismi (requiere sesión) ---
-  async chatPrismi(pregunta, historial = [], signal, { hasSession = true } = {}) {
+  // --- Chat Prismi ---
+  // Con sesión: motor del backend (mismas reglas que la terminal: alcance, sin asesoría,
+  // contexto con los datos del día y, si la hay, la gráfica que se está viendo).
+  // Sin sesión o sin backend: respuestas locales sin cifras de mercado (para no inventar datos).
+  async chatPrismi(pregunta, historial = [], signal, { hasSession = true, contexto = null } = {}) {
     const p = pregunta.toLowerCase();
 
     // Preguntas sobre la cuenta: se responden aquí, con o sin sesión.
     if (/sesi[oó]n|registr|cuenta|login|contrase|acceder|entrar|inscrib/.test(p)) {
       return hasSession
-        ? "Ya tienes la sesión iniciada. Para salir usa «Salir» arriba a la derecha; tu plan lo ves y lo cambias en «Planes»."
-        : "Para entrar a la terminal usa «Iniciar sesión» arriba a la derecha. Si aún no tienes cuenta, elige «Regístrate» en ese formulario: es gratis y empiezas con el plan Explorer (WALMEX completo y el monitor de las 15 emisoras).";
+        ? "Ya tienes la sesión iniciada. Para salir usa «Salir» en el menú lateral de la terminal; tu plan lo ves y lo cambias en tu tarjeta de usuario o en «Planes»."
+        : "Para entrar a la terminal usa «Ingresar» arriba a la derecha. Si aún no tienes cuenta, elige «Abrir cuenta»: es gratis y empiezas con el plan Explorer (WALMEX completo y el monitor de las 15 emisoras).";
     }
 
-    const data = await request("/chat/prismi", { body: { pregunta, historial }, signal });
-    if (data && data.respuesta) return data.respuesta;
+    if (hasSession) {
+      const hist = historial
+        .filter((m) => m && m.text)
+        .slice(-6)
+        .map((m) => ({ role: m.sender === "user" ? "user" : "assistant", content: m.text }));
+      const data = await request("/terminal/prismi", {
+        body: { pregunta, historial: hist, contexto_grafica: contexto || null },
+        signal,
+        timeoutMs: 25000,
+      }).catch(() => null);
+      if (data && data.respuesta) return data.respuesta;
+    }
 
-    // Respuestas analíticas deterministas locales si el backend no está encendido
-    // (o si no hay sesión: el backend responde 401 y se usa este respaldo).
-    if (p.includes("receta") || p.includes("futbol") || p.includes("cocina") || p.includes("politica")) {
-      return "Disculpa, como asistente cuantitativo de Prisma BMV, mi conocimiento está estrictamente restringido a los modelos matemáticos, cotizaciones oficiales y funcionamiento de nuestra plataforma. No tengo información sobre temas externos.";
+    if (/receta|futbol|cocina|politica|clima/.test(p)) {
+      return "Mi alcance se limita a Prisma BMV: el PPP oficial, las 15 emisoras que monitoreamos, los modelos y el funcionamiento de la plataforma.";
     }
     if (p.includes("ppp")) {
-      return "El PPP (Precio Promedio Ponderado) oficial de la BMV es el precio ponderado por volumen transaccionado en la sesión, inmune a distorsiones de subastas de cierre.";
-    }
-    if (p.includes("walmex")) {
-      return "WALMEX cotizó en $50.39 (+3.32% en la sesión, +4.11% acumulado). Los modelos anticipan una fase de consolidación técnica tras cruzar los 50 pesos.";
-    }
-    if (p.includes("gmexico")) {
-      return "GMEXICO ($224.31) presenta un fuerte consenso alcista (54.9% - 56.5%) por rezago relativo extremo (-13.06%), proyectando rebote estadístico en t+5.";
+      return "El PPP (Precio Promedio Ponderado) es el precio oficial que publica la BMV ponderando el volumen de todas las operaciones de la sesión. A diferencia del último hecho, que puede moverse con pocas operaciones al cierre, refleja dónde se negoció realmente el volumen del día.";
     }
     if (p.includes("g2") || p.includes("modelo")) {
-      return "El Panel G2 utiliza regresión logística agrupada (Pooled Logit) optimizada mediante el algoritmo Newton-Raphson IRLS puro, exigiendo convergencia en 3 variantes simultáneas.";
+      return "El panel G2 usa regresiones logísticas agrupadas sobre WALMEX, GMEXICO, GFNORTE, AMX y el resto del IPC. Cada modelo estima la probabilidad de que el PPP dentro de 5 sesiones supere al de hoy; si todos coinciden, hay consenso.";
     }
     if (!hasSession) {
-      return "Sin sesión solo puedo darte respuestas básicas. Inicia sesión (o regístrate gratis) y te respondo con los datos del panel G2.";
+      return "Sin sesión solo puedo darte respuestas generales. Inicia sesión (o abre tu cuenta gratis) y te respondo con los datos del día y te explico cada gráfica de la terminal.";
     }
-    return "¡Hola! Soy Prismi, la gráfica bailarina de Prisma BMV. 🕯️💃 Puedo resolver dudas sobre las 15 emisoras del IPC, los modelos del panel G2 y las señales vigentes.";
+    return "Ahora no pude consultar los datos del día. Puedo explicarte el PPP, los modelos G2, el seguimiento t+1 a t+5 o la política de cero imputación.";
+  },
+
+  // --- Terminal: gráficas (sector y gobernanza son públicas; el resto respeta el plan) ---
+  terminal: {
+    sectores(fecha, signal) {
+      return request(`/terminal/sectores${fecha ? `?fecha=${fecha}` : ""}`, { signal, auth: false });
+    },
+    gobernanza(signal) {
+      return request("/terminal/gobernanza", { signal, auth: false });
+    },
+    serie(emisora, signal) {
+      return request(`/terminal/serie?emisora=${encodeURIComponent(emisora)}`, { signal });
+    },
+    senal(emisora, fecha, signal) {
+      const f = fecha ? `&fecha=${fecha}` : "";
+      return request(`/terminal/senal?emisora=${encodeURIComponent(emisora)}${f}`, { signal });
+    },
+    seguimiento(emisora, fechaSenal, signal) {
+      const f = fechaSenal ? `&fecha_senal=${fechaSenal}` : "";
+      return request(`/terminal/seguimiento?emisora=${encodeURIComponent(emisora)}${f}`, { signal });
+    },
+    marcador(signal) {
+      return request("/terminal/marcador", { signal });
+    },
   },
 
   // --- Admin (requiere rol admin) ---

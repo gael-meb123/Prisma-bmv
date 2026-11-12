@@ -25,6 +25,7 @@ from core.data_provider import (
     obtener_kpis_mercado,
     obtener_metricas_institucionales_modelos,
 )
+from core.terminal_api import router as terminal_router
 from core.supabase_auth import (
     Usuario,
     actualizar_usuario,
@@ -51,6 +52,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Gráficas de la terminal web (sector, serie, señales, seguimiento, marcador, gobernanza).
+app.include_router(terminal_router)
 
 
 # ==============================================================================

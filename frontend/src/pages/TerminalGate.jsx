@@ -1,6 +1,7 @@
 import React from "react";
 import { Lock, LogIn, UserPlus, Check } from "lucide-react";
-import { Header } from "../components/Header";
+import { Header, Footer } from "../components/Header";
+import { EmptyArt } from "../components/Illustrations";
 import { planById } from "../plans.mjs";
 
 // Se muestra en #/sistema y #/ficha cuando no hay sesión iniciada.
@@ -9,7 +10,7 @@ export function TerminalGate() {
 
   return (
     <>
-      <Header context="inner" />
+      <Header />
       <main
         id="main-content"
         className="information-page container"
@@ -19,12 +20,8 @@ export function TerminalGate() {
           data-tour="terminal-gate"
           style={{ background: "#ffffff", border: "1px solid var(--line)", borderRadius: "16px", padding: "32px", boxShadow: "0 16px 45px rgba(9, 42, 73, 0.08)", textAlign: "center" }}
         >
-          <span
-            style={{ display: "inline-flex", width: 52, height: 52, borderRadius: "50%", alignItems: "center", justifyContent: "center", background: "#f0fdfa", color: "#079baa", marginBottom: 12 }}
-          >
-            <Lock size={24} aria-hidden="true" />
-          </span>
-          <span className="eyebrow" style={{ display: "block" }}>TERMINAL INSTITUCIONAL</span>
+          <EmptyArt locked size={140} />
+          <span className="bk-eyebrow" style={{ display: "block" }}>Banca en línea · Terminal</span>
           <h1 style={{ fontSize: "24px", color: "var(--navy)", margin: "6px 0 10px" }}>
             Inicia sesión para abrir la terminal
           </h1>
@@ -43,15 +40,16 @@ export function TerminalGate() {
           </ul>
 
           <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
-            <a href="#/acceso" className="button button-primary" style={{ padding: "10px 22px", display: "inline-flex", alignItems: "center", gap: 6 }}>
-              <LogIn size={16} aria-hidden="true" /> Iniciar sesión
+            <a href="#/acceso" className="bk-btn bk-btn-navy">
+              <LogIn size={16} aria-hidden="true" /> Ingresar
             </a>
-            <a href="#/registro" className="button button-outline" style={{ padding: "10px 22px", display: "inline-flex", alignItems: "center", gap: 6 }}>
-              <UserPlus size={16} aria-hidden="true" /> Crear cuenta gratis
+            <a href="#/registro" className="bk-btn bk-btn-outline">
+              <UserPlus size={16} aria-hidden="true" /> Abrir cuenta gratis
             </a>
           </div>
         </div>
       </main>
+      <Footer />
     </>
   );
 }

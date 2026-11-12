@@ -95,6 +95,49 @@ PRISMA_DATA_SOURCE=athena PRISMA_S3_BUCKET=<bucket> streamlit run app.py
 
 Las señales de Prisma BMV son probabilidades estadísticas. No constituyen recomendación, asesoría ni mandato de compra o venta de valores.
 
+## Terminal web (banca en línea)
+
+La experiencia principal vive en `frontend/` (React + Vite) con estilo de portal bancario y la
+misma paleta del sitio (azul marino `#062c50`, turquesa `#079baa`):
+
+- **Portal público:** barra utilitaria con el estado del mercado, hero con ilustración vectorial,
+  accesos rápidos, "Mercado hoy" con datos vivos, planes como tarjetas de producto, banda de
+  seguridad y preguntas frecuentes. Acceso con diseño de banca en línea (Supabase).
+- **Terminal** (`#/sistema`, o `#/sistema/<seccion>`): menú lateral y seis secciones:
+
+  | Sección | Gráficas |
+  |---|---|
+  | Resumen | Serie PPP oficial (gráfica original, ahora para cualquier emisora y sin rellenar huecos), movimientos del día, variación por sector, probabilidad por modelo |
+  | Mercado | Monitor de las 15 emisoras, sello SHA-256, variación por sector |
+  | Señales | Probabilidad por modelo (umbral 50 %), cascada del factor clave |
+  | Seguimiento t+5 | Línea de tiempo, trayectoria t0 → t+5, efectividad por modelo, marcador |
+  | Calidad de modelos | Calibración del modelo campeón y métricas institucionales |
+  | Datos y gobernanza | Flujo del lakehouse en AWS (Sankey) |
+
+- **Prismi explica cada gráfica:** el botón «Prismi te lo explica» abre el chat con una explicación
+  calculada con los datos del día (`frontend/src/guide/explicaciones.mjs`, funciona sin llave de
+  Claude) y deja la gráfica como contexto para las preguntas siguientes, que responde el motor de
+  `prisma/services/prismi.py` vía `POST /api/terminal/prismi` (sin asesoría, solo cifras reales).
+
+Endpoints nuevos en `core/terminal_api.py` (usan `prisma.data.analytics` sobre los CSV vivos de la raíz):
+
+| Endpoint | Acceso |
+|---|---|
+| `GET /api/terminal/sectores`, `GET /api/terminal/gobernanza` | público |
+| `GET /api/terminal/serie`, `/senal`, `/seguimiento` (`?emisora=`) | sesión; 403 si el plan no incluye la emisora |
+| `GET /api/terminal/marcador`, `POST /api/terminal/prismi` | sesión |
+
+Puesta en marcha (dos terminales):
+
+```bash
+pip install -r requirements-api.txt
+uvicorn api:app --reload --port 8000          # lee .env de la raíz
+
+cd frontend && nvm use 20 && npm ci && npm run dev   # http://localhost:5173
+```
+
+La terminal Streamlit (`streamlit run app.py`) sigue disponible como alternativa.
+
 ## Otros componentes del repositorio
 
 - `frontend/`: sitio web React/Vite con la mascota Prismi, el recorrido guiado

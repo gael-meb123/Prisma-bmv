@@ -10,6 +10,7 @@ import { AccountProvider } from "./hooks/useAccount";
 import "./styles.css";
 import "./public-ui.css";
 import "./print.css";
+import "./bank.css";
 
 class ErrorBoundary extends React.Component {
   state = { failed: false, error: null };

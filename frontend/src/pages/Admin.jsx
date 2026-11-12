@@ -45,7 +45,7 @@ export function Admin() {
   if (account.ready && account.userRole !== "admin") {
     return (
       <>
-        <Header context="inner" />
+        <Header />
         <main id="main-content" className="information-page container" style={{ maxWidth: "600px", margin: "60px auto", padding: "0 20px", textAlign: "center" }}>
           <AlertTriangle size={48} style={{ color: "#f59e0b", marginBottom: "16px" }} />
           <h1 style={{ color: "var(--navy)", fontSize: "24px" }}>Acceso Restringido</h1>
@@ -114,7 +114,7 @@ export function Admin() {
 
   return (
     <>
-      <Header context="inner" />
+      <Header />
 
       <main id="main-content" className="information-page container" style={{ maxWidth: "960px", margin: "40px auto", padding: "0 20px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>

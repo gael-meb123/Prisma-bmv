@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Check, ArrowRight, ShieldCheck, Zap } from "lucide-react";
-import { Header } from "../components/Header";
+import { Header, Footer, PageHero } from "../components/Header";
+import { PlanCardArt } from "../components/Illustrations";
 import { Button, Notice } from "../components/UI";
 import { useAccount } from "../hooks/useAccount";
 import { PLANS, planById } from "../plans.mjs";
@@ -26,16 +27,9 @@ export function Plans() {
 
   return (
     <>
-      <Header context="inner" />
-
-      <main id="main-content" className="information-page container" style={{ maxWidth: "1080px", margin: "40px auto", padding: "0 20px" }}>
-        <span className="eyebrow">SUSCRIPCIONES INSTITUCIONALES</span>
-        <h1 style={{ color: "var(--navy)", fontSize: "36px", margin: "8px 0" }}>
-          Planes y Niveles de Inferencia Cuantitativa
-        </h1>
-        <p className="page-lead" style={{ fontSize: "16px", color: "var(--muted)", maxWidth: "700px", lineHeight: "1.6", marginBottom: "24px" }}>
-          Selecciona el nivel de acceso analítico para tu mesa de dinero o cartera individual. Puedes conmutar de plan en cualquier momento para evaluar las funciones en vivo.
-        </p>
+      <Header />
+      <PageHero eyebrow="Suscripciones institucionales" title="Planes y Niveles de Inferencia Cuantitativa" lead="Selecciona el nivel de acceso analítico para tu mesa de dinero o cartera individual. Puedes conmutar de plan en cualquier momento para evaluar las funciones en vivo." />
+      <main id="main-content" className="information-page bk-container bk-page-body" style={{ maxWidth: "1080px", paddingBottom: "24px" }}>
 
         <Notice tone="info">
           Modo Demostración Activo: La conmutación de planes es instantánea para permitir la evaluación completa de las capacidades multi-modelo y los bloqueos freemium.
@@ -69,13 +63,17 @@ export function Plans() {
                   background: isActive ? "#f0fdfa" : "#ffffff",
                   border: isActive ? "2px solid #079baa" : "1px solid var(--line)",
                   borderRadius: "16px",
-                  padding: "28px",
+                  padding: "22px",
+                  boxShadow: "var(--bk-shadow)",
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "space-between"
                 }}
               >
                 <div>
+                  <div style={{ borderRadius: "14px", overflow: "hidden", marginBottom: "16px" }}>
+                    <PlanCardArt plan={plan.id} />
+                  </div>
                   <span className="eyebrow">{plan.audience}</span>
                   <h2 style={{ fontSize: "22px", color: "var(--navy)", margin: "4px 0" }}>{plan.name}</h2>
                   <div style={{ fontSize: "28px", fontWeight: "800", color: "var(--navy)", fontFamily: "monospace", margin: "14px 0 6px 0" }}>
@@ -113,6 +111,7 @@ export function Plans() {
           </a>
         </div>
       </main>
+      <Footer />
     </>
   );
 }

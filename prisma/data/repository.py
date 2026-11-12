@@ -117,8 +117,9 @@ class RepositorioDatos(ABC):
 class RepositorioLocal(RepositorioDatos):
     nombre_fuente = "Archivos locales (instantánea del lakehouse)"
 
-    def __init__(self, directorio: Path):
+    def __init__(self, directorio: Path, archivo_modelos: Path | None = None):
         self.dir = Path(directorio)
+        self.archivo_modelos = Path(archivo_modelos) if archivo_modelos else self.dir / "modelos" / "registro_modelos_g2_oficial.json"
 
     def _csv(self, nombre: str) -> pd.DataFrame:
         ruta = self.dir / nombre
@@ -136,7 +137,7 @@ class RepositorioLocal(RepositorioDatos):
         return self._csv("registro_senales_prospectivas_walmex.csv")
 
     def modelos_g2(self) -> dict[str, Any]:
-        ruta = self.dir / "modelos" / "registro_modelos_g2_oficial.json"
+        ruta = self.archivo_modelos
         return json.loads(ruta.read_text(encoding="utf-8")) if ruta.exists() else {}
 
     def bronze_local(self, fecha_yyyymmdd: str) -> tuple[bytes | None, str | None]:

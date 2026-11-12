@@ -98,6 +98,8 @@ NOMBRES_MODELO = {
     "G2_V1_POOLED_REL3_CALIBRADO": "G2-V1 Calibrado",
     "G2_V2_POOLED_REL3_ZONA_NEUTRAL": "G2-V2 Zona neutral",
     "G2_V3_POOLED_REL3_ALTA_DISC_EXPANDIDO": "G2-V3 Alta discriminación",
+    "G2_V4_POOLED_DM5_REL_CORTO_PLAZO": "G2-V4 Agotamiento corto (DM5)",
+    "G2_V5_ADAPTATIVO_REGIMEN_SECTORIAL": "G2-V5 Adaptativo por régimen",
     "V1_CONTROL_LOGREG": "G1-V1 Logística base",
     "V2R_RETADOR_LINEAL_AJUSTE_DIVIDENDOS": "G1-V2R Ajuste dividendos",
     "V3_RETADOR_SELECCIONADO_RF": "G1-V3 Random Forest",
@@ -164,13 +166,21 @@ class ExplicacionFactor:
 
 def explicar_factor(modelos: dict[str, Any], fila_g2: pd.Series) -> ExplicacionFactor:
     em, mod = str(fila_g2["emisora"]), str(fila_g2["modelo_g2"])
-    x = {v: float(fila_g2[v]) for v in core.VARIABLES_G2}
-    ret_pct = x["ret_10_rel_panel"] * 100.0
+    ret_pct = float(fila_g2["ret_10_rel_panel"]) * 100.0
     if mod not in modelos or em not in modelos[mod].get("scalers_por_emisora", {}):
         return ExplicacionFactor(ret_pct, None, {}, "Sin parámetros registrados para descomponer la señal.")
     p = modelos[mod]
+    variables = p.get("variables", list(core.VARIABLES_G2))
+    faltantes = [v for v in variables if v not in fila_g2.index or pd.isna(fila_g2[v])]
+    if "ret_10_rel_panel" not in variables or faltantes:
+        # V4/V5 usan variables que el registro de señales no publica (p. ej. distancia_media_5).
+        return ExplicacionFactor(ret_pct, None, {}, (
+            f"{NOMBRES_MODELO.get(mod, mod)} usa variables propias ({', '.join(variables)}) que el registro de "
+            "señales no publica fila por fila, así que su probabilidad no se puede descomponer aquí. "
+            "La descomposición está disponible para G2-V1, V2 y V3."))
+    x = {v: float(fila_g2[v]) for v in variables}
     sc = p["scalers_por_emisora"][em]
-    idx = p.get("variables", list(core.VARIABLES_G2)).index("ret_10_rel_panel")
+    idx = variables.index("ret_10_rel_panel")
     z = (x["ret_10_rel_panel"] - sc["mean"][idx]) / sc["scale"][idx]
     contrib = core.contribuciones_log_odds(p, em, x)
     signo_beta = "negativo" if p["beta"][idx + 1] < 0 else "positivo"
