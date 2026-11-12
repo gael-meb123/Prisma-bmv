@@ -2,6 +2,6 @@
 V1_TITULAR_CONTROL (Intacto Etapa 9I),1,0,1,0,0,1,LEGADO_PRE_CORRECCION_V2,PPP_LEGADO_WALMEX_MEDIA20,0,0,,,,Minimo 60 resueltas y >=10 por clase
 V3_RETADOR_GANADOR_SELECTOR (Random Forest max_depth=3 + Dividendos),1,0,1,0,0,1,LEGADO_PRE_CORRECCION_V2,PPP_LEGADO_WALMEX_MEDIA20,0,0,,,,Minimo 60 resueltas y >=10 por clase
 V2R_RETADOR_LINEAL (Ajuste retroactivo de dividendos),1,1,1,0,0,0,LEGADO_PRE_CORRECCION_V2,PPP_LEGADO_WALMEX_MEDIA20,0,0,0.0,0.7197,0.2633,Minimo 60 resueltas y >=10 por clase
-V1_TITULAR_CONTROL (Intacto Etapa 9I),9,4,4,5,0,0,PPP_EVALUACION_V2,PPP_V2_MEDIA20,1,0,25.0,0.8337,0.3181,Minimo 60 resueltas y >=10 por clase
-V2R_RETADOR_LINEAL (Ajuste retroactivo de dividendos),9,4,4,5,0,0,PPP_EVALUACION_V2,PPP_V2_MEDIA20,0,0,0.0,0.8746,0.3386,Minimo 60 resueltas y >=10 por clase
-V3_RETADOR_GANADOR_SELECTOR (Random Forest max_depth=3 + Dividendos),9,4,4,5,0,0,PPP_EVALUACION_V2,PPP_V2_MEDIA20,0,0,0.0,0.9053,0.3543,Minimo 60 resueltas y >=10 por clase
+V1_TITULAR_CONTROL (Intacto Etapa 9I),10,5,5,5,0,0,PPP_EVALUACION_V2,PPP_V2_MEDIA20,1,0,20.0,0.916,0.3559,Minimo 60 resueltas y >=10 por clase
+V2R_RETADOR_LINEAL (Ajuste retroactivo de dividendos),10,5,5,5,0,0,PPP_EVALUACION_V2,PPP_V2_MEDIA20,0,0,0.0,0.9449,0.3707,Minimo 60 resueltas y >=10 por clase
+V3_RETADOR_GANADOR_SELECTOR (Random Forest max_depth=3 + Dividendos),10,5,5,5,0,0,PPP_EVALUACION_V2,PPP_V2_MEDIA20,0,0,0.0,0.9225,0.3625,Minimo 60 resueltas y >=10 por clase

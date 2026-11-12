@@ -2,10 +2,10 @@
   {
     "fuente": "BMV_EVENTOS_RELEVANTES_OFICIAL",
     "url": "https://www.bmv.com.mx/es/emisoras/eventosrelevantes/WALMEX-6153-CGEN_CAPIT",
-    "timestamp_captura_utc": "2026-11-12T18:35:19.588655+00:00",
+    "timestamp_captura_utc": "2026-11-12T18:45:34.557349+00:00",
     "http_status": 200,
-    "bytes_descargados": 60597,
-    "sha256_payload": "8cea4c6b4ba90726fca561e1f08935239a1931d7b0e0b39dc214d936c4fbfaa5",
+    "bytes_descargados": 60596,
+    "sha256_payload": "a1d03d9f0a71c9dcffaff5d64410f789604dac11123ea21b94a0f3ed85003070",
     "documentos_oficiales_detectados": 3,
     "muestra_documentos": [
       "/docs-pub/GRUPOBMV/deceroabolsa.pdf",
@@ -16,10 +16,10 @@
   {
     "fuente": "BMV_INFO_FINANCIERA_OFICIAL",
     "url": "https://www.bmv.com.mx/es/emisoras/informacionfinanciera/WALMEX-6153-CGEN_CAPIT",
-    "timestamp_captura_utc": "2026-11-12T18:35:19.588655+00:00",
+    "timestamp_captura_utc": "2026-11-12T18:45:34.557349+00:00",
     "http_status": 200,
-    "bytes_descargados": 60830,
-    "sha256_payload": "7d5a52c977740d9a6cf1f2a6eeb8cb6ddf6169960ada2d2b64b18068c6254421",
+    "bytes_descargados": 60833,
+    "sha256_payload": "12963c8076323a1c113c2ad53f115cadfedb5b656f86d429ec81829086e09c71",
     "documentos_oficiales_detectados": 3,
     "muestra_documentos": [
       "/docs-pub/GRUPOBMV/deceroabolsa.pdf",
@@ -30,10 +30,10 @@
   {
     "fuente": "BMV_PERFIL_EMISORA_OFICIAL",
     "url": "https://www.bmv.com.mx/es/emisoras/perfil/WALMEX-6153",
-    "timestamp_captura_utc": "2026-11-12T18:35:19.588655+00:00",
+    "timestamp_captura_utc": "2026-11-12T18:45:34.557349+00:00",
     "http_status": 200,
-    "bytes_descargados": 62923,
-    "sha256_payload": "5ed63974cbdef1f8f22a43d7ae9ad913c14f634473b11f284c2d5790200c2e83",
+    "bytes_descargados": 62927,
+    "sha256_payload": "28f53c7f0aa1b90cb3552314984cfd04db4731ea54afd9c53e6a687cdbee5c62",
     "documentos_oficiales_detectados": 3,
     "muestra_documentos": [
       "/docs-pub/GRUPOBMV/deceroabolsa.pdf",
@@ -44,10 +44,10 @@
   {
     "fuente": "GOOGLE_NEWS_RSS_PROSPECTIVO_WALMEX",
     "url": "https://news.google.com/rss/search?q=WALMEX+OR+%22Walmart+de+Mexico%22&hl=es-419&gl=MX&ceid=MX:es-419",
-    "timestamp_captura_utc": "2026-11-12T18:35:19.588655+00:00",
+    "timestamp_captura_utc": "2026-11-12T18:45:34.557349+00:00",
     "http_status": 200,
-    "bytes_descargados": 67454,
-    "sha256_payload": "74a4a060703d6ace7ff9f987e53f8e3e868b3cb3ba8488332fc086611378b3b4",
+    "bytes_descargados": 65532,
+    "sha256_payload": "e011abfd4780d644440e1941993e325a9faada695da042c2956d77cc0ce5794d",
     "documentos_oficiales_detectados": 0,
     "muestra_documentos": []
   }
