@@ -1,6 +1,6 @@
 {
   "fase": "FASE_7_MONITOREO_SECUENCIAL_ACTIVO_CUSUM_SPRT",
-  "timestamp_utc": "2026-11-10T01:11:14.699654+00:00",
+  "timestamp_utc": "2026-11-12T18:35:58.731555+00:00",
   "fecha_reporte": "2026-11-06",
   "especificacion_matematica": {
     "cusum_page": {
@@ -438,12 +438,12 @@
   "monitoreo_prospectivo_en_vivo": {
     "fecha_congelamiento": "2026-11-06",
     "OUT_OF_SAMPLE_PRE_REGISTRADO": {
-      "total_senales_emitidas": 50,
+      "total_senales_emitidas": 100,
       "total_resueltas_oficial_t5": 0,
       "total_pendientes_reconciliacion": 0,
       "por_modelo": {
         "G2_V1_POOLED_REL3_CALIBRADO": {
-          "senales_emitidas": 10,
+          "senales_emitidas": 20,
           "senales_resueltas_oficial_t5": 0,
           "senales_pendientes_reconciliacion": 0,
           "sprt_wald": {
@@ -473,7 +473,7 @@
           }
         },
         "G2_V2_POOLED_REL3_ZONA_NEUTRAL": {
-          "senales_emitidas": 10,
+          "senales_emitidas": 20,
           "senales_resueltas_oficial_t5": 0,
           "senales_pendientes_reconciliacion": 0,
           "sprt_wald": {
@@ -503,7 +503,7 @@
           }
         },
         "G2_V3_POOLED_REL3_ALTA_DISC_EXPANDIDO": {
-          "senales_emitidas": 10,
+          "senales_emitidas": 20,
           "senales_resueltas_oficial_t5": 0,
           "senales_pendientes_reconciliacion": 0,
           "sprt_wald": {
@@ -533,7 +533,7 @@
           }
         },
         "G2_V4_POOLED_DM5_REL_CORTO_PLAZO": {
-          "senales_emitidas": 10,
+          "senales_emitidas": 20,
           "senales_resueltas_oficial_t5": 0,
           "senales_pendientes_reconciliacion": 0,
           "sprt_wald": {
@@ -563,7 +563,7 @@
           }
         },
         "G2_V5_ADAPTATIVO_REGIMEN_SECTORIAL": {
-          "senales_emitidas": 10,
+          "senales_emitidas": 20,
           "senales_resueltas_oficial_t5": 0,
           "senales_pendientes_reconciliacion": 0,
           "sprt_wald": {
@@ -596,13 +596,13 @@
     },
     "IN_SAMPLE_DISENO": {
       "total_senales_emitidas": 125,
-      "total_resueltas_oficial_t5": 40,
-      "total_pendientes_reconciliacion": 20,
+      "total_resueltas_oficial_t5": 60,
+      "total_pendientes_reconciliacion": 40,
       "por_modelo": {
         "G2_V1_POOLED_REL3_CALIBRADO": {
           "senales_emitidas": 25,
-          "senales_resueltas_oficial_t5": 8,
-          "senales_pendientes_reconciliacion": 4,
+          "senales_resueltas_oficial_t5": 12,
+          "senales_pendientes_reconciliacion": 8,
           "sprt_wald": {
             "p0": 0.5,
             "p1": 0.55,
@@ -617,22 +617,22 @@
             "n_independientes_requeridas_80pct": 617,
             "e_n_sprt_bajo_h1": 380.7,
             "e_n_sprt_bajo_h0": 267.0,
-            "n_nominal": 8,
-            "n_efectivo": 3.2,
+            "n_nominal": 12,
+            "n_efectivo": 4.8,
             "factor_solapamiento": 2.5,
-            "aciertos_direccionales": 1,
-            "tasa_acierto_pct": 12.5,
-            "llr_nominal": -0.642213,
-            "llr_efectivo": -0.256885,
+            "aciertos_direccionales": 3,
+            "tasa_acierto_pct": 25.0,
+            "llr_nominal": -0.662314,
+            "llr_efectivo": -0.264926,
             "estado_sprt": "CONTINUAR_MUESTREO",
-            "senales_efectivas_faltantes_80pct": 613.8,
-            "progreso_muestral_efectivo_pct": 0.52
+            "senales_efectivas_faltantes_80pct": 612.2,
+            "progreso_muestral_efectivo_pct": 0.78
           }
         },
         "G2_V2_POOLED_REL3_ZONA_NEUTRAL": {
           "senales_emitidas": 25,
-          "senales_resueltas_oficial_t5": 8,
-          "senales_pendientes_reconciliacion": 4,
+          "senales_resueltas_oficial_t5": 12,
+          "senales_pendientes_reconciliacion": 8,
           "sprt_wald": {
             "p0": 0.5,
             "p1": 0.55,
@@ -647,22 +647,22 @@
             "n_independientes_requeridas_80pct": 617,
             "e_n_sprt_bajo_h1": 380.7,
             "e_n_sprt_bajo_h0": 267.0,
-            "n_nominal": 8,
-            "n_efectivo": 3.2,
+            "n_nominal": 12,
+            "n_efectivo": 4.8,
             "factor_solapamiento": 2.5,
-            "aciertos_direccionales": 2,
-            "tasa_acierto_pct": 25.0,
-            "llr_nominal": -0.441543,
-            "llr_efectivo": -0.176617,
+            "aciertos_direccionales": 4,
+            "tasa_acierto_pct": 33.33,
+            "llr_nominal": -0.461643,
+            "llr_efectivo": -0.184657,
             "estado_sprt": "CONTINUAR_MUESTREO",
-            "senales_efectivas_faltantes_80pct": 613.8,
-            "progreso_muestral_efectivo_pct": 0.52
+            "senales_efectivas_faltantes_80pct": 612.2,
+            "progreso_muestral_efectivo_pct": 0.78
           }
         },
         "G2_V3_POOLED_REL3_ALTA_DISC_EXPANDIDO": {
           "senales_emitidas": 25,
-          "senales_resueltas_oficial_t5": 8,
-          "senales_pendientes_reconciliacion": 4,
+          "senales_resueltas_oficial_t5": 12,
+          "senales_pendientes_reconciliacion": 8,
           "sprt_wald": {
             "p0": 0.5,
             "p1": 0.55,
@@ -677,22 +677,22 @@
             "n_independientes_requeridas_80pct": 617,
             "e_n_sprt_bajo_h1": 380.7,
             "e_n_sprt_bajo_h0": 267.0,
-            "n_nominal": 8,
-            "n_efectivo": 3.2,
+            "n_nominal": 12,
+            "n_efectivo": 4.8,
             "factor_solapamiento": 2.5,
-            "aciertos_direccionales": 2,
-            "tasa_acierto_pct": 25.0,
-            "llr_nominal": -0.441543,
-            "llr_efectivo": -0.176617,
+            "aciertos_direccionales": 4,
+            "tasa_acierto_pct": 33.33,
+            "llr_nominal": -0.461643,
+            "llr_efectivo": -0.184657,
             "estado_sprt": "CONTINUAR_MUESTREO",
-            "senales_efectivas_faltantes_80pct": 613.8,
-            "progreso_muestral_efectivo_pct": 0.52
+            "senales_efectivas_faltantes_80pct": 612.2,
+            "progreso_muestral_efectivo_pct": 0.78
           }
         },
         "G2_V4_POOLED_DM5_REL_CORTO_PLAZO": {
           "senales_emitidas": 25,
-          "senales_resueltas_oficial_t5": 8,
-          "senales_pendientes_reconciliacion": 4,
+          "senales_resueltas_oficial_t5": 12,
+          "senales_pendientes_reconciliacion": 8,
           "sprt_wald": {
             "p0": 0.5,
             "p1": 0.55,
@@ -707,22 +707,22 @@
             "n_independientes_requeridas_80pct": 617,
             "e_n_sprt_bajo_h1": 380.7,
             "e_n_sprt_bajo_h0": 267.0,
-            "n_nominal": 8,
-            "n_efectivo": 3.2,
+            "n_nominal": 12,
+            "n_efectivo": 4.8,
             "factor_solapamiento": 2.5,
             "aciertos_direccionales": 3,
-            "tasa_acierto_pct": 37.5,
-            "llr_nominal": -0.240872,
-            "llr_efectivo": -0.096349,
+            "tasa_acierto_pct": 25.0,
+            "llr_nominal": -0.662314,
+            "llr_efectivo": -0.264926,
             "estado_sprt": "CONTINUAR_MUESTREO",
-            "senales_efectivas_faltantes_80pct": 613.8,
-            "progreso_muestral_efectivo_pct": 0.52
+            "senales_efectivas_faltantes_80pct": 612.2,
+            "progreso_muestral_efectivo_pct": 0.78
           }
         },
         "G2_V5_ADAPTATIVO_REGIMEN_SECTORIAL": {
           "senales_emitidas": 25,
-          "senales_resueltas_oficial_t5": 8,
-          "senales_pendientes_reconciliacion": 4,
+          "senales_resueltas_oficial_t5": 12,
+          "senales_pendientes_reconciliacion": 8,
           "sprt_wald": {
             "p0": 0.5,
             "p1": 0.55,
@@ -737,16 +737,16 @@
             "n_independientes_requeridas_80pct": 617,
             "e_n_sprt_bajo_h1": 380.7,
             "e_n_sprt_bajo_h0": 267.0,
-            "n_nominal": 8,
-            "n_efectivo": 3.2,
+            "n_nominal": 12,
+            "n_efectivo": 4.8,
             "factor_solapamiento": 2.5,
-            "aciertos_direccionales": 7,
-            "tasa_acierto_pct": 87.5,
-            "llr_nominal": 0.561811,
-            "llr_efectivo": 0.224724,
+            "aciertos_direccionales": 11,
+            "tasa_acierto_pct": 91.67,
+            "llr_nominal": 0.943051,
+            "llr_efectivo": 0.377221,
             "estado_sprt": "CONTINUAR_MUESTREO",
-            "senales_efectivas_faltantes_80pct": 613.8,
-            "progreso_muestral_efectivo_pct": 0.52
+            "senales_efectivas_faltantes_80pct": 612.2,
+            "progreso_muestral_efectivo_pct": 0.78
           }
         }
       }
