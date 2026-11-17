@@ -1,128 +1,126 @@
 """
-Prisma BMV - Orquestador Principal de la Plataforma FinTech
+Prisma BMV - Quantitative Terminal
+Orquestador de la aplicación Streamlit.
+
+Ejecución:  streamlit run app.py
+Configuración: variables de entorno o .streamlit/secrets.toml (ver .env.example).
 """
 
 from __future__ import annotations
 
+import os
+
 import streamlit as st
 
-from config_saas import APP_NAME, APP_SUBTITLE, FINTECH_CSS, PLANS
-from views.asistente_widget import render_onboarding_tutorial, render_prismi_assistant_widget
-from views.landing import render_landing_page
-from views.terminal_auditoria import render_terminal_auditoria
-from views.terminal_mercado import render_terminal_mercado
-from views.terminal_senales import render_terminal_senales
-
-# Configuración básica de página
-st.set_page_config(
-    page_title="Prisma BMV - Quantitative Terminal",
-    page_icon="📈",
-    layout="wide",
-    initial_sidebar_state="expanded",
-)
-
-# Inyectar estilos FinTech oscuros
-st.markdown(FINTECH_CSS, unsafe_allow_html=True)
+st.set_page_config(page_title="Prisma BMV - Quantitative Terminal", page_icon="📈", layout="wide",
+                   initial_sidebar_state="collapsed")
 
 
-def inicializar_estado() -> None:
-    if "usuario_actual" not in st.session_state:
-        st.session_state["usuario_actual"] = None
-    if "mostrar_onboarding" not in st.session_state:
-        st.session_state["mostrar_onboarding"] = False
-    if "onboarding_step" not in st.session_state:
-        st.session_state["onboarding_step"] = 1
+def _secretos_a_entorno() -> None:
+    """Copia st.secrets al entorno para que la configuración sea idéntica en local y en la nube."""
+    try:
+        for k, v in st.secrets.items():
+            if isinstance(v, (str, int, float, bool)) and k not in os.environ:
+                os.environ[k] = str(v)
+    except Exception:
+        pass  # sin secrets.toml: se usan solo variables de entorno
+
+
+_secretos_a_entorno()
+
+from prisma.data.analytics import seguimiento  # noqa: E402
+from prisma.plans import tiene_acceso  # noqa: E402
+from prisma.security.crypto import ErrorConfiguracionSeguridad  # noqa: E402
+from prisma.services import prismi as motor_prismi  # noqa: E402
+from prisma.ui import components as ui  # noqa: E402
+from prisma.ui.contexto import datos as cargar_datos  # noqa: E402
+from prisma.ui.contexto import recortar, servicios, vista_para_plan  # noqa: E402
+from prisma.ui.theme import CSS  # noqa: E402
+from prisma.ui.views import account, audit, landing, lakehouse, market, signals  # noqa: E402
+from prisma.ui.views import prismi as widget_prismi  # noqa: E402
+
+ui.html(CSS)
+
+
+def _estado_inicial() -> None:
+    for k, v in {"usuario_email": None, "vista": "terminal", "tour_abierto": False,
+                 "tour_tipo": "visitante", "tour_paso": 0, "tour_visto": False}.items():
+        st.session_state.setdefault(k, v)
+
+
+def _contexto_prismi(d: dict, vp) -> motor_prismi.ContextoMercado:
+    g1 = recortar(d["g1"], "fecha_senal", vp.fecha_corte)
+    g2 = recortar(d["g2"], "fecha_senal", vp.fecha_corte) if tiene_acceso(vp.plan, "panel_g2") else d["g2"].iloc[0:0]
+    precios = recortar(d["precios"], "fecha", vp.fecha_corte)
+    seg = seguimiento(g1, g2, precios, vp.fecha_corte) if vp.fecha_corte else g2
+    return motor_prismi.construir_contexto(precios, g1, g2, seg, vp.emisoras)
+
+
+def _barra_superior(sv, usuario: dict) -> None:
+    izq, der = st.columns([3, 1.2])
+    with izq:
+        ui.html(f'<div class="pb-barra"><div class="pb-marca">PRISMA BMV<small>Quantitative Terminal</small></div>'
+                f'<div class="pb-usuario"><b>{ui.escape(usuario["nombre"])}</b>{ui.etiqueta_plan(usuario["plan"])}'
+                f'<span class="tenue" style="margin-left:.8rem">fuente: {ui.escape(sv.repo.nombre_fuente)}</span>'
+                f'</div></div>')
+    with der:
+        if st.button("Cerrar sesión", key="logout", width="stretch"):
+            for k in ("usuario_email", "prismi_msgs", "checkout_plan"):
+                st.session_state.pop(k, None)
+            st.rerun()
 
 
 def main() -> None:
-    inicializar_estado()
+    _estado_inicial()
+    try:
+        sv = servicios()
+    except ErrorConfiguracionSeguridad as e:
+        st.error(str(e))
+        st.stop()
 
-    # Widget permanente de Prismi (La Grafica Bailarina) en la barra lateral
-    render_prismi_assistant_widget()
+    try:
+        d = cargar_datos(sv.repo, sv.settings.fuente_datos)
+    except Exception as e:  # credenciales de AWS vencidas, bucket inexistente, etc.
+        st.error(f"No se pudieron leer los datos de {sv.repo.nombre_fuente}: {e}")
+        st.stop()
 
-    usuario = st.session_state.get("usuario_actual")
+    email = st.session_state["usuario_email"]
+    usuario = sv.usuarios.obtener(email) if email else None
+    if email and usuario is None:
+        st.session_state["usuario_email"] = None
 
-    # Caso 1: Flujo de Onboarding Interactivo con Prismi
-    if st.session_state.get("mostrar_onboarding", False):
-        c_head1, c_head2 = st.columns([4, 1])
-        with c_head1:
-            st.markdown(
-                f"<h2 style='color:#10B981; margin:0;'>✨ Configuración de Acceso Institucional - {APP_NAME}</h2>",
-                unsafe_allow_html=True,
-            )
-        with c_head2:
-            if st.button("✕ Cerrar Onboarding"):
-                st.session_state["mostrar_onboarding"] = False
-                st.rerun()
+    # Primera visita de un visitante: el recorrido se abre una vez por sesión.
+    if usuario is None and not st.session_state["tour_visto"]:
+        st.session_state.update(tour_visto=True, tour_abierto=True, tour_tipo="visitante", tour_paso=0)
 
-        render_onboarding_tutorial()
-        return
+    vp = vista_para_plan(d, usuario["plan"] if usuario else "explorer")
 
-    # Caso 2: Visitante No Autenticado -> Landing Page Pública
     if usuario is None:
-        render_landing_page()
-        return
+        landing.render(sv, d)
+    elif st.session_state["vista"] == "checkout":
+        account.checkout(sv, usuario)
+    else:
+        _barra_superior(sv, usuario)
+        if vp.fecha_corte:
+            ui.cinta_cotizaciones(d["precios"][d["precios"]["fecha"] == vp.fecha_corte])
+        t_mk, t_sg, t_au, t_lk, t_ac = st.tabs(
+            ["Monitor de mercado", "Señales y consenso", "Auditoría t+1 a t+5", "Lakehouse", "Cuenta"])
+        with t_mk:
+            market.render(d, vp)
+        with t_sg:
+            signals.render(d, vp)
+        with t_au:
+            audit.render(d, vp, sv.settings)
+        with t_lk:
+            lakehouse.render(sv, d, vp)
+        with t_ac:
+            account.cuenta(sv, usuario)
 
-    # Caso 3: Usuario Autenticado -> Terminal Cuantitativa Privada
-    plan_id = usuario.get("plan", "explorer")
-    plan_info = PLANS.get(plan_id, PLANS["explorer"])
+    widget_prismi.render(sv, usuario, _contexto_prismi(d, vp))
 
-    # Barra de Estado Superior de la Terminal
-    top_col1, top_col2, top_col3 = st.columns([3, 2, 1.2])
-
-    with top_col1:
-        st.markdown(
-            f"""
-            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
-                <span style="font-size: 1.6rem; font-weight: 900; background: linear-gradient(135deg, #10B981, #38BDF8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-                    {APP_NAME}
-                </span>
-                <span style="font-size: 0.75rem; background: rgba(16, 185, 129, 0.15); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.3); padding: 3px 8px; border-radius: 4px; font-weight: 700;">
-                    TERMINAL EN VIVO
-                </span>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-    with top_col2:
-        st.markdown(
-            f"""
-            <div style="text-align: right; margin-top: 4px;">
-                <span style="font-size: 0.9rem; color: #CBD5E1; font-weight: 600;">{usuario.get('nombre', 'Analista')}</span>
-                <span style="display: inline-block; margin-left: 8px; background: rgba(255,255,255,0.08); color: {plan_info['color']}; border: 1px solid {plan_info['color']}; padding: 2px 10px; border-radius: 9999px; font-size: 0.78rem; font-weight: 700;">
-                    Plan {plan_info['name']}
-                </span>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-    with top_col3:
-        if st.button("Cerrar Sesión", key="btn_logout", use_container_width=True):
-            st.session_state["usuario_actual"] = None
-            st.rerun()
-
-    st.markdown("<hr style='border: 0; border-top: 1px solid rgba(255,255,255,0.08); margin: 5px 0 20px 0;'>", unsafe_allow_html=True)
-
-    # Pestañas de la Terminal
-    tab_mercado, tab_senales, tab_auditoria = st.tabs(
-        [
-            "🏛️ Monitor BMV en Vivo",
-            "🧠 Señales y Consenso Cuantitativo",
-            "⏱️ Auditoría Temporal & AWS",
-        ]
-    )
-
-    with tab_mercado:
-        render_terminal_mercado()
-
-    with tab_senales:
-        render_terminal_senales(plan_usuario=plan_id)
-
-    with tab_auditoria:
-        render_terminal_auditoria()
+    if st.session_state["tour_abierto"]:
+        st.session_state["tour_abierto"] = False
+        account.recorrido(sv, usuario)
 
 
-if __name__ == "__main__":
-    main()
+main()

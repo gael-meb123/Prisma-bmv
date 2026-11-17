@@ -7,7 +7,7 @@ import { useAccount } from "../hooks/useAccount";
 import { Mascot } from "./Mascot";
 import "./guide.css";
 
-const isTerminalRoute = (route) => route === "/sistema" || route.startsWith("/ficha");
+const isTerminalRoute = (route) => route.startsWith("/sistema") || route.startsWith("/ficha");
 const isAuthRoute = (route) => route === "/acceso" || route === "/registro";
 
 // Qué recorrido ofrecer (o ninguno) según ruta y sesión.
@@ -42,9 +42,11 @@ export function Guide({ route, phase, selectedTicker, busy, error }) {
   const [messages, setMessages] = useState([
     {
       sender: "prismi",
-      text: "¡Hola! Soy Prismi, el billete con superpoderes de Prisma BMV. Puedo explicarte cómo funcionan los modelos predictivos G2, qué es el PPP oficial o el estado de cualquier emisora del IPC.",
+      text: "¡Hola! Soy Prismi, el billete con superpoderes de Prisma BMV. Puedo explicarte el PPP oficial, los modelos G2 o el estado de cualquier emisora. En la terminal, pulsa «Prismi te lo explica» en cualquier gráfica y te la cuento con los datos del día.",
     },
   ]);
+  // Gráfica que Prismi acaba de explicar: viaja como contexto en las preguntas siguientes.
+  const [chartCtx, setChartCtx] = useState(null);
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
   const threadRef = useRef(null);
@@ -52,7 +54,8 @@ export function Guide({ route, phase, selectedTicker, busy, error }) {
   const moment = guideMoment({ route, phase, selectedTicker, busy, error, hasSession, nombre });
   // Se recalcula en cada render; `tick` provoca el render tras elegir o terminar.
   const offer = pendingOffer({ route, hasSession, ready });
-  const expression = sending ? "thinking" : moment.expression;
+  const ultimaExpresion = [...messages].reverse().find((m) => m.expresion)?.expresion;
+  const expression = sending ? "thinking" : open && ultimaExpresion ? ultimaExpresion : moment.expression;
   const askLogin = ready && !hasSession && !isAuthRoute(route);
 
   useEffect(() => {
@@ -67,6 +70,31 @@ export function Guide({ route, phase, selectedTicker, busy, error }) {
     }
     window.addEventListener("prisma:tour-done", onDone);
     return () => window.removeEventListener("prisma:tour-done", onDone);
+  }, []);
+
+  // "Prismi te lo explica": abre el chat con la explicación de la gráfica.
+  useEffect(() => {
+    function onExplain(e) {
+      const ex = e.detail || {};
+      if (!ex.texto) return;
+      setMessages((prev) => [
+        ...prev,
+        { sender: "prismi", title: ex.titulo, text: ex.texto, sugerencias: ex.sugerencias || [], expresion: ex.expresion },
+      ]);
+      setChartCtx(ex.contexto ? `${ex.titulo}: ${ex.contexto}` : null);
+      setBubbleOpen(false);
+      setOpen(true);
+    }
+    function onOpen() {
+      setBubbleOpen(false);
+      setOpen(true);
+    }
+    window.addEventListener("prisma:explain", onExplain);
+    window.addEventListener("prisma:open-guide", onOpen);
+    return () => {
+      window.removeEventListener("prisma:explain", onExplain);
+      window.removeEventListener("prisma:open-guide", onOpen);
+    };
   }, []);
 
   // Cambios de sesión o de pantalla: Prismi vuelve a hablar.
@@ -118,15 +146,14 @@ export function Guide({ route, phase, selectedTicker, busy, error }) {
     window.location.hash = mode === "register" ? "/registro" : "/acceso";
   }
 
-  async function handleSend(e) {
-    e.preventDefault();
-    if (!draft.trim() || sending) return;
-    const userText = draft.trim();
-    setDraft("");
+  async function preguntar(texto) {
+    const userText = texto.trim();
+    if (!userText || sending) return;
+    const historial = messages;
     setMessages((prev) => [...prev, { sender: "user", text: userText }]);
     setSending(true);
     try {
-      const resp = await api.chatPrismi(userText, [], undefined, { hasSession });
+      const resp = await api.chatPrismi(userText, historial, undefined, { hasSession, contexto: chartCtx });
       setMessages((prev) => [...prev, { sender: "prismi", text: resp }]);
     } catch {
       setMessages((prev) => [
@@ -139,6 +166,13 @@ export function Guide({ route, phase, selectedTicker, busy, error }) {
     } finally {
       setSending(false);
     }
+  }
+
+  function handleSend(e) {
+    e.preventDefault();
+    const texto = draft;
+    setDraft("");
+    preguntar(texto);
   }
 
   const loginButtons = (
@@ -206,7 +240,17 @@ export function Guide({ route, phase, selectedTicker, busy, error }) {
           <div ref={threadRef} className="guide-chat-thread">
             {messages.map((m, idx) => (
               <div key={idx} className={`guide-msg guide-msg-${m.sender}`}>
+                {m.title && <strong className="guide-msg-title">{m.title}</strong>}
                 {m.text}
+                {m.sugerencias?.length > 0 && idx === messages.length - 1 && !sending && (
+                  <div className="guide-suggest">
+                    {m.sugerencias.map((q) => (
+                      <button key={q} type="button" onClick={() => preguntar(q)}>
+                        {q}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
             {askLogin && (
@@ -221,7 +265,7 @@ export function Guide({ route, phase, selectedTicker, busy, error }) {
           <form onSubmit={handleSend} className="guide-chat-form">
             <input
               type="text"
-              placeholder={hasSession ? "Pregunta sobre WALMEX, PPP, o modelos G2…" : "Pregunta cómo entrar, qué es el PPP…"}
+              placeholder={chartCtx ? "Pregunta algo sobre esta gráfica…" : hasSession ? "Pregunta sobre WALMEX, el PPP o los modelos G2…" : "Pregunta cómo entrar, qué es el PPP…"}
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
             />

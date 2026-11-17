@@ -1,0 +1,14 @@
+{
+  "Name": "DisparadorDiarioBMV",
+  "Description": "Ingesta diaria del boletin BMV al cierre (16:45 hora de Ciudad de Mexico, lunes a viernes)",
+  "ScheduleExpression": "cron(45 16 ? * MON-FRI *)",
+  "ScheduleExpressionTimezone": "America/Mexico_City",
+  "FlexibleTimeWindow": {"Mode": "OFF"},
+  "State": "ENABLED",
+  "Target": {
+    "Arn": "arn:aws:lambda:${REGION}:${ACCOUNT_ID}:function:recolector-diario-bmv",
+    "RoleArn": "${SCHEDULER_ROLE_ARN}",
+    "Input": "{}",
+    "RetryPolicy": {"MaximumRetryAttempts": 2, "MaximumEventAgeInSeconds": 3600}
+  }
+}

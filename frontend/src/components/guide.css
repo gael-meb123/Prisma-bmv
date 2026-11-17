@@ -151,3 +151,21 @@
   font-size: 12px;
 }
 .guide-chat-form .button { padding: 0 12px; }
+
+/* Explicaciones de gráficas */
+.guide-msg { white-space: pre-line; }
+.guide-msg-title { display: block; margin-bottom: 6px; color: var(--bk-navy, #062c50); font-size: 13.5px; }
+.guide-suggest { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.guide-suggest button {
+  border: 1px solid #c4e7ec;
+  background: #ffffff;
+  color: #067b8a;
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left;
+}
+.guide-suggest button:hover { background: #ebf8fa; }
+.guide-chat { height: min(560px, calc(100vh - 140px)); width: 400px; }

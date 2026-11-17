@@ -1,0 +1,45 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "LeerLakehouse",
+      "Effect": "Allow",
+      "Action": "s3:GetObject",
+      "Resource": [
+        "arn:aws:s3:::${BUCKET}/bronze/*",
+        "arn:aws:s3:::${BUCKET}/silver/*",
+        "arn:aws:s3:::${BUCKET}/gold/*"
+      ]
+    },
+    {
+      "Sid": "ResultadosDeAthena",
+      "Effect": "Allow",
+      "Action": ["s3:GetObject", "s3:PutObject", "s3:GetBucketLocation", "s3:ListBucket"],
+      "Resource": ["arn:aws:s3:::${BUCKET}", "arn:aws:s3:::${BUCKET}/athena-results/*"]
+    },
+    {
+      "Sid": "ListarParaAthena",
+      "Effect": "Allow",
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::${BUCKET}",
+      "Condition": {"StringLike": {"s3:prefix": ["silver/*", "gold/*", "athena-results/*"]}}
+    },
+    {
+      "Sid": "ConsultasAthenaSoloEnSuWorkgroup",
+      "Effect": "Allow",
+      "Action": ["athena:StartQueryExecution", "athena:GetQueryExecution", "athena:GetQueryResults",
+                 "athena:StopQueryExecution", "athena:GetWorkGroup"],
+      "Resource": "arn:aws:athena:${REGION}:${ACCOUNT_ID}:workgroup/${WORKGROUP}"
+    },
+    {
+      "Sid": "CatalogoSoloLectura",
+      "Effect": "Allow",
+      "Action": ["glue:GetDatabase", "glue:GetTable", "glue:GetTables", "glue:GetPartitions"],
+      "Resource": [
+        "arn:aws:glue:${REGION}:${ACCOUNT_ID}:catalog",
+        "arn:aws:glue:${REGION}:${ACCOUNT_ID}:database/prisma_bmv",
+        "arn:aws:glue:${REGION}:${ACCOUNT_ID}:table/prisma_bmv/*"
+      ]
+    }
+  ]
+}

@@ -7,7 +7,7 @@ import { MOCK_METRICAS_MODELOS } from "../../mocks/mockData";
 
 const Plot = createPlotlyComponent(Plotly);
 
-export function ComparisonAudit({ ticker = "WALMEX", senales = [], metricas = null, onBack, onOpenReport }) {
+export function ComparisonAudit({ ticker = "WALMEX", senales = [], metricas = null, onBack, onOpenReport, ocultarCalibracion = false }) {
   const m = metricas || MOCK_METRICAS_MODELOS;
   const primera = senales[0] || {};
   const pppBase = primera.ppp_base || 50.39;
@@ -224,6 +224,7 @@ export function ComparisonAudit({ ticker = "WALMEX", senales = [], metricas = nu
         </h3>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "14px", alignItems: "center", marginBottom: "14px" }}>
+          {!ocultarCalibracion && (
           <div style={{ height: "230px", background: "#f8fafc", borderRadius: "8px", border: "1px solid #e2e8f0", padding: "4px" }}>
             <Plot
               data={[
@@ -260,8 +261,9 @@ export function ComparisonAudit({ ticker = "WALMEX", senales = [], metricas = nu
               style={{ width: "100%", height: "100%" }}
             />
           </div>
+          )}
 
-          <div style={{ overflowX: "auto" }}>
+          <div style={{ overflowX: "auto", gridColumn: ocultarCalibracion ? "1 / -1" : undefined }}>
             <table className="comparison-table" style={{ width: "100%", fontSize: "11px" }}>
               <thead>
                 <tr>

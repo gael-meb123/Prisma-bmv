@@ -26,11 +26,11 @@ export function guideMoment({ route, phase, selectedTicker, busy = false, error 
       prompt: route === "/registro" ? "Crear tu cuenta es gratis" : "¡Bienvenido de vuelta!",
       message: route === "/registro"
         ? "Empiezas con el plan Explorer: monitor de las 15 emisoras y análisis completo de WALMEX."
-        : "Escribe tu correo y contraseña. ¿No tienes cuenta? Usa «Regístrate» debajo del formulario."
+        : "Escribe tu correo y contraseña. ¿No tienes cuenta? Usa la pestaña «Abrir cuenta»."
     };
   }
 
-  if ((route === "/sistema" || route.startsWith("/ficha")) && !hasSession) {
+  if ((route.startsWith("/sistema") || route.startsWith("/ficha")) && !hasSession) {
     return {
       expression: "unsure",
       prompt: "La terminal necesita sesión",
@@ -43,7 +43,7 @@ export function guideMoment({ route, phase, selectedTicker, busy = false, error 
       ? {
           expression: "happy",
           prompt: `¡Hola${nombre ? `, ${nombre}` : ""}!`,
-          message: "Tu sesión está activa. Usa «Abrir Terminal» para ir directo al análisis."
+          message: "Tu sesión está activa. Usa «Mi terminal» para ir directo a tu resumen."
         }
       : {
           expression: "happy",
@@ -76,19 +76,18 @@ export function guideMoment({ route, phase, selectedTicker, busy = false, error 
     };
   }
 
-  if (route === "/sistema") {
-    if (phase === "analysis" || phase === "audit") {
-      return {
-        expression: "happy",
-        prompt: `¿Analizando ${selectedTicker || "WALMEX"}?`,
-        message: `Los 3 modelos del Panel G2 han emitido su pronóstico a 5 sesiones (t+5). Puedes auditar el consenso o consultar la ficha.`
-      };
-    }
-    return {
-      expression: "idle",
-      prompt: "¿Por dónde empezar?",
-      message: "Elige una emisora en el panel derecho para ver sus señales IA y su serie histórica en Plotly."
+  if (route.startsWith("/sistema")) {
+    const em = selectedTicker || "WALMEX";
+    const porSeccion = {
+      resumen: ["¿Por dónde empezar?", `Este es tu resumen. Pulsa «Explicar» en la gráfica de ${em} y te cuento qué muestra.`, "happy"],
+      mercado: ["El monitor de mercado", "Cada fila es una emisora con su PPP oficial. Haz clic en una para analizarla.", "idle"],
+      senales: [`¿Analizando ${em}?`, "Cada barra es la probabilidad de un modelo. Pídeme que te explique por qué da ese número.", "thinking"],
+      seguimiento: ["La prueba de fuego", "Aquí ves si la señal va acertando. Solo cuenta el resultado en t+5.", "surprised"],
+      calidad: ["¿Qué tan confiables son?", "La calibración compara lo que el modelo dice con lo que pasó.", "thinking"],
+      gobernanza: ["¿De dónde salen los datos?", "Te explico el camino del boletín de la BMV hasta esta pantalla.", "happy"],
     };
+    const [prompt, message, expression] = porSeccion[phase] || porSeccion.resumen;
+    return { expression, prompt, message };
   }
 
   return {

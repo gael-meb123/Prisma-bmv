@@ -6,6 +6,8 @@ ssh/
 *.pem
 *.key
 *.pub
+.streamlit/secrets.toml
+.estado/
 .env
 .env.*
 !.env.example
@@ -40,8 +42,7 @@ downloads/
 eggs/
 .eggs/
 /lib/
-!frontend/src/lib/
-lib64/
+/lib64/
 parts/
 sdist/
 var/
@@ -49,12 +50,16 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+.pytest_cache/
 
 # ==========================================
 # Cache Local de Boletines y Scraping
 # ==========================================
 cache_boletines/
 cache_externo/
+
+# Copias locales de Bronze
+datos/bronze/
 
 # ==========================================
 # IDEs y Sistema Operativo

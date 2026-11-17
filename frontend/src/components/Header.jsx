@@ -1,43 +1,55 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  Menu,
-  X,
   ArrowRight,
-  BookOpen,
   ChevronDown,
   CircleHelp,
-  CreditCard,
-  Database,
-  LogIn,
-  Layers,
-  ShieldCheck,
-  TrendingUp,
+  LayoutDashboard,
+  Lock,
   LogOut,
-  Users
+  Menu,
+  ShieldCheck,
+  UserPlus,
+  Users,
+  X,
 } from "lucide-react";
-import { Logo, Button } from "./UI";
+import { Logo } from "./UI";
+import { PageHeroArt } from "./Illustrations";
 import { useAccount } from "../hooks/useAccount";
-import { planById } from "../plans.mjs";
+import { useMarketStatus } from "../hooks/useMarketStatus";
+import { PLANS } from "../plans.mjs";
 
-export function Header({ context = "landing" }) {
-  const [open, setOpen] = useState(false);
-  const [moreOpen, setMoreOpen] = useState(false);
-  const [planError, setPlanError] = useState("");
-  const moreRef = useRef(null);
+const LINKS = [
+  ["Inicio", "#/"],
+  ["Cómo funciona", "#/#como-funciona"],
+  ["Metodología", "#/metodologia"],
+  ["Fuentes BMV", "#/fuentes"],
+  ["Planes", "#/planes"],
+];
+
+export function iniciales(nombre = "", email = "") {
+  const base = (nombre || email.split("@")[0] || "?").trim();
+  const partes = base.split(/[\s._-]+/).filter(Boolean);
+  return ((partes[0]?.[0] || "") + (partes[1]?.[0] || "")).toUpperCase() || "?";
+}
+
+export function Header() {
   const account = useAccount();
-  const currentPlan = planById(account.role);
-  const isWorkspace = context === "workspace";
-  const isAuth = context === "auth";
+  const status = useMarketStatus();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [userOpen, setUserOpen] = useState(false);
+  const [planError, setPlanError] = useState("");
+  const userRef = useRef(null);
   const hasSession = Boolean(account.session);
   const isAdmin = account.userRole === "admin";
+  const route = typeof location !== "undefined" ? location.hash.replace(/^#/, "") || "/" : "/";
 
-  const publicLinks = [
-    ["Inicio", "#/"],
-    ["Cómo funciona", "#/#capacidades"],
-    ["Metodología G2", "#/metodologia"],
-    ["Fuentes BMV", "#/fuentes"],
-    ["Planes", "#/planes"]
-  ];
+  useEffect(() => {
+    function onDoc(e) {
+      if (userRef.current && !userRef.current.contains(e.target)) setUserOpen(false);
+    }
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, []);
 
   async function handlePlanChange(e) {
     setPlanError("");
@@ -54,88 +66,164 @@ export function Header({ context = "landing" }) {
   }
 
   return (
-    <header className={`site-header system-header ${isAuth ? "auth-header" : ""}`}>
-      <div className="header-inner">
-        {/* Logotipo Oficial */}
-        <Logo light={false} />
-
-        {/* Si estamos en el workspace/terminal, mostramos indicador de sesión y estado */}
-        {isWorkspace && (
-          <div className="header-location" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <span className="status-dot" style={{ background: "#10b981", boxShadow: "0 0 10px #10b981" }} />
-            <span>BMV SESIÓN ACTIVA · PPP 2026-10-30</span>
+    <>
+      {/* Barra utilitaria (estilo portal bancario) */}
+      <div className="bk-util">
+        <div className="bk-container bk-util-inner">
+          <div className="bk-util-left">
+            <span className="bk-util-status">
+              <span className="bk-dot bk-dot-live" aria-hidden="true" />
+              {status
+                ? `Mercado BMV · sesión ${status.fecha} · ${status.verificadas}/${status.total} PPP verificados`
+                : "Mercado BMV · boletín oficial"}
+            </span>
           </div>
-        )}
+          <div className="bk-util-right">
+            <a href="#/fuentes"><ShieldCheck size={13} style={{ verticalAlign: "-2px", marginRight: 4 }} />Seguridad</a>
+            <a href="#/estados"><CircleHelp size={13} style={{ verticalAlign: "-2px", marginRight: 4 }} />Ayuda</a>
+            <a href="#/planes">Planes</a>
+          </div>
+        </div>
+      </div>
 
-        {/* Navegación y Acciones */}
-        <nav className="navigation" style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          {!isWorkspace && (
-            <div className="public-primary-links" style={{ display: "flex", gap: "18px" }}>
-              {publicLinks.map(([label, href]) => (
-                <a key={label} href={href} style={{ color: "#d5ecf8", fontSize: "13px", fontWeight: "600" }}>
-                  {label}
+      <header className="bk-header">
+        <div className="bk-container bk-header-inner">
+          <Logo light />
+
+          <nav className={`bk-nav ${menuOpen ? "is-open" : ""}`} aria-label="Navegación principal">
+            {LINKS.map(([label, href]) => (
+              <a
+                key={label}
+                href={href}
+                className={href === `#${route}` ? "is-active" : ""}
+                onClick={() => setMenuOpen(false)}
+              >
+                {label}
+              </a>
+            ))}
+          </nav>
+
+          <div className="bk-header-actions">
+            {hasSession ? (
+              <>
+                <a href="#/sistema" className="bk-btn bk-btn-primary bk-btn-sm bk-hide-sm" data-tour="cta-sistema-header">
+                  <LayoutDashboard size={15} /> Mi terminal
                 </a>
-              ))}
-            </div>
-          )}
-
-          {/* Selector de Plan (demo): solo con sesión iniciada */}
-          <div
-            title={hasSession ? "Cambio de plan simulado (modo demo)" : "Inicia sesión para cambiar de plan"}
-            style={{ display: "inline-flex", alignItems: "center", background: "rgba(255, 255, 255, 0.1)", borderRadius: "8px", padding: "2px 8px", fontSize: "11px", color: "#e8f4fc", opacity: hasSession ? 1 : 0.5 }}
-          >
-            <span style={{ marginRight: 6, color: "#8ee3ed", fontWeight: 700 }}>PLAN:</span>
-            <select
-              value={account.role}
-              onChange={handlePlanChange}
-              disabled={!hasSession}
-              style={{ background: "transparent", border: 0, color: "#ffffff", fontWeight: "700", cursor: hasSession ? "pointer" : "not-allowed", fontSize: "11px" }}
-            >
-              <option value="explorer" style={{ background: "#062c50", color: "#fff" }}>Explorer ($0)</option>
-              <option value="professional" style={{ background: "#062c50", color: "#fff" }}>Professional ($49)</option>
-              <option value="enterprise" style={{ background: "#062c50", color: "#fff" }}>Enterprise ($199)</option>
-            </select>
-          </div>
-          {planError && (
-            <span role="alert" style={{ fontSize: "11px", color: "#fca5a5" }}>{planError}</span>
-          )}
-
-          {/* Enlace a administración: solo admins */}
-          {hasSession && isAdmin && (
-            <a href="#/admin" style={{ color: "#8ee3ed", fontSize: "12px", fontWeight: "700", display: "inline-flex", alignItems: "center", gap: "4px" }}>
-              <Users size={14} /> Admin
-            </a>
-          )}
-
-          {/* Sesión: entrar o salir */}
-          {hasSession ? (
+                <div className="bk-user" ref={userRef}>
+                  <button type="button" className="bk-user-btn" onClick={() => setUserOpen((v) => !v)} aria-expanded={userOpen}>
+                    <span className="bk-avatar">{iniciales(account.user?.name, account.user?.email)}</span>
+                    <span className="bk-hide-sm">{account.user?.name?.split(" ")[0] || "Mi cuenta"}</span>
+                    <ChevronDown size={14} />
+                  </button>
+                  {userOpen && (
+                    <div className="bk-user-menu" role="menu">
+                      <div className="bk-user-menu-head">
+                        <strong>{account.user?.name || "Mi cuenta"}</strong>
+                        <span>{account.user?.email}</span>
+                      </div>
+                      <label className="bk-plan-select">
+                        Plan (demo)
+                        <select value={account.role} onChange={handlePlanChange}>
+                          {PLANS.map((p) => (
+                            <option key={p.id} value={p.id}>
+                              {p.name} ({p.price.amount})
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                      {planError && <p role="alert" style={{ color: "#b91c1c", fontSize: 12, margin: "0 10px 6px" }}>{planError}</p>}
+                      <a href="#/sistema"><LayoutDashboard size={15} /> Ir a mi terminal</a>
+                      {isAdmin && <a href="#/admin"><Users size={15} /> Administración</a>}
+                      <button type="button" className="bk-user-item" onClick={handleLogout}>
+                        <LogOut size={15} /> Cerrar sesión
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <>
+                <a href="#/registro" className="bk-btn bk-btn-outline bk-btn-sm bk-hide-sm">
+                  <UserPlus size={15} /> Abrir cuenta
+                </a>
+                <a href="#/acceso" data-tour="login" className="bk-btn bk-btn-navy bk-btn-sm">
+                  <Lock size={14} /> Ingresar
+                </a>
+              </>
+            )}
             <button
               type="button"
-              onClick={handleLogout}
-              className="button button-outline"
-              style={{ padding: "6px 14px", fontSize: "12px", display: "inline-flex", alignItems: "center", gap: "6px" }}
+              className="bk-menu-btn"
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
+              aria-expanded={menuOpen}
             >
-              <LogOut size={14} /> Salir
+              {menuOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
-          ) : (
-            <a href="#/acceso" data-tour="login" className="button button-outline" style={{ padding: "6px 14px", fontSize: "12px", display: "inline-flex", alignItems: "center", gap: "6px" }}>
-              <LogIn size={14} /> Iniciar sesión
-            </a>
-          )}
+          </div>
+        </div>
+      </header>
+    </>
+  );
+}
 
-          {/* Botón de acceso / alternar terminal */}
-          {isWorkspace ? (
-            <a href="#/" className="button button-outline header-signin" style={{ padding: "6px 14px", fontSize: "12px" }}>
-              Portal Comercial
-            </a>
-          ) : (
-            <a href="#/sistema" className="button button-primary header-cta" style={{ padding: "6px 16px", fontSize: "12px", background: "#079baa", borderColor: "#1fd2ea" }}>
-              <span>Abrir Terminal</span>
-              <ArrowRight size={14} />
-            </a>
-          )}
-        </nav>
+export function Footer() {
+  return (
+    <footer className="bk-footer">
+      <div className="bk-container bk-footer-grid">
+        <div>
+          <Logo />
+          <p style={{ marginTop: 14, maxWidth: 320 }}>
+            Inteligencia cuantitativa sobre el Precio Promedio Ponderado oficial de la Bolsa Mexicana de Valores. Datos
+            auditables, sin imputaciones.
+          </p>
+        </div>
+        <div>
+          <h4>Plataforma</h4>
+          <a href="#/sistema">Terminal</a>
+          <a href="#/planes">Planes</a>
+          <a href="#/registro">Abrir cuenta</a>
+        </div>
+        <div>
+          <h4>Transparencia</h4>
+          <a href="#/metodologia">Metodología</a>
+          <a href="#/fuentes">Fuentes y gobernanza</a>
+          <a href="#/estados">Estados de los datos</a>
+        </div>
+        <div>
+          <h4>Ayuda</h4>
+          <a href="#/acceso">Ingresar</a>
+          <a href="#/#faq">Preguntas frecuentes</a>
+          <a href="#/fuentes">Seguridad</a>
+        </div>
       </div>
-    </header>
+      <div className="bk-container bk-footer-legal">
+        <span>© 2026 Prisma BMV · Plataforma de análisis cuantitativo.</span>
+        <span>Probabilidades estadísticas; no constituyen recomendación ni asesoría de inversión.</span>
+      </div>
+    </footer>
+  );
+}
+
+/* Encabezado de páginas internas con arte vectorial */
+export function PageHero({ eyebrow, title, lead, children }) {
+  return (
+    <section className="bk-page-hero">
+      <PageHeroArt />
+      <div className="bk-container" style={{ position: "relative" }}>
+        {eyebrow && <span className="bk-eyebrow">{eyebrow}</span>}
+        <h1>{title}</h1>
+        {lead && <p>{lead}</p>}
+        {children}
+      </div>
+    </section>
+  );
+}
+
+export function CtaLink({ href, children }) {
+  return (
+    <a href={href} className="bk-btn bk-btn-primary">
+      {children} <ArrowRight size={16} />
+    </a>
   );
 }
