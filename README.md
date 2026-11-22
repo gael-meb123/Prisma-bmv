@@ -1,5 +1,11 @@
 # Prisma BMV - Quantitative Terminal
 
+> **AWS:** el despliegue heredado `infra/deploy_aws.sh` y las cargas/DDL
+> alternativos están bloqueados para no sobrescribir la Lambda y los datos
+> activos. Consulte `docs/ARQUITECTURA_AWS.md` antes de operar.
+> Para el laboratorio educativo sin App Runner ni CloudFront, consulte
+> `docs/ARQUITECTURA_CUENTA_EDUCATIVA.md`.
+
 Terminal de inteligencia cuantitativa sobre el mercado accionario mexicano. Estima la probabilidad de que el Precio Promedio Ponderado (PPP) oficial de la BMV sea mayor dentro de cinco sesiones hábiles: $Y_t = \mathbb{1}(\mathrm{PPP}_{t+5} > \mathrm{PPP}_t)$.
 
 ## Inicio rápido (sin AWS)
@@ -27,6 +33,20 @@ python scripts/generar_llave_maestra.py   # pegue el resultado en PRISMA_MASTER_
 ```
 
 Para que Prismi responda con Claude, defina `ANTHROPIC_API_KEY`. Sin ella, Prismi responde con el motor local, que usa las mismas cifras del lakehouse.
+
+## Cinta de indicadores económicos
+
+La terminal web muestra el último dato disponible del FIX, la tasa objetivo, la
+variación mensual del INPC y los CETES a 28 días, consultados al SIE de Banco de
+México. Configure `BANXICO_TOKEN` en el `.env` del backend; nunca en el frontend.
+El endpoint público `GET /api/macro/indicadores` mantiene una caché en memoria de
+15 minutos por proceso. Si la consulta falla, conserva el último resultado de ese
+proceso con una advertencia; sin un valor previo indica que no está disponible.
+El valor puede tener una periodicidad diaria, mensual o semanal y no es una
+cotización en tiempo real. Los indicadores son informativos y no se incorporan
+a las señales G2.
+
+Para distribuir actualizaciones mediante AWS, consulte `docs/MACRO_AWS.md`.
 
 ## Pruebas
 
@@ -84,12 +104,9 @@ tests/
 
 ## Despliegue en AWS
 
-Vea `docs/ARQUITECTURA_AWS.md`. En resumen:
-
-```bash
-BUCKET=prisma-bmv-datalake-<sufijo> LAYER_ARN=<ARN de AWSSDKPandas-Python311> ./infra/deploy_aws.sh
-PRISMA_DATA_SOURCE=athena PRISMA_S3_BUCKET=<bucket> streamlit run app.py
-```
+El despliegue automatizado heredado está bloqueado: usa una Lambda y contratos
+distintos de los activos. Vea `docs/ARQUITECTURA_AWS.md` para el inventario,
+la comprobación de solo lectura y los requisitos de una migración segura.
 
 ## Aviso
 

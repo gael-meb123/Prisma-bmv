@@ -1,0 +1,244 @@
+{
+  "fecha": "2026-11-19",
+  "inicio_ventana": "2026-10-20",
+  "fin_ventana": "2026-11-19",
+  "evaluacion": {
+    "AMX": {
+      "ventana_apta": false,
+      "errores": [
+        {
+          "fecha": "2026-10-20",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-10-21",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-10-22",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-10-23",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-10-26",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-10-27",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-11-04",
+          "motivo": "FUENTE_NO_OFICIAL"
+        },
+        {
+          "fecha": "2026-11-05",
+          "motivo": "FUENTE_NO_OFICIAL"
+        },
+        {
+          "fecha": "2026-11-18",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-11-19",
+          "motivo": "FUENTE_NO_OFICIAL"
+        }
+      ],
+      "apta_modelo_relativo": false
+    },
+    "FEMSA": {
+      "ventana_apta": false,
+      "errores": [
+        {
+          "fecha": "2026-10-20",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-10-21",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-10-22",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-10-23",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-10-26",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-10-27",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-11-04",
+          "motivo": "FUENTE_NO_OFICIAL"
+        },
+        {
+          "fecha": "2026-11-05",
+          "motivo": "FUENTE_NO_OFICIAL"
+        },
+        {
+          "fecha": "2026-11-18",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-11-19",
+          "motivo": "FUENTE_NO_OFICIAL"
+        }
+      ],
+      "apta_modelo_relativo": false
+    },
+    "GFNORTE": {
+      "ventana_apta": false,
+      "errores": [
+        {
+          "fecha": "2026-10-20",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-10-21",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-10-22",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-10-23",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-10-26",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-10-27",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-11-04",
+          "motivo": "FUENTE_NO_OFICIAL"
+        },
+        {
+          "fecha": "2026-11-05",
+          "motivo": "FUENTE_NO_OFICIAL"
+        },
+        {
+          "fecha": "2026-11-18",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-11-19",
+          "motivo": "FUENTE_NO_OFICIAL"
+        }
+      ],
+      "apta_modelo_relativo": false
+    },
+    "GMEXICO": {
+      "ventana_apta": false,
+      "errores": [
+        {
+          "fecha": "2026-10-20",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-10-21",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-10-22",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-10-23",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-10-26",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-10-27",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-11-04",
+          "motivo": "FUENTE_NO_OFICIAL"
+        },
+        {
+          "fecha": "2026-11-05",
+          "motivo": "FUENTE_NO_OFICIAL"
+        },
+        {
+          "fecha": "2026-11-18",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-11-19",
+          "motivo": "FUENTE_NO_OFICIAL"
+        }
+      ],
+      "apta_modelo_relativo": false
+    },
+    "WALMEX": {
+      "ventana_apta": false,
+      "errores": [
+        {
+          "fecha": "2026-10-20",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-10-21",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-10-22",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-10-23",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-10-26",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-10-27",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-11-04",
+          "motivo": "FUENTE_NO_OFICIAL"
+        },
+        {
+          "fecha": "2026-11-05",
+          "motivo": "FUENTE_NO_OFICIAL"
+        },
+        {
+          "fecha": "2026-11-18",
+          "motivo": "AUSENTE"
+        },
+        {
+          "fecha": "2026-11-19",
+          "motivo": "FUENTE_NO_OFICIAL"
+        }
+      ],
+      "apta_modelo_relativo": false
+    }
+  },
+  "resumen_evidencia": {
+    "SILVER_AUSENTE": 7,
+    "COINCIDE_PPP_Y_HASH": 55
+  },
+  "origen": "SILVER_DIARIO_Y_BRONZE_S3",
+  "emision": "NO_HABILITADA",
+  "limitacion": "Coincidir con Bronze conservado no valida autenticidad independiente, ajustes, modelos ni derechos."
+}

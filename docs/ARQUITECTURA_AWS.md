@@ -1,5 +1,179 @@
 # Prisma BMV: arquitectura en AWS y especificación de conexión
 
+> Para el entorno educativo sin App Runner ni CloudFront, la ruta local con
+> acceso S3 y sus limitaciones se describe en
+> `docs/ARQUITECTURA_CUENTA_EDUCATIVA.md`. No se ha desplegado una API nueva.
+
+> **Estado verificado el 18-11-2026.** La descripción histórica de las
+> secciones 1–7 de este archivo corresponde a la implementación alternativa
+> `infra/lambda/recolector_diario_bmv/`, no necesariamente a AWS actual.
+> `infra/deploy_aws.sh`, la carga inicial y la creación de DDL históricos están
+> bloqueados para evitar sobrescribir recursos y contratos. No los habilite ni
+> ejecute manualmente sus operaciones contra producción.
+
+## AWS activo y contrato Gold
+
+La Lambda activa observada `recolector-diario-bmv` corresponde al archivo
+`lambda_function_con_ia.py`: Python 3.11, 512 MB, timeout 120 s y capa
+AWSSDKPandas Python 3.11. El Scheduler `DisparadorDiarioBMV` apuntaba a esa
+función, con cron 16:45 Ciudad de México y sin reintentos configurados. Estos
+valores son una instantánea, no una garantía sobre despliegues posteriores.
+
+Gold activo es `gold/senales_g2/registro_senales_prospectivas_panel_g2.csv`.
+La tabla comprobada es `default.bmv_gold_senales_g2`; utiliza OpenCSVSerde,
+42 columnas y orden idéntico al CSV. La plantilla de creación para una tabla
+**nueva** es `infra/athena/11_gold_g2_lambda_activa_referencia.sql`. `CREATE
+IF NOT EXISTS` no actualiza una tabla ya existente y no valida los archivos.
+Si se modifica el contrato de Glue debe preservarse su definición anterior,
+verificarse previamente cada encabezado y probar el resultado con Athena.
+
+Para verificar la situación actual sin escribir en AWS ni ejecutar Athena:
+
+```powershell
+python scripts/verificar_contrato_aws.py --bucket <bucket> --region us-east-1
+```
+
+La comprobación lee todos los CSV no vacíos del prefijo, su encabezado y el
+catálogo Glue. Exige el orden y los tipos del DDL activo, serde, parámetros
+principales y ubicación esperada. No verifica filas completas ni garantiza el
+esquema que producirá la siguiente ejecución; AWS CLI y permisos de lectura son
+necesarios. Lectura de S3 puede generar tráfico y costos.
+
+**No mezclar implementaciones:** `infra/athena/0*.sql`, `prisma/domain/bmv_core.py`
+y el recolector de `infra/lambda/` definen otro contrato y otra ruta de
+procesamiento. `scripts/crear_tablas_athena.py --solo-imprimir` permite
+inspeccionar esos DDL antiguos, pero su ejecución está bloqueada.
+`scripts/bootstrap_lakehouse.py` también está bloqueado: sobrescribiría objetos
+existentes. Una migración futura requiere fuente de datos autorizada, prefijos
+aislados, pruebas de paridad, validación de encabezados y aprobación expresa;
+no hay un despliegue productivo automatizado habilitado actualmente.
+
+La API FastAPI local usa archivos locales; no se ha verificado el origen de una
+API desplegada. La revisión de solo lectura del 19-11-2026 en `us-east-1`
+no encontró APIs Gateway, clústeres ECS ni aplicaciones Amplify; App Runner y
+CloudFront denegaron el acceso. No se descarta otra región o proveedor. Véase
+`docs/AVANCE_PENDIENTES_CAPTURA_IPC.md`. El repositorio Streamlit consulta Glue y aplica el filtro
+`anio` solo cuando la tabla Silver declara esa partición. Una prueba contra
+`default` devolvió 195 filas de Silver; no equivale a una validación integral de
+Streamlit ni de las demás tablas. Requiere `glue:GetTable` y permisos de Athena
+y S3, además de configurar `PRISMA_ATHENA_DATABASE=default` para esa base.
+Sin particiones se escanean potencialmente más datos y aumenta el costo.
+La plantilla IAM `infra/iam/politica_terminal_streamlit.json` usa
+`${DATABASE}` para autorizar únicamente la base elegida; debe sustituirse junto
+con las demás variables antes de una eventual aplicación. No se cambió IAM
+desplegado.
+Las secciones siguientes son documentación histórica de la otra implementación,
+no instrucciones de operación del despliegue activo.
+
+## Laboratorio aislado de migración y reversión
+
+Se creó el stack `prisma-bmv-aislado-prueba-2026` en `us-east-1`, con bucket
+propio versionado, base Glue `prisma_bmv_aislado_prueba_2026`, tabla
+`gold_g2_sintetico` y Lambda de salud independiente. No tiene Scheduler, no
+contiene el recolector real y no consume fuentes de mercado. Usa `LabRole`
+existente, no un rol de mínimo privilegio; antes de usarlo fuera de un laboratorio
+se debe revisar IAM. El bucket tiene `DeletionPolicy: Retain`: borrar el stack
+**no elimina** el bucket ni sus versiones. El stack y sus recursos permanecen y
+pueden generar costos.
+
+La plantilla se genera con:
+
+```powershell
+python scripts/entorno_aislado.py plantilla --salida <ruta-temporal.json>
+aws cloudformation validate-template --region us-east-1 --template-body file://<ruta-temporal.json>
+```
+
+Para un stack nuevo, revisar el cambio y desplegar con un nombre
+`prisma-bmv-aislado-<sufijo>` y un `RoleArn` Lambda permitido. No usar nombres,
+buckets ni tablas de producción. La plantilla crea un entorno nuevo, **no
+promueve cambios** a producción:
+
+```powershell
+aws cloudformation deploy --region us-east-1 --stack-name prisma-bmv-aislado-<sufijo> --template-file <ruta-temporal.json> --parameter-overrides RoleArn=<rol-lambda>
+```
+
+Con `boto3` instalado y únicamente archivos sintéticos, la migración agrega una
+versión inmutable bajo `releases/<version>/` y cambia la ubicación Glue con
+control optimista de versión. El CSV debe tener las 42 columnas del DDL, filas
+completas e IDs únicos `SINTETICO_...`; esa convención no garantiza por sí misma
+que el contenido sea ficticio: el operador debe asegurarlo. Anote la
+`version_glue_anterior` devuelta. El comando de reversión recupera esa versión
+archivada y actualiza la ubicación y el esquema sin borrar archivos.
+
+```powershell
+python scripts/entorno_aislado.py migrar --stack prisma-bmv-aislado-<sufijo> --version v1 --csv <archivo-sintetico.csv>
+python scripts/entorno_aislado.py revertir --stack prisma-bmv-aislado-<sufijo> --version-glue <version-glue-anterior>
+```
+
+Si el objeto se escribe pero falla el cambio Glue, queda una versión huérfana:
+no se elimina automáticamente y no se debe reutilizar su nombre. No ejecutar
+actualizaciones CloudFormation concurrentes con migraciones; cambiar la tabla
+directamente introduce *drift* y un despliegue posterior podría restaurar su
+configuración original. No existe promoción automática a producción, ni
+reversión de Lambda, ingesta o aplicación en producción.
+
+Prueba AWS realizada: `v1` y `v2` con una fila ficticia cada una; Athena leyó
+`SINTETICO_2` con probabilidad 0.75 para `v2` y, después de revertir a la versión
+Glue `1`, leyó `SINTETICO_1` con 0.25 en `v1`. La Lambda de salud respondió
+`AISLADO` y `fuentes_mercado: false`. Ambas versiones y resultados de Athena
+permanecen en el bucket aislado. La prueba no valida el recolector real ni
+autoriza copiar datos de mercado.
+
+## Laboratorio AWS de captura provisional
+
+El stack separado `prisma-bmv-captura-aislada-2026` tiene su propio bucket
+versionado, base `prisma_bmv_captura_aislada_2026`, Lambda de captura y tabla
+`silver_captura_provisional_v1`. No hay Scheduler ni inferencia. Este es un
+laboratorio **distinto** del stack que solo contiene datos sintéticos.
+Ambos stacks permanecen en AWS y pueden generar costos; sus buckets tienen
+política de retención y no se borran automáticamente con el stack.
+
+- Plantilla: `infra/captura_ampliada_aislada/template.yaml`.
+- Handler: `infra/lambda/captura_ampliada_aislada/handler.py`.
+- Empaquetado sin sobrescritura: `scripts/empaquetar_captura_aislada.py`.
+- Se usó `LabRole`, que no garantiza mínimo privilegio; no usar el laboratorio
+  como despliegue de producción. La Lambda tiene concurrencia reservada de 1.
+- El paquete fuente está almacenado bajo `artifacts/captura-ampliada/` en el
+  bucket del laboratorio previo, identificado por SHA-256. El bucket nuevo
+  recibe Bronze, Silver y manifiestos bajo `experimental/v1/`.
+- Se activa manualmente mediante `{"fecha":"2026-11-17"}`. Solo se admite
+  el corte del catálogo empaquetado; la fecha se valida antes de descargar.
+  Ni los aliases provisionales ni los resultados habilitan señales.
+- Silver usa 15 columnas específicas y OpenCSVSerde; no comparte el prefijo
+  ni la tabla Silver productiva. Athena registra todos los CSV de ese prefijo:
+  no debe hacerse una unión con producción ni considerarse serie canónica.
+
+### Resultado de las pruebas
+
+La captura inicial en AWS del 17-11-2026 produjo 35 filas: 16 PPP observados y
+19 no encontrados en las tablas parciales. La consulta Athena
+`de36db0b-dc0d-47d6-bf5b-c1b480b84f9c` verificó 35 pares únicos, 16 precios,
+una firma y ningún estado de composición distinto de provisional. Las 35 filas
+coincidieron con la captura local al comparar todas las columnas excepto el
+hash del boletín.
+
+Las firmas del HTML local y del HTML descargado por Lambda diferían. La
+comparación de esas dos copias encontró una diferencia en un script dinámico
+`f5_cspm` posterior al HTML; esto explica la diferencia observada, pero no
+autoriza ignorar otras diferencias futuras. Se conservaron sus hashes de bytes
+originales, sin normalización.
+
+Tras identificar el riesgo se actualizó **solo la Lambda aislada**: ahora
+rechaza un hash distinto para una fecha ya capturada en lugar de añadir otro
+CSV. La reejecución real fue bloqueada con
+`HASH_DIVERGENTE_REQUIERE_REVISION` y sigue habiendo un solo Silver. Esa
+descarga divergente no se guarda; se requiere revisión manual antes de
+reprocesar. El bloqueo de hash idéntico y los conflictos se probaron con
+dobles locales. La serialización con concurrencia 1 protege esta Lambda, no
+impide escrituras manuales o de otros roles en el bucket.
+
+Una invocación para 18-11-2026 se rechazó antes de descargar porque no hay un
+catálogo fechado para esa sesión. Actualmente solo existe la instantánea del
+17-11-2026; probar otras fechas requiere nuevas versiones de catálogo con
+evidencia de cada corte, sin extender la vigencia por suposición. Las pruebas
+no validan composición oficial, modelos, ejecución de producción ni un
+despliegue/reversión productivo.
+
 ## Flujo de extremo a extremo
 
 ```mermaid

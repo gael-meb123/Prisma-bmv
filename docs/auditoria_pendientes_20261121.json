@@ -1,0 +1,193 @@
+{
+  "sha256_historico": "92201443e18dfe92f27038b232d038c6314d5e9029b523c55c089e900f665067",
+  "sha256_panel": "b72463e85623242e61dc1bbad5a5c945c02b7ac5d4c014d5a2594f437a37ba4b",
+  "vinculos": {
+    "contadores": {
+      "filas_panel": 9879,
+      "vinculo_exacto": 9879,
+      "estado_base_verificado": 9879,
+      "ppp_base_igual": 9879,
+      "ventana_21_estados_verificados": 9866,
+      "ventana_21_con_faltante_o_no_verificado": 13
+    },
+    "desde_panel": "2016-11-28",
+    "hasta_panel": "2026-10-28",
+    "ventanas_incompletas": [
+      {
+        "fecha": "2023-03-28",
+        "emisora": "AMX",
+        "serie": "B",
+        "estados": {
+          "SIN_CLAVE_EXACTA": 13
+        }
+      },
+      {
+        "fecha": "2023-03-29",
+        "emisora": "AMX",
+        "serie": "B",
+        "estados": {
+          "SIN_CLAVE_EXACTA": 12
+        }
+      },
+      {
+        "fecha": "2023-03-30",
+        "emisora": "AMX",
+        "serie": "B",
+        "estados": {
+          "SIN_CLAVE_EXACTA": 11
+        }
+      },
+      {
+        "fecha": "2023-03-31",
+        "emisora": "AMX",
+        "serie": "B",
+        "estados": {
+          "SIN_CLAVE_EXACTA": 10
+        }
+      },
+      {
+        "fecha": "2023-04-03",
+        "emisora": "AMX",
+        "serie": "B",
+        "estados": {
+          "SIN_CLAVE_EXACTA": 9
+        }
+      },
+      {
+        "fecha": "2023-04-04",
+        "emisora": "AMX",
+        "serie": "B",
+        "estados": {
+          "SIN_CLAVE_EXACTA": 8
+        }
+      },
+      {
+        "fecha": "2023-04-05",
+        "emisora": "AMX",
+        "serie": "B",
+        "estados": {
+          "SIN_CLAVE_EXACTA": 7
+        }
+      },
+      {
+        "fecha": "2023-04-10",
+        "emisora": "AMX",
+        "serie": "B",
+        "estados": {
+          "SIN_CLAVE_EXACTA": 6
+        }
+      },
+      {
+        "fecha": "2023-04-11",
+        "emisora": "AMX",
+        "serie": "B",
+        "estados": {
+          "SIN_CLAVE_EXACTA": 5
+        }
+      },
+      {
+        "fecha": "2023-04-12",
+        "emisora": "AMX",
+        "serie": "B",
+        "estados": {
+          "SIN_CLAVE_EXACTA": 4
+        }
+      },
+      {
+        "fecha": "2023-04-13",
+        "emisora": "AMX",
+        "serie": "B",
+        "estados": {
+          "SIN_CLAVE_EXACTA": 3
+        }
+      },
+      {
+        "fecha": "2023-04-14",
+        "emisora": "AMX",
+        "serie": "B",
+        "estados": {
+          "SIN_CLAVE_EXACTA": 2
+        }
+      },
+      {
+        "fecha": "2023-04-17",
+        "emisora": "AMX",
+        "serie": "B",
+        "estados": {
+          "SIN_CLAVE_EXACTA": 1
+        }
+      }
+    ],
+    "limitacion": "Estados declarados no verifican evidencia, ajustes, fórmulas, ni autorización de redistribución."
+  },
+  "aritmetica": {
+    "filas_panel": 9879,
+    "tolerancia_absoluta": 1e-08,
+    "resultados": {
+      "ret_1_adj": {
+        "comparables": 9709,
+        "difieren": 0,
+        "diferencia_maxima": 5.377642775528102e-16
+      },
+      "ret_5_adj": {
+        "comparables": 9090,
+        "difieren": 0,
+        "diferencia_maxima": 5.204170427930421e-16
+      },
+      "ret_10_adj": {
+        "comparables": 8388,
+        "difieren": 0,
+        "diferencia_maxima": 5.412337245047638e-16
+      },
+      "ret_20_adj": {
+        "comparables": 7175,
+        "difieren": 0,
+        "diferencia_maxima": 5.342948306008566e-16
+      },
+      "distancia_media_5_adj": {
+        "comparables": 9239,
+        "difieren": 0,
+        "diferencia_maxima": 5.429684479807406e-16
+      },
+      "distancia_media_20_adj": {
+        "comparables": 7281,
+        "difieren": 0,
+        "diferencia_maxima": 7.441963711940502e-16
+      },
+      "volatilidad_5_adj": {
+        "comparables": 9090,
+        "difieren": 0,
+        "diferencia_maxima": 5.192027363598584e-15
+      },
+      "volatilidad_20_adj": {
+        "comparables": 7175,
+        "difieren": 0,
+        "diferencia_maxima": 5.39499001028787e-16
+      }
+    },
+    "limitacion": "Comprueba aritmética solo en subventanas consecutivas del propio panel; no valida evidencia BMV, ajustes, filas excluidas ni derechos de uso."
+  },
+  "huellas": {
+    "eventos_corporativos_15_emisoras.csv": "620f83a4705cb895977302b3e023cbb69adeff15b3fcc401c515b43652f1b8b5",
+    "registro_modelos_g2_oficial.json": "acad28f4baa82097580584af81c71721c7f52ca8ccbf9bccb2f899e11c50e19b",
+    "registro_modelos_g2_v2.json": "badcc9624d023acafee66359b44a41fe43db420d09a9902847b37b02e368c985",
+    "registro_modelos_g2_exportado.json": "439d0c563e6a6d26e395248c6813c69aedd673de49b07af884e9fafda8e2cd5c"
+  },
+  "catalogo": {
+    "version": "naftrac-2026-11-17-v1",
+    "fecha_corte": "2026-11-17",
+    "componentes": 35,
+    "estado": "PROVISIONAL_NO_OFICIAL",
+    "alias_pendientes": [
+      "RA -> R / A",
+      "LIVEPOLC.1 -> LIVEPOL / C-1"
+    ]
+  },
+  "validaciones_externas": [
+    "Documentos oficiales de eventos corporativos, fechas ex y factores de ajuste.",
+    "Composición IPC con vigencia y evidencia de equivalencia de alias.",
+    "Evidencia BMV de cada sesión de entrenamiento/evaluación; auditoría temporal sin fuga.",
+    "Calendario oficial BMV 2027 y alcance de autorización BMV."
+  ],
+  "emision": "NO_HABILITADA"
+}
