@@ -21,6 +21,7 @@ import { TerminalChartPlotly } from "../ComparisonAudit/TerminalChartPlotly";
 import { ComparisonAudit } from "../ComparisonAudit/ComparisonAudit";
 import { WelcomeArt } from "../Illustrations";
 import { ChartCard, Estado, ExplainButton } from "./ChartCard";
+import { CostosInversion } from "./CostosInversion";
 import {
   CalibracionChart,
   ContribucionesChart,
@@ -43,8 +44,7 @@ import {
   textoConsenso,
 } from "../../guide/explicaciones.mjs";
 import { startTour } from "../../guide/tour.mjs";
-import { formatMoney, formatPct } from "../../utils/presentation.mjs";
-import { MOCK_METRICAS_MODELOS } from "../../mocks/mockData";
+import { describirModelos, estadoModeloHistorico, formatMoney, formatPct, modelosHistoricosSinSenal, nombreModelo } from "../../utils/presentation.mjs";
 
 const prob = (p) => (p == null ? "—" : `${(p * 100).toFixed(1)}%`);
 
@@ -107,17 +107,17 @@ export function Resumen({ ctx }) {
         <div style={{ position: "relative", zIndex: 1 }}>
           <h2>Hola{nombre ? `, ${nombre}` : ""}. Este es tu resumen del mercado.</h2>
           <p>
-            Plan {account.plan.name} · sesión {mercado?.fecha || "—"} · {k.total_verificadas ?? "—"} de {k.total_emisoras ?? 15} PPP
-            verificados en el boletín oficial.
+            Plan {account.plan.name} · sesión {mercado?.fecha || "—"} · {k.total_verificadas ?? "—"} de {k.total_emisoras ?? "—"} filas
+            con PPP marcado como verificado; cobertura parcial.
           </p>
         </div>
         <div className="tm-welcome-actions">
           <button type="button" className="bk-btn bk-btn-primary bk-btn-sm" onClick={() => irA("senales")}>
             Ver señales de {emisora} <ArrowRight size={15} />
           </button>
-          <button type="button" className="bk-btn bk-btn-light bk-btn-sm" onClick={() => startTour("terminal")}>
+          {import.meta.env.VITE_REQUIRE_REAL_API !== "true" && <button type="button" className="bk-btn bk-btn-light bk-btn-sm" onClick={() => startTour("terminal")}>
             <MapIcon size={15} /> Recorrido guiado
-          </button>
+          </button>}
         </div>
       </section>
 
@@ -125,20 +125,20 @@ export function Resumen({ ctx }) {
         <Kpi
           label={`PPP ${emisora}`}
           value={actual?.ppp_bmv_mxn != null ? formatMoney(actual.ppp_bmv_mxn) : "Sin dato"}
-          sub={actual?.variacion_pct != null ? `${formatPct(actual.variacion_pct)} vs. sesión anterior` : "No apareció en el boletín"}
+          sub={actual?.variacion_pct != null ? `${formatPct(actual.variacion_pct)} vs. sesión anterior` : "Variación no disponible"}
           icon={Wallet}
           tone={tonoDe(actual?.variacion_pct)}
         />
         <div className="bk-card tm-kpi">
           <span className="tm-kpi-icon"><BrainCircuit size={18} /></span>
           <small>Consenso de modelos</small>
-          <div style={{ marginTop: 4 }}>{permitido ? consensoChip(senal?.consensos?.G2) : <span className="bk-chip bk-chip-navy">Fuera de tu plan</span>}</div>
+          <div style={{ marginTop: 4 }}>{permitido ? (senal ? consensoChip(senal.consensos?.G2) : <span className="bk-chip bk-chip-navy">No disponible</span>) : <span className="bk-chip bk-chip-navy">Fuera de tu plan</span>}</div>
           <span>{senal?.fecha ? `Señal del ${senal.fecha} · horizonte t+5` : "—"}</span>
         </div>
         <Kpi
           label="Alzas · bajas"
           value={`${k.conteo_alzas ?? "—"} · ${k.conteo_bajas ?? "—"}`}
-          sub={`${k.total_ausentes ?? 0} sin dato (no se rellenan)`}
+          sub={`${k.total_ausentes ?? "—"} sin PPP verificado (no se rellenan)`}
           icon={Gauge}
         />
         <Kpi
@@ -215,12 +215,15 @@ export function Resumen({ ctx }) {
           explicar={datos.sectores.data ? () => explicarSectores(datos.sectores.data) : null}
           tour="sectores"
         >
-          {datos.sectores.data ? <SectoresChart sectores={datos.sectores.data.sectores} /> : <Estado loading={datos.sectores.loading} />}
+          {datos.sectores.data?.sectores?.some((s) => s.variacion_media_pct != null)
+            ? <SectoresChart sectores={datos.sectores.data.sectores} />
+            : <Estado loading={datos.sectores.loading} titulo="Variaciones por sector no disponibles"
+                texto={datos.sectores.error?.message || "La fuente disponible no contiene variaciones verificadas para este corte."} />}
         </ChartCard>
         <ChartCard
           title={`Probabilidad por modelo · ${emisora}`}
           subtitle="Que el PPP suba en 5 sesiones; la línea marca 50 %"
-          explicar={senal ? () => explicarProbabilidades({ emisora, ...senal }) : null}
+          explicar={senal ? () => explicarProbabilidades({ emisora, ...senal, modelos: senal.modelos.map((m) => ({ ...m, nombre: nombreModelo(m.modelo, m.nombre) })) }) : null}
           actions={
             <button type="button" className="bk-btn bk-btn-ghost bk-btn-sm" onClick={() => irA("senales")}>
               Detalle <ArrowRight size={14} />
@@ -244,39 +247,124 @@ export function Resumen({ ctx }) {
    MERCADO
    ============================================================================ */
 export function Mercado({ ctx }) {
-  const { emisora, datos, onSelectTicker, onShowEvidence, puedeVer } = ctx;
+  const { emisora, datos, irA, onSelectTicker, onShowEvidence, puedeVer, universoMercado = "base_15", setUniversoMercado } = ctx;
   const mercado = datos.mercado.data;
   const cot = mercado?.cotizaciones || [];
+  const catalogoIpc = mercado?.catalogo_ipc || null;
+  const esIpc35 = universoMercado === "ipc35_provisional";
   const [query, setQuery] = useState("");
   const [sector, setSector] = useState("Todos");
+  const [filtroOrigen, setFiltroOrigen] = useState("todos");
+  const [avisoProvisional, setAvisoProvisional] = useState(null);
   const sectores = ["Todos", ...new Set(cot.map((c) => c.sector).filter(Boolean))];
   const filtradas = cot.filter((c) => {
     const q = query.toLowerCase();
-    const okQ = !q || c.emisora.toLowerCase().includes(q) || (c.sector || "").toLowerCase().includes(q);
-    return okQ && (sector === "Todos" || c.sector === sector);
+    const okQ = !q
+      || c.emisora.toLowerCase().includes(q)
+      || (c.serie || "").toLowerCase().includes(q)
+      || (c.sector || "").toLowerCase().includes(q)
+      || (c.alias_blackrock || "").toLowerCase().includes(q);
+    const okSector = sector === "Todos" || c.sector === sector;
+    const okOrigen = !esIpc35
+      || filtroOrigen === "todos"
+      || (filtroOrigen === "base_15" && c.origen_catalogo === "ACTUAL_15")
+      || (filtroOrigen === "candidato_20" && c.origen_catalogo === "CANDIDATO_20")
+      || (filtroOrigen === "con_ppp" && c.ppp_bmv_mxn != null)
+      || (filtroOrigen === "huecos" && c.ppp_bmv_mxn == null);
+    return okQ && okSector && okOrigen;
   });
   const sha = mercado?.kpis?.sha256_boletin || "";
   const actual = cot.find((c) => c.emisora === emisora);
 
+  function cambiarUniverso(nuevo) {
+    if (!setUniversoMercado) return;
+    setAvisoProvisional(null);
+    setSector("Todos");
+    setFiltroOrigen("todos");
+    setUniversoMercado(nuevo);
+  }
+
+  function abrirFila(c) {
+    if (c.origen_catalogo === "CANDIDATO_20") {
+      setAvisoProvisional(c);
+      return;
+    }
+    setAvisoProvisional(null);
+    if (onSelectTicker(c.emisora)) irA("resumen");
+  }
+
   return (
     <>
       <ChartCard
-        title={`Cotizaciones oficiales · sesión ${mercado?.fecha || "—"}`}
-        subtitle="PPP del boletín de la BMV. Haz clic en una emisora para analizarla."
+        title={`Capturas de mercado · sesión ${mercado?.fecha || "—"}`}
+        subtitle={esIpc35
+          ? "Vista ampliada con 35 componentes provisionales (NAFTRAC 2026-11-17). Los huecos no se imputan y las señales siguen bloqueadas."
+          : "Los PPP marcados como verificados proceden de la fuente registrada. Los valores de contingencia no se muestran."}
         explicar={() => explicarMonitor({ fecha: mercado?.fecha, cotizaciones: cot })}
         tour="monitor"
       >
-        <div className="tm-filters" style={{ padding: "4px 6px 14px" }}>
+        <div className="tm-filters" style={{ padding: "4px 6px 14px", flexWrap: "wrap", gap: 8 }}>
+          {setUniversoMercado && (
+            <div role="group" aria-label="Universo de mercado" style={{ display: "inline-flex", gap: 6 }}>
+              <button
+                type="button"
+                className={`bk-btn bk-btn-sm ${!esIpc35 ? "bk-btn-primary" : "bk-btn-outline"}`}
+                aria-pressed={!esIpc35}
+                onClick={() => cambiarUniverso("base_15")}
+              >
+                Panel base (15)
+              </button>
+              <button
+                type="button"
+                className={`bk-btn bk-btn-sm ${esIpc35 ? "bk-btn-primary" : "bk-btn-outline"}`}
+                aria-pressed={esIpc35}
+                onClick={() => cambiarUniverso("ipc35_provisional")}
+              >
+                IPC provisional (35)
+              </button>
+            </div>
+          )}
           <label className="tm-search">
             <Search size={16} />
-            <input type="search" placeholder="Buscar emisora o sector" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Buscar emisora o sector" />
+            <input type="search" placeholder="Buscar emisora, serie o sector" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Buscar emisora o sector" />
           </label>
           <select value={sector} onChange={(e) => setSector(e.target.value)} aria-label="Filtrar por sector">
             {sectores.map((s) => (
               <option key={s} value={s}>{s}</option>
             ))}
           </select>
+          {esIpc35 && (
+            <select value={filtroOrigen} onChange={(e) => setFiltroOrigen(e.target.value)} aria-label="Filtrar cobertura provisional">
+              <option value="todos">Todos ({cot.length})</option>
+              <option value="base_15">Base ({mercado?.kpis?.total_base_15 ?? 15})</option>
+              <option value="candidato_20">Candidatos provisionales ({mercado?.kpis?.total_candidatos_20 ?? 20})</option>
+              <option value="con_ppp">Solo con PPP observado</option>
+              <option value="huecos">Solo huecos / sin dato</option>
+            </select>
+          )}
         </div>
+        {esIpc35 && catalogoIpc && (
+          <div className="bk-alert bk-alert-info" role="status" style={{ margin: "0 6px 14px", fontSize: 13, lineHeight: 1.5 }}>
+            <div>
+              <strong>Catálogo provisional ({catalogoIpc.version} · {catalogoIpc.estado_composicion}):</strong>{" "}
+              Base 15 con PPP verificado: <strong>{mercado?.kpis?.total_verificadas ?? 0}</strong> ·
+              Candidatos 20 con PPP observado en Bronze: <strong>{mercado?.kpis?.total_provisionales_con_ppp ?? 0}</strong> ·
+              Huecos sin dato: <strong>{mercado?.kpis?.total_ausentes ?? 0}</strong> ·
+              Señales: <strong>bloqueadas</strong>.
+            </div>
+            <div style={{ marginTop: 4 }}>
+              {catalogoIpc.bronze_disponible
+                ? `Boletín Bronze leído (SHA-256 ${catalogoIpc.sha256_bronze?.slice(0, 12)}…). `
+                : "Sin boletín Bronze en esta sesión (ej. fechas con contingencia o previas a 2026-10-20): los 20 candidatos quedan sin precio. Selecciona una sesión con boletín Bronze (2026-10-20 a 2026-11-17) para consultar observaciones PPP provisionales. "}
+              Alias pendientes de evidencia oficial: {(catalogoIpc.alias_pendientes || []).join(", ")}.
+            </div>
+          </div>
+        )}
+        {avisoProvisional && (
+          <div className="bk-alert bk-alert-info" role="status" style={{ margin: "0 6px 14px", fontSize: 13 }}>
+            <strong>{avisoProvisional.emisora} {avisoProvisional.serie}</strong> (alias BlackRock: <code>{avisoProvisional.alias_blackrock || "—"}</code>) es un componente provisional de solo lectura en Mercado. No habilita series históricas, estadística ni señales hasta validar composición oficial, alias e historial.
+          </div>
+        )}
         <div className="tm-table-wrap">
           <table className="tm-table">
             <thead>
@@ -292,12 +380,20 @@ export function Mercado({ ctx }) {
             <tbody>
               {filtradas.map((c) => {
                 const ok = c.ppp_bmv_mxn != null;
+                const esCandidato = c.origen_catalogo === "CANDIDATO_20";
                 return (
                   <tr
-                    key={c.emisora}
-                    className={`is-clickable ${c.emisora === emisora ? "is-selected" : ""}`}
+                    key={`${c.emisora}-${c.serie}`}
+                    className={`is-clickable ${!esCandidato && c.emisora === emisora ? "is-selected" : ""}`}
                     data-tour={c.emisora === "WALMEX" ? "emisora-walmex" : undefined}
-                    onClick={() => onSelectTicker(c.emisora)}
+                    onClick={() => abrirFila(c)}
+                    tabIndex={0}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        abrirFila(c);
+                      }
+                    }}
                   >
                     <td>
                       <span className="tm-table-ticker">
@@ -305,7 +401,9 @@ export function Mercado({ ctx }) {
                         <span>
                           <strong style={{ color: "var(--bk-navy)" }}>{c.emisora}</strong>{" "}
                           <span className="bk-muted" style={{ fontSize: 12 }}>{c.serie}</span>
-                          {!puedeVer(c.emisora) && <span className="bk-chip bk-chip-navy" style={{ marginLeft: 6, padding: "1px 7px", fontSize: 10.5 }}>Pro</span>}
+                          {esCandidato
+                            ? <span className="bk-chip bk-chip-warn" style={{ marginLeft: 6, padding: "1px 7px", fontSize: 10.5 }}>Provisional · Sin señales</span>
+                            : !puedeVer(c.emisora) && <span className="bk-chip bk-chip-navy" style={{ marginLeft: 6, padding: "1px 7px", fontSize: 10.5 }}>Pro</span>}
                         </span>
                       </span>
                     </td>
@@ -321,17 +419,33 @@ export function Mercado({ ctx }) {
               })}
             </tbody>
           </table>
-          {!filtradas.length && <Estado loading={datos.mercado.loading} titulo="Sin coincidencias" texto="Prueba con otro texto o sector." />}
+          {!filtradas.length && <Estado loading={datos.mercado.loading} titulo={datos.mercado.error ? "Mercado no disponible" : "Sin coincidencias"}
+            texto={datos.mercado.error?.message || "Prueba con otro texto o sector."} />}
         </div>
+        {mercado?.fuente && <p className="bk-muted" style={{ fontSize: 12 }}>
+          Fuente: {mercado.fuente.tipo === "silver_diario_s3" ? "Silver diario" : "instantánea reciente"} ·
+          actualización: {mercado.fuente.actualizada || "no disponible"} · {mercado.fuente.cobertura}
+          {catalogoIpc?.sha256_bronze ? ` · Bronze SHA-256: ${catalogoIpc.sha256_bronze.slice(0, 12)}…` : ""}
+        </p>}
       </ChartCard>
 
-      <div className="tm-row tm-row-half">
+      <div className="tm-row">
+        <ChartCard
+          title="Variación media por sector"
+          subtitle="Verde: subió · rojo: bajó"
+          explicar={datos.sectores.data ? () => explicarSectores(datos.sectores.data) : null}
+        >
+          {datos.sectores.data?.sectores?.some((s) => s.variacion_media_pct != null)
+            ? <SectoresChart sectores={datos.sectores.data.sectores} />
+            : <Estado loading={datos.sectores.loading} titulo="Variaciones por sector no disponibles"
+                texto={datos.sectores.error?.message || "La fuente disponible no contiene variaciones verificadas para este corte."} />}
+        </ChartCard>
         <section className="bk-card bk-card-pad" data-tour="sello" style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap", alignSelf: "start" }}>
           <span className="tm-list-icon" style={{ background: "var(--bk-teal-50)", color: "var(--bk-teal-600)", width: 48, height: 48 }}>
             <ShieldCheck size={24} />
           </span>
           <div style={{ flex: 1, minWidth: 200 }}>
-            <strong style={{ color: "var(--bk-navy)" }}>Boletín verificado con SHA-256</strong>
+            <strong style={{ color: "var(--bk-navy)" }}>Huella de la fuente</strong>
             <p className="bk-mono" style={{ margin: "4px 0 0", fontSize: 12, wordBreak: "break-all" }}>{sha || "Huella no disponible para esta sesión"}</p>
           </div>
           <button
@@ -350,13 +464,6 @@ export function Mercado({ ctx }) {
             Ver evidencia
           </button>
         </section>
-        <ChartCard
-          title="Variación media por sector"
-          subtitle="Verde: subió · rojo: bajó"
-          explicar={datos.sectores.data ? () => explicarSectores(datos.sectores.data) : null}
-        >
-          {datos.sectores.data ? <SectoresChart sectores={datos.sectores.data.sectores} /> : <Estado loading={datos.sectores.loading} />}
-        </ChartCard>
       </div>
     </>
   );
@@ -369,11 +476,17 @@ export function Senales({ ctx }) {
   const { emisora, datos, permitido, onPlanGate, irA, onOpenReport } = ctx;
   if (!permitido) return <Bloqueado emisora={emisora} onPlanGate={onPlanGate} />;
   const senal = datos.senal.data;
-  if (!senal) return <div className="bk-card"><Estado loading={datos.senal.loading} titulo="Sin señal" texto={datos.senal.error?.message} /></div>;
+  if (!senal) return (
+    <>
+      <div className="bk-card"><Estado loading={datos.senal.loading} titulo="Sin señal" texto={datos.senal.error?.message} /></div>
+      <CostosInversion key={emisora} emisora={emisora} />
+    </>
+  );
   const g2 = senal.modelos.filter((m) => m.generacion === "G2");
   const arriba = g2.filter((m) => m.probabilidad >= 0.5).length;
   const factor = senal.factor;
   const metricas = datos.metricas.data;
+  const historicosSinSenal = modelosHistoricosSinSenal(metricas, senal.modelos);
   const kelly =
     metricas?.asignacion_capital_fase5?.ultimos_pesos_sugeridos_pct?.[emisora] ??
     metricas?.politica_asignacion_capital?.pesos_sugeridos_Recientes?.[emisora];
@@ -407,14 +520,20 @@ export function Senales({ ctx }) {
         <ChartCard
           title="Probabilidad de subida por modelo"
           subtitle={`${emisora} · señal ${senal.fecha} · horizonte de 5 sesiones`}
-          explicar={() => explicarProbabilidades({ emisora, ...senal })}
+          explicar={() => explicarProbabilidades({ emisora, ...senal, modelos: senal.modelos.map((m) => ({ ...m, nombre: nombreModelo(m.modelo, m.nombre) })) })}
           tour="modelos"
         >
           <ProbabilidadesChart modelos={senal.modelos} />
+          <div className="tm-list">
+            {senal.modelos.map((m) => <div className="tm-list-item" key={`${m.generacion}-${m.modelo}`}>
+              <span className="tm-list-main"><strong>{nombreModelo(m.modelo, m.nombre)}</strong>
+                <span>{m.modelo} · {m.valida ? "Señal registrada" : "Señal anulada"}</span></span>
+            </div>)}
+          </div>
         </ChartCard>
         <ChartCard
           title="¿Qué empuja la probabilidad?"
-          subtitle={factor?.contribuciones && Object.keys(factor.contribuciones).length ? `Descomposición de ${factor.nombre}` : "Factor clave: retorno relativo al panel"}
+          subtitle={factor?.contribuciones && Object.keys(factor.contribuciones).length ? `Descomposición de ${nombreModelo(factor.modelo, factor.nombre)}` : "Factor clave: retorno relativo al panel"}
           explicar={() => explicarFactor({ emisora, factor })}
           tour="factor"
           foot={factor?.lectura ? <span>{factor.lectura}</span> : null}
@@ -426,6 +545,22 @@ export function Senales({ ctx }) {
           )}
         </ChartCard>
       </div>
+
+      {historicosSinSenal.length > 0 && <section className="bk-card bk-card-pad">
+        <details>
+          <summary><strong>Modelos con evaluación histórica sin señal registrada ({historicosSinSenal.length})</strong></summary>
+          <p className="bk-muted" style={{ fontSize: 12 }}>Comparación por identificador técnico exacto para {emisora}, señal del {senal.fecha || "—"}. Las variantes históricas no se consideran equivalentes a otras versiones por tener un nombre parecido.</p>
+          <div className="tm-list">
+            {historicosSinSenal.map((m) => <div className="tm-list-item" key={m.id_modelo}>
+              <span className="tm-list-main"><strong>{nombreModelo(m.id_modelo, m.nombre)}</strong>
+                <span>{m.id_modelo} · {estadoModeloHistorico(m.id_modelo, m.rol).join(" · ")}</span></span>
+              <span className="bk-chip bk-chip-navy">Sin señal disponible</span>
+            </div>)}
+          </div>
+        </details>
+      </section>}
+
+      <CostosInversion key={emisora} emisora={emisora} />
 
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }} data-tour="acciones">
         <button type="button" className="bk-btn bk-btn-navy" onClick={() => irA("seguimiento")}>
@@ -452,7 +587,7 @@ export function Seguimiento({ ctx }) {
   return (
     <>
       {!seg || !r ? (
-        <div className="bk-card"><Estado loading={datos.seguimiento.loading} titulo="Sin señales en seguimiento" texto={`Aún no hay señales de ${emisora} con sesiones posteriores.`} /></div>
+        <div className="bk-card"><Estado loading={datos.seguimiento.loading} titulo="Seguimiento no disponible" texto={datos.seguimiento.error?.message || "No hay información disponible para este corte."} /></div>
       ) : (
         <>
           <div className="tm-kpis">
@@ -525,8 +660,8 @@ export function Seguimiento({ ctx }) {
                   return (
                     <div key={m.modelo} className="tm-list-item">
                       <span className="tm-list-main">
-                        <strong>{m.nombre}</strong>
-                        <span>P(subida) {prob(m.probabilidad)} → {m.prediccion === "SUBIDA" ? "subida" : "no subida"}</span>
+                        <strong>{nombreModelo(m.modelo, m.nombre)}</strong>
+                        <span>{m.modelo} · Señal registrada · P(subida) {prob(m.probabilidad)} → {m.prediccion === "SUBIDA" ? "subida" : "no subida"}</span>
                       </span>
                       {chip}
                     </div>
@@ -540,8 +675,8 @@ export function Seguimiento({ ctx }) {
 
       <ChartCard
         title="Marcador por modelo"
-        subtitle={marc ? `Todas las señales de las emisoras de tu plan · corte ${marc.fecha_corte}` : "Aciertos parciales y en t+5"}
-        explicar={marc?.modelos?.length ? () => explicarMarcador(marc) : null}
+        subtitle={marc ? `Seguimiento prospectivo de señales registradas de las emisoras de tu plan · corte ${marc.fecha_corte}; separado del TEST histórico` : "Seguimiento prospectivo · aciertos parciales y en t+5"}
+        explicar={marc?.modelos?.length ? () => explicarMarcador({ ...marc, modelos: marc.modelos.map((m) => ({ ...m, nombre: nombreModelo(m.id_modelo, m.nombre) })) }) : null}
         tour="marcador"
         foot={<span>Con pocas señales resueltas la tasa es inestable: la métrica que cuenta es la resolución en t+5 y su Brier score (menor es mejor).</span>}
       >
@@ -561,7 +696,7 @@ export function Seguimiento({ ctx }) {
                 <tbody>
                   {marc.modelos.map((m) => (
                     <tr key={m.modelo}>
-                      <td><strong style={{ color: "var(--bk-navy)" }}>{m.nombre}</strong></td>
+                      <td><strong style={{ color: "var(--bk-navy)" }}>{nombreModelo(m.id_modelo, m.nombre)}</strong><br /><small>{m.id_modelo || m.modelo} · Seguimiento de señales registradas</small></td>
                       <td className="num">{m.tasa_parcial_pct?.toFixed(1)}% <span className="bk-muted">({m.aciertos_parciales}/{m.en_seguimiento})</span></td>
                       <td className="num">{m.aciertos_t5}/{m.resueltas_t5}</td>
                       <td className="num">{m.brier_t5 != null ? m.brier_t5.toFixed(4) : "—"}</td>
@@ -572,7 +707,7 @@ export function Seguimiento({ ctx }) {
             </div>
           </div>
         ) : (
-          <Estado loading={datos.marcador.loading} titulo="Sin marcador" />
+          <Estado loading={datos.marcador.loading} titulo="Marcador no disponible" texto={datos.marcador.error?.message} />
         )}
       </ChartCard>
     </>
@@ -586,13 +721,14 @@ function binsDe(m) {
   const raw =
     m?.curvas_calibracion_reliability?.G2_V4_ADJ ||
     m?.modelos_test_15_emisoras?.G2_V4_ADJ?.reliability_bins ||
-    MOCK_METRICAS_MODELOS.modelos_test_15_emisoras.G2_V4_ADJ.reliability_bins;
-  return raw.map((b) => ({ prob_media: b.prob_media ?? b.p_media ?? 0.5, frecuencia_observada: b.frecuencia_observada ?? b.y_obs_media ?? 0.5, n: b.n ?? null }));
+    [];
+  return raw.map((b) => ({ prob_media: b.prob_media ?? b.p_media, frecuencia_observada: b.frecuencia_observada ?? b.y_obs_media, n: b.n ?? null }))
+    .filter((b) => Number.isFinite(b.prob_media) && Number.isFinite(b.frecuencia_observada));
 }
 
 function filasDe(m) {
   if (Array.isArray(m?.modelos_test)) {
-    return m.modelos_test.map((it) => ({ label: it.nombre, accuracy_pct: it.exactitud_15_pct, bss_pct: it.bss_vs_climatologia_15_pct ?? 0, ece: it.ece_15 ?? 0 }));
+    return m.modelos_test.map((it) => ({ label: nombreModelo(it.id_modelo, it.nombre), accuracy_pct: it.exactitud_15_pct, bss_pct: it.bss_vs_climatologia_15_pct ?? 0, ece: it.ece_15 ?? 0 }));
   }
   return [];
 }
@@ -600,8 +736,13 @@ function filasDe(m) {
 export function Calidad({ ctx }) {
   const { emisora, datos, senalesTicker, irA, onOpenReport } = ctx;
   const m = datos.metricas.data;
+  // La auditoría heredada mezcla datos del backend con cifras de demostración.
+  // No debe mostrarse en modo de datos reales hasta eliminar esa mezcla.
+  if (import.meta.env.VITE_REQUIRE_REAL_API === "true") {
+    return <Estado titulo="Auditoría no disponible" texto="Esta sección está temporalmente deshabilitada mientras se verifica la procedencia de todas sus métricas." />;
+  }
   const bins = binsDe(m);
-  const campeon = m?.decision_arquitectura?.campeon_oficial || "G2_V4_ADJ";
+  const campeon = nombreModelo(m?.decision_arquitectura?.campeon_oficial || "G2_V4_ADJ");
   return (
     <>
       <div className="tm-row tm-row-main">
@@ -617,9 +758,9 @@ export function Calidad({ ctx }) {
           <span className="bk-eyebrow" style={{ marginBottom: 0 }}>Decisión de arquitectura</span>
           <strong style={{ color: "var(--bk-navy)", fontSize: 18 }}>Campeón: {campeon}</strong>
           {m?.decision_arquitectura?.subcampeon_shadow_operativo && (
-            <span className="bk-chip bk-chip-navy" style={{ justifySelf: "start" }}>En sombra: {m.decision_arquitectura.subcampeon_shadow_operativo}</span>
+            <span className="bk-chip bk-chip-navy" style={{ justifySelf: "start" }}>En observación: {nombreModelo(m.decision_arquitectura.subcampeon_shadow_operativo)}</span>
           )}
-          <p style={{ margin: 0, fontSize: 13.5 }}>{m?.decision_arquitectura?.justificacion || "Métricas institucionales fuera de muestra del panel de 15 emisoras."}</p>
+          <p style={{ margin: 0, fontSize: 13.5 }}>{describirModelos(m?.decision_arquitectura?.justificacion) || "Métricas institucionales fuera de muestra del panel de 15 emisoras."}</p>
           <p className="bk-muted" style={{ margin: 0, fontSize: 12 }}>Congelamiento oficial: {m?.fecha_congelamiento_oficial || "—"}</p>
         </div>
       </div>
@@ -646,7 +787,7 @@ export function Gobernanza({ ctx }) {
   const piezas = [
     [Timer, "EventBridge", "16:45 CDMX", "Dispara la ingesta de lunes a viernes tras el cierre."],
     [BrainCircuit, "AWS Lambda", "recolector-diario-bmv", "Descarga el boletín, calcula señales y escribe en S3."],
-    [Database, "Amazon S3", "Bronze · Silver · Gold", "HTML intacto, PPP limpios y señales. Nada se sobrescribe."],
+    [Database, "Amazon S3", "Bronze · Silver · Gold", "El almacenamiento y la procedencia de cada objeto requieren verificación."],
     [Cloud, "Amazon Athena", "SQL sin servidores", "Consultas de auditoría sobre Silver y Gold."],
   ];
   return (

@@ -15,7 +15,7 @@ function cargar() {
         cache = {
           fecha: m?.fecha || k.fecha || "—",
           verificadas: k.total_verificadas ?? "—",
-          total: k.total_emisoras ?? 15,
+          total: k.total_emisoras ?? "—",
           mercado: m,
         };
         return cache;

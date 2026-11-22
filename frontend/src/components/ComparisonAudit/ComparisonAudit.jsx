@@ -4,6 +4,7 @@ import createPlotlyComponent from "react-plotly.js/factory";
 import { Clock, ShieldCheck, Database, Cloud, Terminal, CheckCircle2, ArrowLeft, Server, BarChart3, Scale } from "lucide-react";
 import { Badge, Button } from "../UI";
 import { MOCK_METRICAS_MODELOS } from "../../mocks/mockData";
+import { estadoModeloHistorico, nombreModelo } from "../../utils/presentation.mjs";
 
 const Plot = createPlotlyComponent(Plotly);
 
@@ -28,7 +29,8 @@ export function ComparisonAudit({ ticker = "WALMEX", senales = [], metricas = nu
   if (Array.isArray(m?.modelos_test) && m.modelos_test.length > 0) {
     filasModelos = m.modelos_test.map((item) => ({
       key: item.id_modelo,
-      label: item.nombre,
+      label: nombreModelo(item.id_modelo, item.nombre),
+      estado: estadoModeloHistorico(item.id_modelo, item.rol),
       accuracy_pct: item.exactitud_15_pct,
       wilson_low: Array.isArray(item.wilson_95_15_pct) ? item.wilson_95_15_pct[0] : 49.0,
       wilson_high: Array.isArray(item.wilson_95_15_pct) ? item.wilson_95_15_pct[1] : 54.0,
@@ -51,7 +53,8 @@ export function ComparisonAudit({ ticker = "WALMEX", senales = [], metricas = nu
         if (!it) return null;
         return {
           key: row.key,
-          label: row.label,
+          label: nombreModelo(row.key, row.label),
+          estado: ["Evaluación histórica TEST", "Datos de demostración"],
           accuracy_pct: it.accuracy_pct,
           wilson_low: it.wilson_95_low_pct,
           wilson_high: it.wilson_95_high_pct,
@@ -120,6 +123,9 @@ export function ComparisonAudit({ ticker = "WALMEX", senales = [], metricas = nu
 
   return (
     <div className="comparison-panel" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+      <div className="bk-alert bk-alert-info" role="status">
+        Vista de demostración: puede contener cifras simuladas o valores de ejemplo; no representa datos verificados.
+      </div>
       {/* Botón Volver y Título */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px", flexWrap: "wrap" }}>
         <button
@@ -241,7 +247,7 @@ export function ComparisonAudit({ ticker = "WALMEX", senales = [], metricas = nu
                   y: bins.map((b) => b.frecuencia_observada),
                   type: "scatter",
                   mode: "lines+markers",
-                  name: "G2_V4_ADJ (ECE = 0.0123)",
+                  name: `${nombreModelo("G2_V4_ADJ")} (ECE = 0.0123)`,
                   line: { color: "#079baa", width: 2.5 },
                   marker: { color: "#062c50", size: 7 }
                 }
@@ -277,7 +283,7 @@ export function ComparisonAudit({ ticker = "WALMEX", senales = [], metricas = nu
               <tbody>
                 {filasModelos.map((item) => (
                   <tr key={item.key}>
-                    <td><strong>{item.label}</strong></td>
+                    <td><strong>{item.label}</strong><br /><small>{item.key} · {(item.estado || []).join(" · ")}</small></td>
                     <td style={{ textAlign: "right", fontFamily: "monospace" }}>
                       {Number(item.accuracy_pct).toFixed(2)}% <span style={{ color: "var(--muted)", fontSize: "10px" }}>[{Number(item.wilson_low).toFixed(1)}, {Number(item.wilson_high).toFixed(1)}]</span>
                     </td>

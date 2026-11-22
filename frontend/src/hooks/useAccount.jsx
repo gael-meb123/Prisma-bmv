@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
-import { supabase } from "../lib/supabase.mjs";
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
+import { authClient as supabase } from "../lib/auth.mjs";
 import { planById } from "../plans.mjs";
 import { setAuthToken } from "../services/api.mjs";
 
@@ -11,74 +11,123 @@ export function AccountProvider({ children }) {
   const [session, setSession] = useState(null);   // Supabase session (tiene .access_token)
   const [profile, setProfile] = useState(null);    // { id, email, nombre, rol, plan, emisoras }
   const [loading, setLoading] = useState(true);    // true mientras se valida la sesión
+  const versionPerfil = useRef(0);
 
   // --- Cargar perfil verificado desde el backend ---
-  const fetchProfile = useCallback(async (accessToken) => {
+  const fetchProfile = useCallback(async (accessToken, version = ++versionPerfil.current) => {
     try {
       const res = await fetch(`${API_BASE}/api/me`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       if (!res.ok) {
         // Token vencido o inválido: cerrar sesión
-        if (res.status === 401) {
+        if (res.status === 401 && versionPerfil.current === version) {
           await supabase.auth.signOut();
           return;
         }
         throw new Error(`/api/me → ${res.status}`);
       }
       const data = await res.json();
-      setProfile(data);
+      if (versionPerfil.current === version) setProfile(data);
     } catch (err) {
       console.error("[Prisma] Error cargando perfil:", err);
-      setProfile(null);
+      if (versionPerfil.current === version) setProfile(null);
     }
   }, []);
 
   // --- Listener de sesión ---
   useEffect(() => {
+    let activo = true;
+    let eventoRecibido = false;
+    function aplicarSesion(s) {
+      const version = ++versionPerfil.current;
+      setSession(s);
+      setProfile(null);
+      if (!s) {
+        setLoading(false);
+        return;
+      }
+      setLoading(true);
+      fetchProfile(s.access_token, version).finally(() => {
+        if (activo && versionPerfil.current === version) setLoading(false);
+      });
+    }
     // 1. Sesión actual (si ya había una guardada)
     supabase.auth.getSession().then(({ data: { session: s } }) => {
-      setSession(s);
-      if (s) {
-        fetchProfile(s.access_token).finally(() => setLoading(false));
-      } else {
-        setLoading(false);
-      }
+      if (activo && !eventoRecibido) aplicarSesion(s);
+    }).catch(() => {
+      if (activo && !eventoRecibido) aplicarSesion(null);
     });
 
     // 2. Cambios de sesión (login, logout, token refresh)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, s) => {
-        setSession(s);
-        if (s) {
-          fetchProfile(s.access_token);
-        } else {
-          setProfile(null);
-        }
+        if (!activo) return;
+        eventoRecibido = true;
+        aplicarSesion(s);
       }
     );
 
-    return () => subscription.unsubscribe();
+    return () => {
+      activo = false;
+      versionPerfil.current++;
+      subscription.unsubscribe();
+    };
   }, [fetchProfile]);
 
   // --- Acciones ---
   async function enter(email, password) {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error, challenge } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
+    return challenge;
     // onAuthStateChange se encarga de cargar el perfil
   }
 
+  async function completeChallenge(value) {
+    const { error, challenge } = await supabase.auth.completeChallenge(value);
+    if (error) throw error;
+    return challenge;
+  }
+
+  async function startPasswordReset(email) {
+    const { error } = await supabase.auth.resetPasswordForEmail(email);
+    if (error) throw error;
+  }
+
+  async function confirmPasswordReset(email, code, password) {
+    const { error } = await supabase.auth.confirmPasswordReset(email, code, password);
+    if (error) throw error;
+  }
+
+  async function startTotpEnrollment() { return supabase.auth.startTotpEnrollment(); }
+  async function finishTotpEnrollment(code) { return supabase.auth.finishTotpEnrollment(code); }
+  function cancelTotpEnrollment() { supabase.auth.cancelTotpEnrollment?.(); }
+  async function startEmailVerification() { return supabase.auth.startEmailVerification(); }
+  async function finishEmailVerification(code) { return supabase.auth.finishEmailVerification(code); }
+
   async function register(email, password, nombre) {
-    const { error } = await supabase.auth.signUp({
+    const { error, confirmacionRequerida } = await supabase.auth.signUp({
       email,
       password,
       options: { data: { nombre } },
     });
     if (error) throw error;
+    return confirmacionRequerida;
+  }
+
+  async function confirmRegistration(email, code) {
+    const { error } = await supabase.auth.confirmRegistration(email, code);
+    if (error) throw error;
+  }
+
+  async function resendRegistration(email) {
+    const { error } = await supabase.auth.resendRegistration(email);
+    if (error) throw error;
   }
 
   async function leave() {
     await supabase.auth.signOut();
+    versionPerfil.current++;
     setProfile(null);
     setSession(null);
   }
@@ -113,7 +162,17 @@ export function AccountProvider({ children }) {
 
     // Acciones
     enter,
+    completeChallenge,
+    startPasswordReset,
+    confirmPasswordReset,
+    startTotpEnrollment,
+    finishTotpEnrollment,
+    cancelTotpEnrollment,
+    startEmailVerification,
+    finishEmailVerification,
     register,
+    confirmRegistration,
+    resendRegistration,
     leave,
     switchPlan,
     refreshProfile,

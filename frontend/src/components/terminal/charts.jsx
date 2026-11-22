@@ -5,6 +5,7 @@
 import React from "react";
 import Plotly from "plotly.js-dist-min";
 import createPlotlyComponent from "react-plotly.js/factory";
+import { nombreModelo } from "../../utils/presentation.mjs";
 
 const Plot = createPlotlyComponent(Plotly);
 
@@ -48,6 +49,28 @@ function Chart({ data, layout, height }) {
       useResizeHandler
     />
   );
+}
+
+export function HistogramaEstadistico({ intervalos }) {
+  if (!intervalos.length) return null;
+  return <Chart height={270} data={[{
+    type: "bar", x: intervalos.map((i) => (i.desde + i.hasta) / 2),
+    y: intervalos.map((i) => i.n), width: intervalos.map((i) => i.hasta - i.desde),
+    marker: { color: COLOR.teal, line: { color: "#fff", width: 0.5 } },
+    customdata: intervalos.map((i) => [i.desde, i.hasta]),
+    hovertemplate: "%{customdata[0]:.3f}% a %{customdata[1]:.3f}%<br>Observaciones: %{y}<extra></extra>",
+  }]} layout={base({ bargap: 0, margin: { l: 50, r: 20, t: 10, b: 50 },
+    xaxis: { title: { text: "Variación del PPP (%)" }, gridcolor: COLOR.grid },
+    yaxis: { title: { text: "Frecuencia" }, gridcolor: COLOR.grid } })} />;
+}
+
+export function CajaEstadistica({ valores }) {
+  if (!valores.length) return null;
+  return <Chart height={240} data={[{ type: "box", x: valores, name: "Variación",
+    marker: { color: COLOR.teal }, boxpoints: "outliers", orientation: "h",
+    hovertemplate: "%{x:.3f}%<extra></extra>" }]}
+    layout={base({ margin: { l: 30, r: 20, t: 10, b: 50 },
+      xaxis: { title: { text: "Variación del PPP (%)" }, gridcolor: COLOR.grid } })} />;
 }
 
 /* Variación media del PPP por sector -------------------------------------- */
@@ -102,7 +125,7 @@ export function ProbabilidadesChart({ modelos = [] }) {
           type: "bar",
           orientation: "h",
           x: pct,
-          y: filas.map((m) => m.nombre),
+          y: filas.map((m) => nombreModelo(m.modelo, m.nombre)),
           marker: {
             color: filas.map((m) => (!m.valida ? "#cbd5e1" : m.probabilidad >= 0.5 ? COLOR.up : COLOR.down)),
           },
@@ -110,7 +133,8 @@ export function ProbabilidadesChart({ modelos = [] }) {
           textposition: "outside",
           textfont: MONO,
           cliponaxis: false,
-          hovertemplate: "<b>%{y}</b><br>P(PPP t+5 > PPP t) = %{x:.2f}%<extra></extra>",
+          customdata: filas.map((m) => m.modelo),
+          hovertemplate: "<b>%{y}</b><br>ID: %{customdata}<br>P(PPP t+5 > PPP t) = %{x:.2f}%<extra></extra>",
         },
       ]}
       layout={base({
@@ -239,7 +263,7 @@ export function TrayectoriaChart({ trayectoria = [], emisora = "" }) {
 /* Marcador por modelo ------------------------------------------------------- */
 export function MarcadorChart({ modelos = [] }) {
   if (!modelos.length) return null;
-  const nombres = modelos.map((m) => m.nombre);
+  const nombres = modelos.map((m) => nombreModelo(m.id_modelo, m.nombre));
   const tasaT5 = modelos.map((m) => (m.resueltas_t5 ? (m.aciertos_t5 / m.resueltas_t5) * 100 : null));
   const height = 80 + 44 * modelos.length;
   return (

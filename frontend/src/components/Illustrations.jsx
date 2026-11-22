@@ -19,7 +19,7 @@ function useIds(...names) {
 /* --------------------------------------------------------------------------
    Hero: teléfono con la terminal + tarjeta Prisma + sello SHA-256
    -------------------------------------------------------------------------- */
-export function HeroIllustration({ ppp = "$54.59", ticker = "WALMEX" }) {
+export function HeroIllustration({ ppp = "—", ticker = "WALMEX" }) {
   const id = useIds("blob", "screen", "card", "area", "shield", "chip");
   return (
     <svg className="bk-hero-svg" viewBox="0 0 560 470" role="img" aria-label="Terminal Prisma BMV en un teléfono junto a una tarjeta del plan">

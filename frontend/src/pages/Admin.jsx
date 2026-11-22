@@ -5,6 +5,8 @@ import { Button, Notice } from "../components/UI";
 import { useAccount } from "../hooks/useAccount";
 import { api } from "../services/api.mjs";
 import { PLANS } from "../plans.mjs";
+import { isCognito } from "../lib/auth.mjs";
+import { mensajeAlta } from "../services/adminInvite.mjs";
 
 // ---------------------------------------------------------------------------
 // Componente principal
@@ -20,6 +22,7 @@ export function Admin() {
   const [form, setForm] = useState({ nombre: "", email: "", password: "", rol: "user", plan: "explorer" });
   const [formError, setFormError] = useState("");
   const [formLoading, setFormLoading] = useState(false);
+  const [formNotice, setFormNotice] = useState("");
 
   // --- Edición inline ---
   const [editId, setEditId] = useState(null);
@@ -39,7 +42,7 @@ export function Admin() {
     }
   }, []);
 
-  useEffect(() => { cargar(); }, [cargar]);
+  useEffect(() => { if (account.ready && account.userRole === "admin") cargar(); }, [cargar, account.ready, account.userRole]);
 
   // --- Redirección si no es admin ---
   if (account.ready && account.userRole !== "admin") {
@@ -64,15 +67,20 @@ export function Admin() {
   async function handleCrear(e) {
     e.preventDefault();
     setFormError("");
+    setFormNotice("");
     setFormLoading(true);
     try {
-      await api.admin.crearUsuario({
+      const resultado = await api.admin.crearUsuario({
         nombre: form.nombre.trim(),
         email: form.email.trim().toLowerCase(),
         password: form.password,
         rol: form.rol,
         plan: form.plan,
       });
+      if (isCognito && !["ACEPTADA_POR_COGNITO", "ENVIO_NO_CONFIRMADO"].includes(resultado?.invitacion)) {
+        throw new Error("No se pudo confirmar el alta. Consulta Cognito y el perfil antes de reintentar.");
+      }
+      setFormNotice(mensajeAlta(resultado));
       setForm({ nombre: "", email: "", password: "", rol: "user", plan: "explorer" });
       setShowForm(false);
       await cargar();
@@ -129,6 +137,8 @@ export function Admin() {
             {showForm ? <><X size={16} /> Cancelar</> : <><UserPlus size={16} /> Nuevo Usuario</>}
           </Button>
         </div>
+        {isCognito && <p>Las invitaciones son experimentales. El administrador no establece la contraseña y la entrega del correo debe confirmarse por separado.</p>}
+        {formNotice && <p role="status">{formNotice}</p>}
 
         {/* ---- Formulario de alta ---- */}
         {showForm && (
@@ -150,11 +160,11 @@ export function Admin() {
                 value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
                 style={inputStyle}
               />
-              <input
+              {!isCognito && <input
                 type="password" required minLength={8} placeholder="Contraseña (mín. 8)"
                 value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })}
                 style={inputStyle}
-              />
+              />}
               <select value={form.rol} onChange={(e) => setForm({ ...form, rol: e.target.value })} style={inputStyle}>
                 <option value="user">user</option>
                 <option value="admin">admin</option>

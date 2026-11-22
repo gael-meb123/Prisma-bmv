@@ -4,6 +4,53 @@
 
 export const DISCLAIMER = "Evaluación estadística e inferencia prospectiva oficial BMV; no constituye recomendación financiera ni asesoría de inversión individualizada.";
 
+const NOMBRES_MODELOS = {
+  G2_V4_ADJ: "G2-V4 · Ajustado por dividendos",
+  G2_V4_F1_GAP: "G2-V4 · Ajustado con señal de cierre",
+  G2_V1_ADJ: "G2-V1 · Calibrado ajustado",
+  G2_V2_ADJ: "G2-V2 · Zona neutral ajustado",
+  G2_V3_ADJ: "G2-V3 · Alta discriminación ajustado",
+  G2_V4: "G2-V4 · Corto plazo sin ajuste",
+  G2_V5_ADJ: "G2-V5 · Adaptativo ajustado",
+  G2_V6A_JERARQUICO: "G2-V6A · Logística jerárquica",
+  G2_V6B_DESCOMPUESTO: "G2-V6B · Mercado y exceso",
+  G2_V6C_RIDGE_CONTINUO: "G2-V6C · Ridge continuo",
+  G2_LGBM_CHALLENGER: "G2 · LightGBM challenger",
+  CLIMATOLOGIA_ADJ: "Referencia · Climatología ajustada",
+  G2_V1_POOLED_REL3_CALIBRADO: "G2-V1 · Calibrado",
+  G2_V2_POOLED_REL3_ZONA_NEUTRAL: "G2-V2 · Zona neutral",
+  G2_V3_POOLED_REL3_ALTA_DISC_EXPANDIDO: "G2-V3 · Alta discriminación",
+  G2_V4_POOLED_DM5_REL_CORTO_PLAZO: "G2-V4 · Agotamiento corto",
+  G2_V5_ADAPTATIVO_REGIMEN_SECTORIAL: "G2-V5 · Adaptativo por régimen",
+  V1_CONTROL_LOGREG: "G1-V1 · Logística base",
+  V2R_RETADOR_LINEAL_AJUSTE_DIVIDENDOS: "G1-V2R · Ajuste por dividendos",
+  V3_RETADOR_SELECCIONADO_RF: "G1-V3 · Random Forest",
+  V2_RETADOR_HIBRIDO_BOLETIN: "G1-V2 · Híbrido boletín",
+};
+
+export function nombreModelo(id, alternativa = id) {
+  return NOMBRES_MODELOS[id] || alternativa;
+}
+
+export function estadoModeloHistorico(id, rol = "") {
+  const etiquetas = ["Evaluación histórica TEST"];
+  if (id?.endsWith("_ADJ") || id === "G2_V4_F1_GAP") etiquetas.push("Variante ajustada");
+  if (rol.startsWith("SHADOW")) etiquetas.push("Shadow");
+  if (rol === "BENCHMARK") etiquetas.push("Referencia");
+  return etiquetas;
+}
+
+export function modelosHistoricosSinSenal(metricas, modelos = []) {
+  if (!Array.isArray(metricas?.modelos_test)) return [];
+  const registrados = new Set(modelos.map((m) => m.modelo));
+  return metricas.modelos_test.filter((m) => m.id_modelo && !registrados.has(m.id_modelo));
+}
+
+export function describirModelos(texto) {
+  if (!texto) return texto;
+  return texto.replace(/\bG2_V4_F1_GAP\b|\bG2_V4_ADJ\b/g, (id) => nombreModelo(id));
+}
+
 export const TICKERS_INFO = {
   WALMEX: { nombre: "Walmart de México y Centroamérica", serie: "*", sector: "Comercio y autoservicio", tier: "explorer" },
   GMEXICO: { nombre: "Grupo México", serie: "B", sector: "Minería y materiales", tier: "profesional" },
@@ -24,19 +71,44 @@ export const TICKERS_INFO = {
 
 export const STATUS = {
   PPP_PUBLICADO_VERIFICADO: {
-    label: "PPP Oficial Verificado",
+    label: "Marcado como PPP verificado",
     tone: "available",
-    description: "Precio Promedio Ponderado extraído del boletín regulatorio de la BMV con hash SHA-256 verificado."
+    description: "La fuente registra un PPP como verificado; la evidencia y la cobertura se deben revisar por corte."
   },
   CONTINGENCIA_FUENTE_SECUNDARIA: {
     label: "Contingencia Secundaria",
     tone: "partial",
-    description: "Cotización obtenida de fuente secundaria mientras la BMV publica el boletín RSS oficial; se reconcilia automáticamente."
+    description: "Dato de fuente secundaria; no es PPP oficial. La conciliación automática está pausada."
   },
   NO_PUBLICADA_EN_BOLETIN_RSS_DEL_DIA: {
-    label: "Ausente en Boletín",
+    label: "Sin dato en la captura",
     tone: "missing",
-    description: "La emisora no registró volumen suficiente en las tablas del boletín oficial. Cero imputación sintética."
+    description: "No se cuenta con un dato válido en esta captura. El estado no acredita ausencia de operación."
+  },
+  NO_PUBLICADO_EN_BOLETIN_RSS_DEL_DIA: {
+    label: "Sin dato en boletín RSS",
+    tone: "missing",
+    description: "El par no aparece en las tablas parciales del boletín RSS de esta sesión; no se imputa precio."
+  },
+  NO_ENCONTRADO_EN_TABLAS_BOLETIN: {
+    label: "No publicado en tablas RSS",
+    tone: "missing",
+    description: "El par no aparece en las tablas de cotizaciones reconocidas del boletín; no se imputa precio."
+  },
+  PPP_OBSERVADO_MAPEO_PROVISIONAL: {
+    label: "PPP observado (provisional)",
+    tone: "partial",
+    description: "PPP extraído del boletín Bronze para un candidato provisional; composición y alias pendientes de confirmación oficial y sin señales."
+  },
+  BOLETIN_BRONZE_NO_DISPONIBLE: {
+    label: "Sin boletín Bronze en sesión",
+    tone: "missing",
+    description: "No existe boletín oficial Bronze archivado para este corte; los candidatos provisionales quedan sin precio."
+  },
+  CONFLICTO_O_FILA_INVALIDA: {
+    label: "Conflicto / revisión",
+    tone: "missing",
+    description: "Fila ambigua o inválida en el boletín; bloqueada sin imputación."
   },
   CONSENSO_PANEL_G2_SUBIDA: {
     label: "Consenso Fuerte: Subida",

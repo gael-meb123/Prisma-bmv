@@ -19,6 +19,8 @@ import { Mascot } from "../components/Mascot";
 import { iniciales } from "../components/Header";
 import { PlanGate } from "../components/PlanGate";
 import { EvidenceDialog } from "../components/EvidenceDialog";
+import { Estadistica } from "../components/terminal/Estadistica";
+import { ConsensoModelos } from "../components/terminal/ConsensoModelos";
 import { Calidad, Gobernanza, Mercado, Resumen, Senales, Seguimiento } from "../components/terminal/Secciones";
 import { useAccount } from "../hooks/useAccount";
 import { useTerminalData } from "../hooks/useTerminalData";
@@ -27,9 +29,11 @@ import { canAccessTicker, PLANS } from "../plans.mjs";
 export const SECCIONES = [
   { id: "resumen", label: "Resumen", icon: LayoutDashboard, titulo: "Resumen de tu terminal" },
   { id: "mercado", label: "Mercado", icon: BarChart3, titulo: "Monitor de mercado" },
+  { id: "consenso", label: "Consenso de modelos", icon: BrainCircuit, titulo: "Consenso de modelos" },
   { id: "senales", label: "Señales", icon: BrainCircuit, titulo: "Señales de los modelos", porEmisora: true },
   { id: "seguimiento", label: "Seguimiento t+5", icon: Timer, titulo: "Seguimiento de señales", porEmisora: true },
   { id: "calidad", label: "Calidad de modelos", icon: ShieldCheck, titulo: "Calidad de los modelos" },
+  { id: "estadistica", label: "Análisis estadístico", icon: BarChart3, titulo: "Análisis estadístico", porEmisora: true },
   { id: "gobernanza", label: "Datos y gobernanza", icon: Cloud, titulo: "Datos y gobernanza en AWS" },
 ];
 const IDS = SECCIONES.map((s) => s.id);
@@ -49,17 +53,20 @@ function saludo() {
 }
 
 export function Terminal({ route, seccion, setSeccion, selectedTicker, setSelectedTicker, senalesTicker, onOpenReport }) {
+  const real = import.meta.env.VITE_REQUIRE_REAL_API === "true";
   const account = useAccount();
   const [menuOpen, setMenuOpen] = useState(false);
   const [fecha, setFecha] = useState(null); // null = última sesión
+  const [universoMercado, setUniversoMercado] = useState("base_15");
   const [fechaSenal, setFechaSenal] = useState(null);
   const [planGate, setPlanGate] = useState(null);
   const [evidence, setEvidence] = useState(null);
   const [planError, setPlanError] = useState("");
+  const [estadisticaVisitada, setEstadisticaVisitada] = useState(false);
 
   const emisora = selectedTicker;
   const permitido = canAccessTicker(account.role, emisora);
-  const datos = useTerminalData({ emisora, fecha, fechaSenal, permitido, conSesion: Boolean(account.session) });
+  const datos = useTerminalData({ emisora, fecha, fechaSenal, permitido, conSesion: Boolean(account.session), seccion, universoMercado });
   const actual = SECCIONES.find((s) => s.id === seccion) || SECCIONES[0];
 
   // /sistema/<seccion> abre esa sección (accesos rápidos de la landing).
@@ -67,6 +74,10 @@ export function Terminal({ route, seccion, setSeccion, selectedTicker, setSelect
     const s = seccionDeRuta(route);
     if (s) setSeccion(s);
   }, [route, setSeccion]);
+
+  useEffect(() => {
+    if (seccion === "estadistica") setEstadisticaVisitada(true);
+  }, [seccion]);
 
   // El recorrido guiado cambia de sección con el evento prisma:tour-phase.
   useEffect(() => {
@@ -86,10 +97,11 @@ export function Terminal({ route, seccion, setSeccion, selectedTicker, setSelect
   function seleccionarEmisora(t) {
     if (!canAccessTicker(account.role, t)) {
       setPlanGate(t);
-      return;
+      return false;
     }
     setFechaSenal(null);
     setSelectedTicker(t);
+    return true;
   }
 
   async function cambiarPlan(e) {
@@ -119,6 +131,9 @@ export function Terminal({ route, seccion, setSeccion, selectedTicker, setSelect
     onSelectTicker: seleccionarEmisora,
     onPlanGate: (t) => setPlanGate(t),
     onShowEvidence: (ev) => setEvidence(ev),
+    fecha,
+    universoMercado,
+    setUniversoMercado,
     puedeVer: (t) => canAccessTicker(account.role, t),
   };
 
@@ -140,14 +155,14 @@ export function Terminal({ route, seccion, setSeccion, selectedTicker, setSelect
               <span>Plan {account.plan.name}</span>
             </div>
           </div>
-          <label style={{ display: "grid", gap: 4, fontSize: 11, color: "#9fc0d6", fontWeight: 700 }}>
+          {!real && <label style={{ display: "grid", gap: 4, fontSize: 11, color: "#9fc0d6", fontWeight: 700 }}>
             Cambiar plan (demo)
             <select value={account.role} onChange={cambiarPlan}>
               {PLANS.map((p) => (
                 <option key={p.id} value={p.id}>{p.name} · {p.price.amount}</option>
               ))}
             </select>
-          </label>
+          </label>}
           {planError && <span role="alert" style={{ color: "#fca5a5", fontSize: 11 }}>{planError}</span>}
         </div>
 
@@ -168,9 +183,10 @@ export function Terminal({ route, seccion, setSeccion, selectedTicker, setSelect
         </nav>
 
         <div className="tm-side-foot tm-nav">
-          <button type="button" onClick={onOpenReport}><FileText size={17} /> Ficha ejecutiva</button>
-          <a href="#/planes"><Tag size={17} /> Planes</a>
+          {!real && <button type="button" onClick={onOpenReport}><FileText size={17} /> Ficha ejecutiva</button>}
+          {!real && <a href="#/planes"><Tag size={17} /> Planes</a>}
           {account.userRole === "admin" && <a href="#/admin"><Users size={17} /> Administración</a>}
+          {real && <a href="#/seguridad"><ShieldCheck size={17} /> Seguridad de la cuenta</a>}
           <a href="#/"><Home size={17} /> Portal</a>
           <button type="button" onClick={salir}><LogOut size={17} /> Cerrar sesión</button>
         </div>
@@ -184,7 +200,7 @@ export function Terminal({ route, seccion, setSeccion, selectedTicker, setSelect
           </button>
           <div className="tm-top-title">
             <strong>{actual.titulo}</strong>
-            <span>{saludo()}{nombre ? `, ${nombre.split(" ")[0]}` : ""} · datos oficiales del boletín BMV</span>
+            <span>{saludo()}{nombre ? `, ${nombre.split(" ")[0]}` : ""} · consulta la fuente y cobertura de cada dato</span>
           </div>
           <div className="tm-top-controls">
             <div className="tm-control" data-tour="selector-emisora">
@@ -207,7 +223,7 @@ export function Terminal({ route, seccion, setSeccion, selectedTicker, setSelect
                 </select>
               </div>
             )}
-            <button
+            {!real && <button
               type="button"
               className="tm-icon-btn"
               onClick={() => window.dispatchEvent(new CustomEvent("prisma:open-guide"))}
@@ -216,19 +232,29 @@ export function Terminal({ route, seccion, setSeccion, selectedTicker, setSelect
               style={{ width: 44, height: 44, padding: 0, overflow: "hidden" }}
             >
               <Mascot size={30} expression="happy" title="" />
-            </button>
+            </button>}
           </div>
         </header>
 
         <main id="main-content" className="tm-content">
+          {real && <p role="status">Versión experimental: ingesta automática pausada; cobertura parcial. Las señales y el panel ajustado no están disponibles.</p>}
           {seccion === "resumen" && <Resumen ctx={ctx} />}
           {seccion === "mercado" && <Mercado ctx={ctx} />}
-          {seccion === "senales" && <Senales ctx={ctx} />}
-          {seccion === "seguimiento" && <Seguimiento ctx={ctx} />}
-          {seccion === "calidad" && <Calidad ctx={ctx} />}
-          {seccion === "gobernanza" && <Gobernanza ctx={ctx} />}
+          {real && ["consenso", "senales", "seguimiento", "calidad", "gobernanza"].includes(seccion) &&
+            <div className="bk-card bk-card-pad"><h2>Sección no disponible</h2>
+              <p>La procedencia y las ventanas están pendientes de validación. No se muestran predicciones.</p></div>}
+          {!real && seccion === "consenso" && <ConsensoModelos ctx={ctx} />}
+          {!real && seccion === "senales" && <Senales ctx={ctx} />}
+          {!real && seccion === "seguimiento" && <Seguimiento ctx={ctx} />}
+          {!real && seccion === "calidad" && <Calidad ctx={ctx} />}
+          {(estadisticaVisitada || seccion === "estadistica") && (
+            <div className="estadistica-contenido" hidden={seccion !== "estadistica"}>
+              <Estadistica ctx={ctx} />
+            </div>
+          )}
+          {!real && seccion === "gobernanza" && <Gobernanza ctx={ctx} />}
           <p className="bk-muted" style={{ fontSize: 12, margin: "8px 0 0" }}>
-            Probabilidades estadísticas sobre el PPP oficial de la BMV; no constituyen recomendación ni asesoría de inversión.
+            {real ? "Información experimental; no constituye recomendación ni asesoría de inversión." : "Probabilidades estadísticas sobre el PPP oficial de la BMV; no constituyen recomendación ni asesoría de inversión."}
           </p>
         </main>
       </div>

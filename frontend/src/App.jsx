@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import { Header, Footer } from "./components/Header";
 import { Guide } from "./components/Guide";
 import { Tour } from "./components/Tour";
@@ -6,13 +6,17 @@ import { Landing } from "./pages/Landing";
 import { Plans } from "./pages/Plans";
 import { Access } from "./pages/Access";
 import { Methodology, Sources, InformationStates } from "./pages/Information";
-import { Report } from "./pages/Report";
-import { Terminal } from "./pages/Terminal";
 import { useCatalog } from "./hooks/useCatalog";
 import { useAccount } from "./hooks/useAccount";
 import { Admin } from "./pages/Admin";
 import { TerminalGate } from "./pages/TerminalGate";
 import { EmptyArt } from "./components/Illustrations";
+import { MacroTicker } from "./components/MacroTicker/MacroTicker";
+import { Security } from "./pages/Security";
+import { Experimental, ExperimentalNoDisponible } from "./pages/Experimental";
+import { isCognito } from "./lib/auth.mjs";
+const Report = lazy(() => import("./pages/Report").then(m => ({ default: m.Report })));
+const Terminal = lazy(() => import("./pages/Terminal").then(m => ({ default: m.Terminal })));
 
 // "#/ruta#ancla" → "/ruta" (el ancla la usa cada página para desplazarse).
 function currentRoute() {
@@ -27,12 +31,15 @@ const isTerminalRoute = (route) => route.startsWith("/sistema") || route.startsW
 // los datos (señales, serie) se recarguen con los permisos nuevos.
 export default function App() {
   const account = useAccount();
-  const key = `${account.profile?.id || "anon"}:${account.role}`;
+  const identidad = account.session?.user_id || account.session?.user?.id || account.profile?.id || "anon";
+  const key = isCognito ? identidad : `${identidad}:${account.role}`;
   return <AppInner key={key} />;
 }
 
 function AppInner() {
-  const catalog = useCatalog();
+  const real = import.meta.env.VITE_REQUIRE_REAL_API === "true";
+  // La ficha y las señales no están validadas en el modo de API real.
+  const catalog = useCatalog(import.meta.env.VITE_REQUIRE_REAL_API !== "true");
   const account = useAccount();
   const [route, setRoute] = useState(currentRoute);
   const [seccion, setSeccion] = useState("resumen");
@@ -63,13 +70,17 @@ function AppInner() {
   } else if (isTerminalRoute(route) && !account.session) {
     content = <TerminalGate />;
   } else if (route === "/") {
-    content = <Landing />;
+    content = real ? <Experimental /> : <Landing />;
+  } else if (real && ["/planes", "/metodologia", "/fuentes", "/estados"].includes(route)) {
+    content = <ExperimentalNoDisponible />;
   } else if (route === "/planes") {
     content = <Plans />;
   } else if (route === "/acceso" || route === "/registro") {
     content = <Access key={route} initialMode={route === "/registro" ? "register" : "login"} />;
   } else if (route === "/admin") {
     content = <Admin />;
+  } else if (route === "/seguridad") {
+    content = <Security />;
   } else if (route === "/metodologia") {
     content = <Methodology />;
   } else if (route === "/fuentes") {
@@ -121,11 +132,14 @@ function AppInner() {
         Saltar al contenido principal
       </a>
 
-      {content}
+      <Suspense fallback={<main id="main-content" className="bk-container" role="status">Cargando sección…</main>}>
+        {content}
+      </Suspense>
 
       {/* Prismi: asistente, explicaciones de gráficas y recorrido guiado */}
-      <Guide route={route} phase={seccion} selectedTicker={selectedTicker} />
-      <Tour route={route} />
+      {!real && <Guide route={route} phase={seccion} selectedTicker={selectedTicker} />}
+      {!real && <Tour route={route} />}
+      {!real && <MacroTicker />}
     </>
   );
 }

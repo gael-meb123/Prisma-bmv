@@ -1,0 +1,45 @@
+:root { --macro-bar-height: 54px; }
+body { padding-bottom: var(--macro-bar-height); }
+.macro-bar {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 1100;
+  height: var(--macro-bar-height);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 16px;
+  color: #e2f3f8;
+  background: #062c50;
+  border-top: 1px solid #21607b;
+  box-shadow: 0 -4px 18px #092a4920;
+}
+.macro-bar-label { flex: none; color: #8ee3ed; font-size: 11px; font-weight: 800; letter-spacing: .06em; }
+.macro-bar-label span { color: #35c9b5; font-size: 8px; }
+.macro-bar-items { min-width: 0; flex: 1; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: thin; }
+.macro-item { flex: none; display: flex; align-items: center; gap: 9px; padding: 7px 10px; border: 1px solid #ffffff24; border-radius: 7px; background: #ffffff0d; color: inherit; font-size: 11px; white-space: nowrap; }
+.macro-item:hover, .macro-item:focus-visible { border-color: #8ee3ed; background: #ffffff1c; }
+.macro-item strong { color: #a8dce7; }
+.macro-value { color: #fff; font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.macro-date, .macro-source, .macro-message { color: #c2d7e3; font-size: 11px; white-space: nowrap; }
+.macro-source { flex: none; }
+.macro-dialog { width: min(520px, calc(100% - 32px)); max-height: 80vh; border: 1px solid #dce7ef; border-radius: 14px; padding: 24px; color: #092a49; box-shadow: 0 24px 60px #0005; }
+.macro-dialog::backdrop { background: #061c30a8; }
+.macro-dialog-head { display: flex; justify-content: space-between; gap: 16px; align-items: start; }
+.macro-dialog h2 { margin: 4px 0; font-size: 20px; }
+.macro-dialog p { font-size: 13px; line-height: 1.6; }
+.macro-dialog a { color: #067b8a; text-decoration: underline; }
+.macro-eyebrow { color: #067b8a; font-size: 11px; font-weight: 800; letter-spacing: .06em; }
+.macro-close { border: 0; background: transparent; color: #60758c; font-size: 28px; line-height: 1; }
+.macro-detail-value { padding: 14px; border-radius: 8px; background: #f1f7fa; font-size: 24px; font-weight: 800; }
+.macro-detail-value small { font-size: 12px; font-weight: 500; }
+.macro-disclaimer { color: #60758c; }
+.guide { bottom: calc(var(--macro-bar-height) + 16px); }
+@media (max-width: 720px) {
+  .macro-bar { gap: 8px; padding-inline: 8px; }
+  .macro-source { display: none; }
+}
+@media print {
+  body { padding-bottom: 0; }
+  .macro-bar, .macro-dialog { display: none !important; }
+}

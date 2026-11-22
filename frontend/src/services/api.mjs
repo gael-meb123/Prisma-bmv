@@ -10,7 +10,11 @@
  *  - Nuevos: me(), admin.*
  */
 
-import { supabase } from "../lib/supabase.mjs";
+import { authClient as supabase, isCognito } from "../lib/auth.mjs";
+import { crearLimitador } from "./requestLimiter.mjs";
+import { fetchLectura } from "./retryRead.mjs";
+import { cuerpoAlta } from "./adminInvite.mjs";
+import { recorrerHistorial } from "./historyPages.mjs";
 import {
   MOCK_FECHAS,
   MOCK_MERCADO_RESUMEN,
@@ -22,6 +26,12 @@ import {
 const API_BASE = import.meta.env.VITE_API_URL
   ? `${import.meta.env.VITE_API_URL}/api`
   : "http://localhost:8000/api";
+const REQUIRE_REAL = import.meta.env.VITE_REQUIRE_REAL_API === "true";
+const limitarRequest = crearLimitador(2);
+function fallback(value) {
+  if (REQUIRE_REAL) throw new APIError("Datos reales no disponibles.", "DATA_UNAVAILABLE", 503);
+  return value;
+}
 
 // Token de la sesión activa. Lo fija useAccount en cada cambio de sesión (login, refresh, logout).
 // Leerlo de aquí evita llamar a supabase.auth.getSession() en cada petición: varias llamadas
@@ -50,18 +60,19 @@ export class APIError extends Error {
  * @param {boolean} [opts.auth]      - adjuntar token (default true)
  */
 export async function request(path, { body, method, signal, timeoutMs = 8000, auth = true } = {}) {
-  const timeout = AbortSignal.timeout(timeoutMs);
-  const combinedSignal = signal ? AbortSignal.any([signal, timeout]) : timeout;
-
-  try {
+  return limitarRequest(async () => {
+    const timeout = AbortSignal.timeout(timeoutMs);
+    const combinedSignal = signal ? AbortSignal.any([signal, timeout]) : timeout;
+    try {
     const headers = { "Content-Type": "application/json" };
     let tieneToken = false;
 
     if (auth) {
       let token = tokenSesion;
-      if (!token) {
+      if (!token || import.meta.env.VITE_AUTH_PROVIDER === "cognito") {
         const { data: { session } } = await supabase.auth.getSession();
         token = session?.access_token || null;
+        if (import.meta.env.VITE_AUTH_PROVIDER === "cognito") tokenSesion = token;
       }
       if (token) {
         headers["Authorization"] = `Bearer ${token}`;
@@ -74,18 +85,22 @@ export async function request(path, { body, method, signal, timeoutMs = 8000, au
     const esPublica =
       path.startsWith("/mercado/") ||
       path.startsWith("/metricas/modelos") ||
+      path.startsWith("/macro/indicadores") ||
       path.startsWith("/terminal/sectores") ||
       path.startsWith("/terminal/gobernanza");
-    if (!tieneToken && !esPublica) return null;
+    if (!tieneToken && !esPublica) {
+      if (REQUIRE_REAL) throw new APIError("Inicia sesión para continuar.", "AUTH_REQUIRED", 401);
+      return null;
+    }
 
     const httpMethod = method || (body ? "POST" : "GET");
 
-    const res = await fetch(`${API_BASE}${path}`, {
+    const res = await fetchLectura(`${API_BASE}${path}`, {
       method: httpMethod,
       headers,
       body: body ? JSON.stringify(body) : undefined,
       signal: combinedSignal,
-    });
+    }, { reintentar: path.startsWith("/mercado/") || path.startsWith("/terminal/sectores") });
 
     if (res.status === 401) {
       // Visitante sin cuenta: no es un error, se usan los mocks
@@ -111,16 +126,26 @@ export async function request(path, { body, method, signal, timeoutMs = 8000, au
     }
 
     return await res.json();
-  } catch (error) {
-    if (signal?.aborted) throw error;
-    // Re-lanzar errores de auth/permisos (no usar mock para esos)
-    if (error instanceof APIError) throw error;
-    // Si el backend no está encendido, fallback local inmediato
-    return null;
-  }
+    } catch (error) {
+      if (signal?.aborted) throw error;
+      // Re-lanzar errores de auth/permisos (no usar mock para esos)
+      if (error instanceof APIError) throw error;
+      if (REQUIRE_REAL) throw new APIError("No se pudo consultar la API real.", "DATA_UNAVAILABLE", 503);
+      // Si el backend no está encendido, fallback local inmediato
+      return null;
+    }
+  }, signal);
 }
 
 export const api = {
+  async getCapturasMes(mes, { limite = 20, despues, signal } = {}) {
+    const params = new URLSearchParams({ mes, limite: String(limite) });
+    if (despues) params.set("despues", despues);
+    return request(`/mercado/fechas?${params}`, { signal, auth: false });
+  },
+  async getMacroIndicadores(signal) {
+    return request("/macro/indicadores", { signal, auth: false, timeoutMs: 20000 });
+  },
   // --- Perfil verificado (nuevo) ---
   async me(signal) {
     return request("/me", { signal });
@@ -128,24 +153,35 @@ export const api = {
 
   // --- Monitor de mercado (público) ---
   async getFechas(signal) {
+    if (isCognito) {
+      const data = await recorrerHistorial((despues) => request(`/mercado/fechas?paginado=true${despues ? `&despues=${despues}` : ""}`,
+        { signal, auth: false }), "fechas", signal);
+      return data.fechas.reverse();
+    }
     const data = await request("/mercado/fechas", { signal, auth: false });
-    return data || MOCK_FECHAS;
+    return data || fallback(MOCK_FECHAS);
   },
 
-  async getMercado(fecha = null, signal) {
-    const data = await request(`/mercado/resumen${fecha ? `?fecha=${fecha}` : ""}`, { signal, auth: false });
-    return data || MOCK_MERCADO_RESUMEN;
+  async getMercado(fecha = null, signal, universo = null) {
+    if (!fecha && isCognito) fecha = (await api.getFechas(signal))[0];
+    const params = new URLSearchParams();
+    if (fecha) params.set("fecha", fecha);
+    if (universo) params.set("universo", universo);
+    const qs = params.toString();
+    const data = await request(`/mercado/resumen${qs ? `?${qs}` : ""}`, { signal, auth: false });
+    return data || fallback(MOCK_MERCADO_RESUMEN);
   },
 
 
   // --- Métricas Institucionales y Asignación de Capital ¼-Kelly (público) ---
   async getMetricasModelos(signal) {
     const data = await request("/metricas/modelos", { signal, auth: false });
-    return data || MOCK_METRICAS_MODELOS;
+    return data || fallback(MOCK_METRICAS_MODELOS);
   },
 
   // --- Señales Panel G2 (requiere sesión, filtrado por plan en backend) ---
-  async getSenales(fecha = "2026-11-05", ticker = null, signal) {
+  async getSenales(fecha = null, ticker = null, signal) {
+    if (!fecha) return fallback([]);
     const query = ticker ? `?fecha=${fecha}&emisora=${ticker}` : `?fecha=${fecha}`;
     const data = await request(`/senales/panel${query}`, { signal });
     const adaptar = (s) => ({
@@ -158,24 +194,25 @@ export const api = {
       ppp_base: s.ppp_base_t,
       ret_rel: s.ret_10_rel_panel,
       sector: s.sector,
-      muestra_evaluacion: s.muestra_evaluacion || "IN_SAMPLE_DISENO",
-      estado_resolucion: s.estado_resolucion || "PENDIENTE_RECONCILIACION",
-      sesiones_transcurridas: s.sesiones_transcurridas ?? 0,
+      muestra_evaluacion: s.muestra_evaluacion ?? null,
+      estado_resolucion: s.estado_resolucion ?? null,
+      sesiones_transcurridas: s.sesiones_transcurridas ?? null,
       retorno_parcial_pct: s.retorno_parcial_pct ?? null,
       acierto_parcial_en_curso: s.acierto_parcial_en_curso ?? null,
     });
 
     if (data && data.senales) return data.senales.map(adaptar);
     if (ticker) {
-      return MOCK_SENALES_PANEL.filter((s) => s.emisora === ticker);
+      return fallback(MOCK_SENALES_PANEL.filter((s) => s.emisora === ticker));
     }
-    return MOCK_SENALES_PANEL;
+    return fallback(MOCK_SENALES_PANEL);
   },
 
   // --- Serie temporal (requiere sesión) ---
   async getSerie(ticker = "WALMEX", signal) {
+    if (isCognito) return (await api.terminal.serie(ticker, signal)).puntos;
     const data = await request(`/serie/${ticker.toLowerCase()}`, { signal });
-    return data || MOCK_SERIE_WALMEX;
+    return data || fallback(MOCK_SERIE_WALMEX);
   },
 
   // --- Chat Prismi ---
@@ -222,14 +259,29 @@ export const api = {
 
   // --- Terminal: gráficas (sector y gobernanza son públicas; el resto respeta el plan) ---
   terminal: {
-    sectores(fecha, signal) {
+    consenso(fecha, signal) {
+      const query = fecha ? `?fecha=${encodeURIComponent(fecha)}` : "";
+      return request(`/terminal/consenso${query}`, { signal, timeoutMs: 30000 });
+    },
+    async sectores(fecha, signal) {
+      if (!fecha && isCognito) fecha = (await api.getFechas(signal))[0];
       return request(`/terminal/sectores${fecha ? `?fecha=${fecha}` : ""}`, { signal, auth: false });
     },
     gobernanza(signal) {
       return request("/terminal/gobernanza", { signal, auth: false });
     },
     serie(emisora, signal) {
+      if (isCognito) return recorrerHistorial((despues) =>
+        request(`/terminal/serie?emisora=${encodeURIComponent(emisora)}&paginado=true${despues ? `&despues=${despues}` : ""}`,
+          { signal }), "puntos", signal);
       return request(`/terminal/serie?emisora=${encodeURIComponent(emisora)}`, { signal });
+    },
+    estadistica(emisora, desde, hasta, signal, universo = null) {
+      const params = new URLSearchParams({ emisora });
+      if (desde) params.set("desde", desde);
+      if (hasta) params.set("hasta", hasta);
+      if (universo) params.set("universo", universo);
+      return request(`/terminal/estadistica?${params}`, { signal, timeoutMs: 30000 });
     },
     senal(emisora, fecha, signal) {
       const f = fecha ? `&fecha=${fecha}` : "";
@@ -251,7 +303,7 @@ export const api = {
     },
     async crearUsuario({ nombre, email, password, rol, plan }, signal) {
       return request("/admin/usuarios", {
-        body: { nombre, email, password, rol, plan },
+        body: cuerpoAlta({ nombre, email, password, rol, plan }, isCognito),
         signal,
       });
     },

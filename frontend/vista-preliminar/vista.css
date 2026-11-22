@@ -1,0 +1,26 @@
+:root { font-family: system-ui, sans-serif; color: #172b45; background: #f1f5f8; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+.wrap { width: min(1080px, 92%); margin: auto; }
+header { background: #112a43; color: white; padding: 20px 0; }
+header .wrap { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+header strong { letter-spacing: .1em; } header strong span { color: #56d4c7; } header small { color: #c7d8e5; }
+.intro { padding: 46px 0 22px; max-width: 850px; }
+h1 { font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.1; margin: 12px 0; }
+h2 { margin: 0; font-size: 1.5rem; } p { line-height: 1.6; }
+.eyebrow { color: #087d78; font-size: .75rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; margin: 0 0 8px; }
+.notice { background: #fff4d5; border-left: 4px solid #c68b10; padding: 16px; line-height: 1.5; border-radius: 5px; margin-top: 24px; }
+.panel { background: white; border: 1px solid #dce6ed; border-radius: 14px; padding: clamp(18px, 4vw, 32px); box-shadow: 0 12px 30px #132b430c; }
+.controls { display: flex; align-items: end; gap: 14px; flex-wrap: wrap; }
+.controls > div { flex: 1 1 250px; }
+label { display: grid; gap: 5px; font-size: .85rem; font-weight: 700; }
+select, button { font: inherit; border: 1px solid #aebfcb; border-radius: 6px; padding: 9px 12px; background: white; color: #172b45; }
+button { background: #126d70; color: white; border-color: #126d70; cursor: pointer; }
+button:hover { background: #0d5659; } button:focus-visible, select:focus-visible { outline: 3px solid #eba22e; outline-offset: 2px; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 12px; }
+.stats div { border: 1px solid #dce6ed; border-radius: 8px; padding: 16px; }
+.stats span { display: block; color: #526a7d; font-size: .85rem; min-height: 2.5em; }.stats strong { font-size: 1.8rem; }
+.explanation, .source, footer { color: #526a7d; font-size: .9rem; }
+.table-scroll { overflow-x: auto; } table { width: 100%; border-collapse: collapse; min-width: 620px; }
+th, td { text-align: left; padding: 12px 10px; border-bottom: 1px solid #e3ebef; } th { color: #526a7d; font-size: .8rem; }
+footer { padding: 32px 0 50px; }

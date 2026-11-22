@@ -14,7 +14,7 @@ function useRecurso(cargar, deps, activo = true) {
       return undefined;
     }
     const ctrl = new AbortController();
-    setEstado((s) => ({ data: s.data, loading: true, error: null }));
+    setEstado({ data: null, loading: true, error: null });
     cargar(ctrl.signal)
       .then((data) => !ctrl.signal.aborted && setEstado({ data, loading: false, error: null }))
       .catch((error) => !ctrl.signal.aborted && setEstado({ data: null, loading: false, error }));
@@ -24,15 +24,18 @@ function useRecurso(cargar, deps, activo = true) {
   return estado;
 }
 
-export function useTerminalData({ emisora, fecha, fechaSenal, permitido, conSesion }) {
+export function useTerminalData({ emisora, fecha, fechaSenal, permitido, conSesion, seccion, universoMercado = "base_15" }) {
+  const real = import.meta.env.VITE_REQUIRE_REAL_API === "true";
+  const es = (...secciones) => secciones.includes(seccion);
+  const universoActivo = seccion === "mercado" && universoMercado === "ipc35_provisional" ? "ipc35_provisional" : null;
   const fechas = useRecurso((s) => api.getFechas(s), []);
-  const mercado = useRecurso((s) => api.getMercado(fecha, s), [fecha]);
-  const sectores = useRecurso((s) => api.terminal.sectores(fecha, s), [fecha]);
-  const gobernanza = useRecurso((s) => api.terminal.gobernanza(s), []);
-  const metricas = useRecurso((s) => api.getMetricasModelos(s), []);
-  const serie = useRecurso((s) => api.terminal.serie(emisora, s), [emisora], permitido && conSesion);
-  const senal = useRecurso((s) => api.terminal.senal(emisora, fecha, s), [emisora, fecha], permitido && conSesion);
-  const seguimiento = useRecurso((s) => api.terminal.seguimiento(emisora, fechaSenal, s), [emisora, fechaSenal], permitido && conSesion);
-  const marcador = useRecurso((s) => api.terminal.marcador(s), [], conSesion);
+  const mercado = useRecurso((s) => api.getMercado(fecha, s, universoActivo), [fecha, universoActivo], es("resumen", "mercado"));
+  const sectores = useRecurso((s) => api.terminal.sectores(fecha, s), [fecha], es("resumen", "mercado"));
+  const gobernanza = useRecurso((s) => api.terminal.gobernanza(s), [], es("gobernanza") && !real);
+  const metricas = useRecurso((s) => api.getMetricasModelos(s), [], es("senales", "calidad") && !real);
+  const serie = useRecurso((s) => api.terminal.serie(emisora, s), [emisora], es("resumen") && permitido && conSesion);
+  const senal = useRecurso((s) => api.terminal.senal(emisora, fecha, s), [emisora, fecha], es("senales") && permitido && conSesion);
+  const seguimiento = useRecurso((s) => api.terminal.seguimiento(emisora, fechaSenal, s), [emisora, fechaSenal], es("seguimiento") && permitido && conSesion);
+  const marcador = useRecurso((s) => api.terminal.marcador(s), [], es("seguimiento") && conSesion);
   return { fechas, mercado, sectores, gobernanza, metricas, serie, senal, seguimiento, marcador };
 }

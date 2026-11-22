@@ -124,13 +124,14 @@ export function Landing() {
             </div>
 
             <div className="bk-hero-art">
-              <HeroIllustration ppp={walmex?.ppp_bmv_mxn ? formatMoney(walmex.ppp_bmv_mxn) : "$54.59"} />
+              <HeroIllustration ppp={walmex?.ppp_bmv_mxn != null ? formatMoney(walmex.ppp_bmv_mxn) : "—"} />
+              <small>Ilustración: la gráfica y las barras no representan datos reales.</small>
               {mercado && (
                 <>
                   <div className="bk-hero-float f1">
                     PPP verificados hoy
                     <strong className="bk-mono">
-                      {k.total_verificadas ?? "—"}/{k.total_emisoras ?? 15}
+                      {k.total_verificadas ?? "—"}/{k.total_emisoras ?? "—"}
                     </strong>
                     sesión {mercado.fecha}
                   </div>
@@ -191,8 +192,8 @@ export function Landing() {
           <div className="bk-grid-4">
             <div className="bk-card bk-stat">
               <small>PPP verificados</small>
-              <strong className="bk-mono">{k.total_verificadas ?? "—"} de {k.total_emisoras ?? 15}</strong>
-              <span>{k.total_ausentes ?? 0} emisoras sin dato en el boletín (sin rellenar)</span>
+              <strong className="bk-mono">{k.total_verificadas ?? "—"} de {k.total_emisoras ?? "—"}</strong>
+              <span>{k.total_ausentes ?? "—"} filas sin PPP verificado; cobertura parcial</span>
             </div>
             <div className="bk-card bk-stat">
               <small>Alzas · bajas</small>

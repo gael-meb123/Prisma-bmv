@@ -1,12 +1,19 @@
 import React, { useState } from "react";
 import { ArrowLeft, Printer, ShieldCheck, CheckCircle2, FileText, Download } from "lucide-react";
 import { Logo, Badge, Button } from "../components/UI";
-import { formatMoney, formatPct, formatProb } from "../utils/presentation.mjs";
+import { formatMoney, formatPct, formatProb, nombreModelo } from "../utils/presentation.mjs";
 
 export function Report({ ticker = "WALMEX", senales = [], onBack }) {
   const [issuedAt] = useState(() =>
     new Date().toLocaleString("es-MX", { dateStyle: "medium", timeStyle: "short" })
   );
+  if (import.meta.env.VITE_REQUIRE_REAL_API === "true") {
+    return <main className="container" style={{ maxWidth: 700, margin: "60px auto" }}>
+      <h1>Ficha no disponible</h1>
+      <p>La ficha se habilitará cuando las señales y su procedencia estén validadas. No se muestra información de ejemplo.</p>
+      <button type="button" onClick={onBack}>Volver a la terminal</button>
+    </main>;
+  }
 
   const primera = senales[0] || {};
   const consenso = primera.consenso || "CONSENSO_PANEL_G2_NO_SUBIDA";
@@ -67,20 +74,23 @@ export function Report({ ticker = "WALMEX", senales = [], onBack }) {
           {/* Tabla de Modelos G2 */}
           <section className="report-section" style={{ marginBottom: "24px" }}>
             <h2 style={{ fontSize: "16px", color: "var(--navy)", marginBottom: "10px" }}>Matriz de Inferencia del Panel G2 (Horizonte t+5)</h2>
-            <table className="comparison-table" style={{ width: "100%", fontSize: "12px" }}>
+            <table className="comparison-table" style={{ width: "100%", minWidth: 0, fontSize: "12px" }}>
               <thead>
                 <tr>
-                  <th>Variante de Modelo</th>
-                  <th>Especificación</th>
-                  <th style={{ textAlign: "right" }}>Probabilidad</th>
-                  <th style={{ textAlign: "center" }}>Pronóstico</th>
+                  <th style={{ width: "60%" }}>Modelo de análisis</th>
+                  <th style={{ width: "20%", textAlign: "right" }}>Probabilidad</th>
+                  <th style={{ width: "20%", textAlign: "center" }}>Pronóstico</th>
                 </tr>
               </thead>
               <tbody>
                 {senales.map((s) => (
                   <tr key={s.id}>
-                    <td><strong>{s.modelo}</strong></td>
-                    <td style={{ color: "var(--muted)" }}>Logit Pooled IRLS Newton-Raphson</td>
+                    <td>
+                      <strong>{nombreModelo(s.modelo)}</strong>
+                      <small style={{ color: "var(--muted)", display: "block", marginTop: "4px" }}>
+                        Estimación estadística basada en regresión logística
+                      </small>
+                    </td>
                     <td style={{ textAlign: "right", fontFamily: "monospace", fontWeight: "700" }}>{formatProb(s.prob)}</td>
                     <td style={{ textAlign: "center" }}>
                       <span style={{ fontWeight: "700", color: s.pred === "SUBIDA" ? "#059669" : "#dc2626" }}>

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <title>Prisma BMV · Vista preliminar de mercado</title>
+  <link rel="stylesheet" href="./vista.css">
+  <script src="./vista.js" defer></script>
+</head>
+<body>
+  <header><div class="wrap"><strong>PRISMA <span>BMV</span></strong><small>Laboratorio educativo · vista preliminar</small></div></header>
+  <main class="wrap">
+    <section class="intro">
+      <p class="eyebrow">Mercado · datos disponibles</p>
+      <h1>Consulta preliminar de mercado</h1>
+      <p>Consulta las filas disponibles de la instantánea de datos. Esta vista es parcial: no acredita cobertura completa ni sustituye al boletín de la BMV.</p>
+      <div class="notice"><strong>Aplicación en construcción.</strong> Todavía no están disponibles aquí el acceso de usuarios, las señales, la estadística ni la administración. No se muestran datos de ejemplo.</div>
+    </section>
+    <section class="panel" aria-labelledby="titulo">
+      <div class="controls"><div><p class="eyebrow">Sesión consultada</p><h2 id="titulo">Resumen de mercado</h2></div>
+        <label>Fecha <select id="fecha" disabled><option>Cargando…</option></select></label>
+        <button id="recargar" type="button">Actualizar</button>
+      </div>
+      <p id="estado" role="status" aria-live="polite">Consultando la API…</p>
+      <div id="resultado" hidden>
+        <div class="stats">
+          <div><span>Filas disponibles</span><strong id="filas">—</strong></div>
+          <div><span>PPP marcados como verificados</span><strong id="verificadas">—</strong></div>
+          <div><span>Sin PPP verificado</span><strong id="sin-ppp">—</strong></div>
+        </div>
+        <p class="explanation">Los totales solo describen las filas recibidas, no todas las emisoras. Los datos de contingencia no se muestran como PPP de BMV.</p>
+        <div class="table-scroll"><table>
+          <thead><tr><th>Emisora</th><th>Serie</th><th>Estado de captura</th><th>PPP BMV (MXN)</th><th>Variación</th></tr></thead>
+          <tbody id="cotizaciones"></tbody>
+        </table></div>
+        <p class="source" id="fuente"></p>
+      </div>
+    </section>
+    <footer>Información educativa; no constituye asesoría ni recomendación de inversión. La disponibilidad y procedencia de los datos requieren validación adicional.</footer>
+  </main>
+</body>
+</html>

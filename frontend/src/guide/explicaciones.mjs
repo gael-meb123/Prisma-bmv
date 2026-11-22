@@ -32,6 +32,72 @@ export function textoConsenso(etiqueta) {
 
 const AVISO = "Recuerda: son probabilidades estadísticas, no una recomendación de compra o venta.";
 
+/* Análisis descriptivo ------------------------------------------------------- */
+export function explicarEstadistica({ emisora, reporte, apartado = "general", metodo = "pearson" }) {
+  const h = reporte?.cobertura_historico;
+  const p = reporte?.cobertura_panel;
+  if (!h) {
+    return { titulo: "Análisis estadístico", texto: "No hay un reporte disponible para explicar.",
+      contexto: "", sugerencias: [], expresion: "unsure" };
+  }
+  const periodo = h.fecha_inicial && h.fecha_final ? `${h.fecha_inicial} a ${h.fecha_final}` : "sin fechas disponibles";
+  const verificados = h.estados?.PPP_PUBLICADO_VERIFICADO ?? 0;
+  const variacion = reporte.estadisticas_historico_verificado?.find((x) => x.agrupacion === "total" && x.variable === "variacion_ppp_vs_anterior_pct");
+  const direcciones = reporte.frecuencias_direccion?.filter((x) => x.agrupacion === "total") || [];
+  const conteo = (nombre) => direcciones.find((x) => x.direccion === nombre)?.n ?? 0;
+  const n = variacion?.n_valido ?? 0;
+  const panel = p ? `${p.registros} registros` : "no disponible";
+  const base = `${emisora}: ${h.registros} registros históricos del ${periodo}, ${verificados} con estado verificado; panel: ${panel}.`;
+  const textos = {
+    general: [
+      `Este módulo describe el comportamiento histórico de ${emisora}; no predice precios ni recomienda comprar o vender.`,
+      `${base} La serie histórica y el panel de indicadores pueden cubrir fechas distintas.`,
+      `Las medidas y gráficos usan observaciones verificadas y no rellenan valores ausentes. Hay ${n} variaciones válidas para resumir.`,
+      "Elige un periodo y usa los botones de Prismi en cada tarjeta para saber cómo leer sus resultados.",
+    ],
+    calidad: [
+      `La cobertura indica qué datos están disponibles para ${emisora} en el periodo ${periodo}.`,
+      `La serie contiene ${h.registros} registros, de los cuales ${verificados} tienen estado de PPP verificado. Panel: ${panel}.`,
+      "Un registro verificado no garantiza que todos sus indicadores estén disponibles. Los faltantes y estados no verificados no se sustituyen por ceros; revisa el N válido de cada variable.",
+    ],
+    direccion: [
+      `Estas frecuencias cuentan las variaciones históricas válidas y verificadas de ${emisora} frente a la sesión anterior.`,
+      n ? `De ${n} variaciones válidas: ${conteo("alza")} fueron alzas, ${conteo("baja")} bajas y ${conteo("sin_cambio")} quedaron sin cambio. Los porcentajes usan estas variaciones válidas como denominador.` : "No hay variaciones válidas para contar en este periodo.",
+      "Contar más alzas que bajas no indica el tamaño de los movimientos ni predice la siguiente sesión.",
+    ],
+    medidas: [
+      "Cada fila resume una variable. N válido cuenta los valores usados; faltantes cuenta los que no se pudieron usar dentro de las filas verificadas.",
+      "La media es el promedio; la mediana es el valor central. Mínimo y máximo son los extremos; la desviación estándar describe la dispersión. Q1 y Q3 delimitan el 50 % central y su diferencia es el RIC.",
+      "La asimetría describe hacia qué lado se extiende la distribución. El exceso de curtosis resume el peso de sus colas respecto a una normal; ambas medidas pueden ser sensibles a valores extremos y requieren suficientes datos.",
+      n && variacion?.media != null ? `Para ${emisora}, la variación histórica tiene N=${n} y media ${pct(variacion.media)}.` : "No hay suficientes datos de variación para dar un promedio.",
+      "El PPP se expresa en pesos, la variación histórica en porcentaje y los rendimientos y volatilidades del panel en escala decimal: 0.05 equivale a 5 %. El rendimiento a 20 sesiones mira hacia atrás, no hacia el futuro.",
+    ],
+    histograma: [
+      `El histograma agrupa las ${n} variaciones válidas de ${emisora} en intervalos. El eje horizontal muestra la variación porcentual y la altura de cada barra, cuántas observaciones cayeron en ese intervalo.`,
+      "Las barras a la izquierda de cero representan bajas y las de la derecha alzas. Su forma describe el pasado; no indica la probabilidad exacta del próximo movimiento.",
+    ],
+    caja: [
+      `El diagrama resume la dispersión de ${n} variaciones históricas válidas de ${emisora}. La caja abarca del primer al tercer cuartil y la línea interior indica la mediana.`,
+      "Los bigotes y puntos ayudan a identificar la dispersión y valores atípicos según la regla de la gráfica. Un valor atípico no implica necesariamente un error ni anticipa un movimiento futuro.",
+    ],
+    correlacion: [
+      `La matriz muestra asociaciones históricas entre dos variables de ${emisora}, usando pares completos de la muestra del panel. El método seleccionado es ${metodo === "spearman" ? "Spearman" : "Pearson"}.`,
+      "Pearson mide asociación lineal; Spearman usa los rangos para describir una relación monotónica. Valores cercanos a +1 indican asociación positiva y cercanos a −1, negativa; cerca de 0 indica poca asociación del tipo medido, no necesariamente ausencia de toda relación.",
+      "La diagonal compara cada variable consigo misma. El N puede cambiar entre celdas; un guion indica que la correlación no pudo calcularse. Correlación no es causalidad ni predicción, y las observaciones pueden depender entre sí.",
+    ],
+  };
+  const titulos = { general: "Análisis estadístico", calidad: "Calidad y cobertura",
+    direccion: "Dirección de la variación", medidas: "Medidas descriptivas",
+    histograma: "Histograma de variaciones", caja: "Diagrama de caja", correlacion: "Correlaciones exploratorias" };
+  return {
+    titulo: `${titulos[apartado] || titulos.general} · ${emisora}`,
+    texto: (textos[apartado] || textos.general).join("\n\n"),
+    contexto: `${base} Variaciones válidas: ${n}. Apartado: ${titulos[apartado] || titulos.general}.${apartado === "correlacion" ? ` Método: ${metodo}.` : ""}`,
+    sugerencias: ["¿Qué es el PPP?", "¿Cómo interpreto la variación histórica?", "¿Por qué no se rellenan los datos faltantes?"],
+    expresion: "thinking",
+  };
+}
+
 /* Serie PPP ------------------------------------------------------------------ */
 export function explicarSerie({ emisora, sector, puntos = [] }) {
   const con = puntos.filter((p) => p.ppp != null);

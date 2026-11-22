@@ -33,6 +33,7 @@ export function iniciales(nombre = "", email = "") {
 }
 
 export function Header() {
+  const real = import.meta.env.VITE_REQUIRE_REAL_API === "true";
   const account = useAccount();
   const status = useMarketStatus();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -75,13 +76,15 @@ export function Header() {
               <span className="bk-dot bk-dot-live" aria-hidden="true" />
               {status
                 ? `Mercado BMV · sesión ${status.fecha} · ${status.verificadas}/${status.total} PPP verificados`
-                : "Mercado BMV · boletín oficial"}
+                : real ? "Prisma BMV · versión experimental" : "Mercado BMV · boletín oficial"}
             </span>
           </div>
           <div className="bk-util-right">
-            <a href="#/fuentes"><ShieldCheck size={13} style={{ verticalAlign: "-2px", marginRight: 4 }} />Seguridad</a>
-            <a href="#/estados"><CircleHelp size={13} style={{ verticalAlign: "-2px", marginRight: 4 }} />Ayuda</a>
-            <a href="#/planes">Planes</a>
+            {real ? <span>Ingesta automática pausada</span> : <>
+              <a href="#/fuentes"><ShieldCheck size={13} style={{ verticalAlign: "-2px", marginRight: 4 }} />Seguridad</a>
+              <a href="#/estados"><CircleHelp size={13} style={{ verticalAlign: "-2px", marginRight: 4 }} />Ayuda</a>
+              <a href="#/planes">Planes</a>
+            </>}
           </div>
         </div>
       </div>
@@ -91,7 +94,7 @@ export function Header() {
           <Logo light />
 
           <nav className={`bk-nav ${menuOpen ? "is-open" : ""}`} aria-label="Navegación principal">
-            {LINKS.map(([label, href]) => (
+            {(real ? [["Inicio", "#/"], ["Terminal", "#/sistema"]] : LINKS).map(([label, href]) => (
               <a
                 key={label}
                 href={href}
@@ -121,7 +124,7 @@ export function Header() {
                         <strong>{account.user?.name || "Mi cuenta"}</strong>
                         <span>{account.user?.email}</span>
                       </div>
-                      <label className="bk-plan-select">
+                      {!real && <label className="bk-plan-select">
                         Plan (demo)
                         <select value={account.role} onChange={handlePlanChange}>
                           {PLANS.map((p) => (
@@ -130,9 +133,10 @@ export function Header() {
                             </option>
                           ))}
                         </select>
-                      </label>
+                      </label>}
                       {planError && <p role="alert" style={{ color: "#b91c1c", fontSize: 12, margin: "0 10px 6px" }}>{planError}</p>}
                       <a href="#/sistema"><LayoutDashboard size={15} /> Ir a mi terminal</a>
+                      <a href="#/seguridad"><ShieldCheck size={15} /> Seguridad de la cuenta</a>
                       {isAdmin && <a href="#/admin"><Users size={15} /> Administración</a>}
                       <button type="button" className="bk-user-item" onClick={handleLogout}>
                         <LogOut size={15} /> Cerrar sesión
@@ -143,9 +147,9 @@ export function Header() {
               </>
             ) : (
               <>
-                <a href="#/registro" className="bk-btn bk-btn-outline bk-btn-sm bk-hide-sm">
+                {!real && <a href="#/registro" className="bk-btn bk-btn-outline bk-btn-sm bk-hide-sm">
                   <UserPlus size={15} /> Abrir cuenta
-                </a>
+                </a>}
                 <a href="#/acceso" data-tour="login" className="bk-btn bk-btn-navy bk-btn-sm">
                   <Lock size={14} /> Ingresar
                 </a>
