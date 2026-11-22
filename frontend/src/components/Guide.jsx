@@ -31,18 +31,21 @@ const OFFER_TEXT = {
 };
 
 export function Guide({ route, phase, selectedTicker, busy, error }) {
+  const real = import.meta.env.VITE_REQUIRE_REAL_API === "true";
   const account = useAccount();
   const hasSession = Boolean(account.session);
   const ready = account.ready;
   const nombre = account.user?.name?.split(" ")[0] || "";
 
   const [open, setOpen] = useState(false);
-  const [bubbleOpen, setBubbleOpen] = useState(true);
+  const [bubbleOpen, setBubbleOpen] = useState(!real);
   const [, setTick] = useState(0); // fuerza recalcular la oferta tras elegir/terminar
   const [messages, setMessages] = useState([
     {
       sender: "prismi",
-      text: "¡Hola! Soy Prismi, el billete con superpoderes de Prisma BMV. Puedo explicarte el PPP oficial, los modelos G2 o el estado de cualquier emisora. En la terminal, pulsa «Prismi te lo explica» en cualquier gráfica y te la cuento con los datos del día.",
+      text: real
+        ? "¡Hola! Soy Prismi, el asistente cuantitativo de Prisma BMV. Puedo explicarte el PPP oficial de la BMV, la cobertura provisional de los 35 componentes del IPC, el avance de la ventana limpia 21/21, las observaciones secundarias de Yahoo Finance o tus planes."
+        : "¡Hola! Soy Prismi, el billete con superpoderes de Prisma BMV. Puedo explicarte el PPP oficial, los modelos G2 o el estado de cualquier emisora. En la terminal, pulsa «Prismi te lo explica» en cualquier gráfica y te la cuento con los datos del día.",
     },
   ]);
   // Gráfica que Prismi acaba de explicar: viaja como contexto en las preguntas siguientes.
@@ -52,8 +55,8 @@ export function Guide({ route, phase, selectedTicker, busy, error }) {
   const threadRef = useRef(null);
 
   const moment = guideMoment({ route, phase, selectedTicker, busy, error, hasSession, nombre });
-  // Se recalcula en cada render; `tick` provoca el render tras elegir o terminar.
-  const offer = pendingOffer({ route, hasSession, ready });
+  // En modo AWS real no ofrecemos el recorrido heredado (Tour desactivado).
+  const offer = real ? null : pendingOffer({ route, hasSession, ready });
   const ultimaExpresion = [...messages].reverse().find((m) => m.expresion)?.expresion;
   const expression = sending ? "thinking" : open && ultimaExpresion ? ultimaExpresion : moment.expression;
   const askLogin = ready && !hasSession && !isAuthRoute(route);
@@ -228,9 +231,9 @@ export function Guide({ route, phase, selectedTicker, busy, error }) {
               </div>
             </div>
             <div className="guide-chat-tools">
-              <button type="button" onClick={replayTour} aria-label="Ver el recorrido guiado" title="Ver el recorrido guiado">
+              {!real && <button type="button" onClick={replayTour} aria-label="Ver el recorrido guiado" title="Ver el recorrido guiado">
                 <MapIcon size={17} />
-              </button>
+              </button>}
               <button type="button" onClick={() => setOpen(false)} aria-label="Minimizar chat">
                 <X size={18} />
               </button>

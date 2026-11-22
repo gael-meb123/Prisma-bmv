@@ -298,10 +298,12 @@ class MercadoTest(unittest.TestCase):
             self.assertEqual(body["catalogo_ipc"]["estado_composicion"], "PROVISIONAL_NO_OFICIAL")
             por_em = {x["emisora"]: x for x in body["cotizaciones"]}
             self.assertEqual(por_em["VOLAR"]["estado_captura"], "PPP_OBSERVADO_MAPEO_PROVISIONAL")
+            self.assertEqual(por_em["VOLAR"]["sector"], "Industrial · Aerolíneas (provisional)")
             self.assertEqual(por_em["VOLAR"]["ppp_bmv_mxn"], 15.15)
             self.assertAlmostEqual(por_em["VOLAR"]["variacion_pct"], 1.0)
             self.assertFalse(por_em["VOLAR"]["elegible_senales"])
             self.assertEqual(por_em["PINFRA"]["estado_captura"], "NO_ENCONTRADO_EN_TABLAS_BOLETIN")
+            self.assertEqual(por_em["PINFRA"]["sector"], "Industrial · Infraestructura (provisional)")
             self.assertIsNone(por_em["PINFRA"]["ppp_bmv_mxn"])
             self.assertTrue(all(x["elegible_senales"] is False for x in body["cotizaciones"]))
 
@@ -316,6 +318,84 @@ class MercadoTest(unittest.TestCase):
             cands = [x for x in body_sin["cotizaciones"] if x["origen_catalogo"] == "CANDIDATO_20"]
             self.assertEqual(len(cands), 20)
             self.assertTrue(all(x["estado_captura"] == "BOLETIN_BRONZE_NO_DISPONIBLE" and x["ppp_bmv_mxn"] is None for x in cands))
+
+    def test_gobernanza_en_vivo_y_prismi_aws_con_guardrails_y_plan(self):
+        class ErrorNoSuchKey(Exception):
+            def __init__(self):
+                self.response = {"Error": {"Code": "NoSuchKey"}}
+
+        class S3Gob:
+            def __init__(self):
+                self.objs = {
+                    "k": MercadoTest.CSV.encode("utf-8"),
+                    "evidencias/operacion/avance_ventana_limpia.json": json.dumps({
+                        "ultima_fecha_capturada": "2026-11-20",
+                        "capturas_seguras_totales": 8,
+                        "sha256_bronze": "a" * 64,
+                        "sha256_silver": "b" * 64,
+                        "emision": "NO_HABILITADA",
+                        "ventana_limpia": {"desde_corte_limpio": "2026-11-20", "sesiones_consecutivas": 1, "meta": 21, "faltan": 20, "completa": False, "fechas_racha": ["2026-11-20"]},
+                    }).encode("utf-8"),
+                    "evidencias/observaciones_yahoo/estado_permiso.json": json.dumps({"estado": "APROBADO", "habilitacion_permitida": True}).encode("utf-8"),
+                    "evidencias/calendario_bmv/2027/estado.json": json.dumps({"estado": "PENDIENTE_FUENTE_OFICIAL", "habilita_operacion": False}).encode("utf-8"),
+                }
+
+            def get_object(self, Bucket, Key):
+                if Key not in self.objs:
+                    raise ErrorNoSuchKey()
+                raw = self.objs[Key]
+                return {"Body": io.BytesIO(raw), "ContentLength": len(raw), "LastModified": "2026-11-21"}
+
+            def list_objects_v2(self, Bucket, Prefix, MaxKeys=100):
+                if Prefix == "silver/ipc35_provisional/capturas/":
+                    return {"Contents": [{"Key": "silver/ipc35_provisional/capturas/2026/11/captura_20261120.json"}]}
+                return {"Contents": []}
+
+        s3 = S3Gob()
+        with patch.dict("os.environ", {"MERCADO_BUCKET": "b", "MERCADO_KEY": "k", "YAHOO_OBSERVACIONES_HABILITADAS": "true", "ANTHROPIC_API_KEY": ""}):
+            r_gob = api.ejecutar({"routeKey": "GET /api/terminal/gobernanza"}, Tabla(), s3)
+            self.assertEqual(r_gob["statusCode"], 200)
+            gob = json.loads(r_gob["body"])
+            self.assertEqual(len(gob["nodos"]), 10)
+            self.assertEqual(gob["estado_operativo"]["ventana_limpia"]["sesiones_consecutivas"], 1)
+            self.assertEqual(gob["estado_operativo"]["compuertas"]["emision_senales"], "NO_HABILITADA")
+            self.assertTrue(gob["estado_operativo"]["compuertas"]["yahoo_observaciones"]["habilitada_api"])
+            self.assertEqual(gob["estado_operativo"]["integridad"]["cortes_ipc35_provisionales"], 1)
+
+            perfil_exp = Tabla({"rol": "user", "plan": "explorer", "email": "e@example.org", "nombre": "Exp"})
+            ev_p = evento({"sub": "u", "token_use": "access"})
+            ev_p["routeKey"] = "POST /api/terminal/prismi"
+
+            # Tema externo -> GUARDRAIL
+            ev_p["body"] = json.dumps({"pregunta": "Dame una receta de pastel"})
+            r_ext = api.ejecutar(ev_p, perfil_exp, s3)
+            self.assertEqual(r_ext["statusCode"], 200)
+            self.assertEqual(json.loads(r_ext["body"])["origen"], "GUARDRAIL")
+
+            # Asesoría imperativa -> GUARDRAIL
+            ev_p["body"] = json.dumps({"pregunta": "¿Debo comprar WALMEX hoy?"})
+            r_adv = api.ejecutar(ev_p, perfil_exp, s3)
+            b_adv = json.loads(r_adv["body"])
+            self.assertEqual(b_adv["origen"], "GUARDRAIL")
+            self.assertIn("No doy recomendaciones", b_adv["respuesta"])
+            self.assertIn("$42.00 MXN", b_adv["respuesta"])
+
+            # Respeta plan Explorer (no filtra AMX)
+            ev_p["body"] = json.dumps({"pregunta": "¿Cómo cerró AMX?"})
+            r_plan = api.ejecutar(ev_p, perfil_exp, s3)
+            self.assertIn("no está incluida en tu plan", json.loads(r_plan["body"])["respuesta"])
+
+            # Consulta sobre señales -> honestamente indica bloqueo 1/21
+            ev_p["body"] = json.dumps({"pregunta": "¿Ya están listas las señales G2?"})
+            r_sen = api.ejecutar(ev_p, perfil_exp, s3)
+            b_sen = json.loads(r_sen["body"])
+            self.assertEqual(b_sen["origen"], "LOCAL_AWS")
+            self.assertIn("bloqueados", b_sen["respuesta"])
+            self.assertIn("1/21", b_sen["respuesta"])
+
+            # Cuerpo vacío -> 422
+            ev_p["body"] = json.dumps({"pregunta": "   "})
+            self.assertEqual(api.ejecutar(ev_p, perfil_exp, s3)["statusCode"], 422)
 
 
 if __name__ == "__main__":

@@ -31,7 +31,7 @@ export function useTerminalData({ emisora, fecha, fechaSenal, permitido, conSesi
   const fechas = useRecurso((s) => api.getFechas(s), []);
   const mercado = useRecurso((s) => api.getMercado(fecha, s, universoActivo), [fecha, universoActivo], es("resumen", "mercado"));
   const sectores = useRecurso((s) => api.terminal.sectores(fecha, s), [fecha], es("resumen", "mercado"));
-  const gobernanza = useRecurso((s) => api.terminal.gobernanza(s), [], es("gobernanza") && !real);
+  const gobernanza = useRecurso((s) => api.terminal.gobernanza(s), [], es("gobernanza"));
   const metricas = useRecurso((s) => api.getMetricasModelos(s), [], es("senales", "calidad") && !real);
   const serie = useRecurso((s) => api.terminal.serie(emisora, s), [emisora], es("resumen") && permitido && conSesion);
   const senal = useRecurso((s) => api.terminal.senal(emisora, fecha, s), [emisora, fecha], es("senales") && permitido && conSesion);

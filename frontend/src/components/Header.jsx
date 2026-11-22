@@ -80,7 +80,10 @@ export function Header() {
             </span>
           </div>
           <div className="bk-util-right">
-            {real ? <span>Ingesta automática pausada</span> : <>
+            {real ? <>
+              <span>Ingesta BMV activa · Señales en validación</span>
+              <a href="#/planes">Planes</a>
+            </> : <>
               <a href="#/fuentes"><ShieldCheck size={13} style={{ verticalAlign: "-2px", marginRight: 4 }} />Seguridad</a>
               <a href="#/estados"><CircleHelp size={13} style={{ verticalAlign: "-2px", marginRight: 4 }} />Ayuda</a>
               <a href="#/planes">Planes</a>
@@ -94,7 +97,7 @@ export function Header() {
           <Logo light />
 
           <nav className={`bk-nav ${menuOpen ? "is-open" : ""}`} aria-label="Navegación principal">
-            {(real ? [["Inicio", "#/"], ["Terminal", "#/sistema"]] : LINKS).map(([label, href]) => (
+            {(real ? [["Inicio", "#/"], ["Terminal", "#/sistema"], ["Planes", "#/planes"]] : LINKS).map(([label, href]) => (
               <a
                 key={label}
                 href={href}

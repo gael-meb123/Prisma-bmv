@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { request } from "../../services/api.mjs";
 
 export function ObservacionSecundaria({ emisora, universo = null, habilitada = true }) {
-  const [fecha, setFecha] = useState("");
+  const [fecha, setFecha] = useState("2026-11-20");
   const [estado, setEstado] = useState({ data: null, error: "", loading: false });
   const [consulta, setConsulta] = useState(null);
   useEffect(() => { setConsulta(null); setEstado({ data: null, error: "", loading: false }); }, [emisora, universo]);

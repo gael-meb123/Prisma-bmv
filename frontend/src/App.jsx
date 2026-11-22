@@ -71,7 +71,7 @@ function AppInner() {
     content = <TerminalGate />;
   } else if (route === "/") {
     content = real ? <Experimental /> : <Landing />;
-  } else if (real && ["/planes", "/metodologia", "/fuentes", "/estados"].includes(route)) {
+  } else if (real && ["/metodologia", "/fuentes", "/estados"].includes(route)) {
     content = <ExperimentalNoDisponible />;
   } else if (route === "/planes") {
     content = <Plans />;
@@ -136,8 +136,8 @@ function AppInner() {
         {content}
       </Suspense>
 
-      {/* Prismi: asistente, explicaciones de gráficas y recorrido guiado */}
-      {!real && <Guide route={route} phase={seccion} selectedTicker={selectedTicker} />}
+      {/* Prismi: asistente cuantitativo en AWS con guardrails y contexto real */}
+      <Guide route={route} phase={seccion} selectedTicker={selectedTicker} />
       {!real && <Tour route={route} />}
       {!real && <MacroTicker />}
     </>

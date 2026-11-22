@@ -8,11 +8,14 @@ import math
 import os
 import re
 import statistics
+import unicodedata
+import urllib.request
 from collections import Counter
 from datetime import date, datetime, timezone
 from infra.capturas_seguras import manifiesto, captura, pagina, pagina_global
 from prisma.data.captura_ampliada import extraer as extraer_boletin_ipc
 from prisma.data.ipc35_almacen import (
+    SECTORES_IPC35_PROVISIONAL,
     SIMBOLOS_YAHOO_IPC35,
     leer_captura_ipc35,
     leer_manifiesto_ipc35,
@@ -300,7 +303,7 @@ def _cargar_candidatos_ipc35(s3, fecha):
         filas = [{
             "emisora": c.emisora,
             "serie": c.serie,
-            "sector": "IPC provisional (sin clasificar)",
+            "sector": SECTORES_IPC35_PROVISIONAL.get(c.emisora, "IPC provisional (sin clasificar)"),
             "estado_captura": "BOLETIN_BRONZE_NO_DISPONIBLE",
             "ppp_bmv_mxn": None,
             "anterior_bmv_mxn": None,
@@ -344,7 +347,7 @@ def _cargar_candidatos_ipc35(s3, fecha):
         filas.append({
             "emisora": c.emisora,
             "serie": c.serie,
-            "sector": "IPC provisional (sin clasificar)",
+            "sector": SECTORES_IPC35_PROVISIONAL.get(c.emisora, "IPC provisional (sin clasificar)"),
             "estado_captura": estado,
             "ppp_bmv_mxn": ppp,
             "anterior_bmv_mxn": ant,
@@ -993,6 +996,405 @@ def _yahoo(evento, s3, permitidas):
         return respuesta(503, {"detail": "Observación secundaria inválida o no disponible."})
 
 
+_MENSAJE_FRONTERA_PRISMI = (
+    "Mi alcance se limita a Prisma BMV: el PPP oficial de la BMV, las emisoras del IPC monitoreadas, "
+    "la metodología de modelos G2, las observaciones secundarias separadas, la gobernanza en AWS "
+    "y el funcionamiento de la plataforma. No tengo información sobre temas externos."
+)
+_MENSAJE_NO_ASESORIA_PRISMI = (
+    "No doy recomendaciones ni órdenes de compra, venta o inversión. Puedo explicarte el PPP oficial, "
+    "la cobertura de los datos y el estado de validación de los modelos."
+)
+_TEMAS_EXTERNOS_PRISMI = (
+    "receta", "cocina", "futbol", "pelicula", "serie de tv", "cancion", "poema", "chiste",
+    "politica", "elecciones", "presidente", "clima", "horoscopo", "bitcoin", "cripto",
+    "ethereum", "tesla", "nvidia", "apple", "microsoft", "nasdaq", "dow jones",
+    "tarea", "ensayo", "traduce", "javascript",
+)
+_PIDE_ASESORIA_PRISMI = re.compile(
+    r"\b(debo|deberia|conviene|me recomiendas|recomiendas|que hago)\b.*\b(comprar|vender|invertir|entrar|salir)\b"
+    r"|\b(compro|vendo|invierto)\b",
+)
+_SALIDA_IMPERATIVA_PRISMI = re.compile(
+    r"\b(compre|venda|compra ya|vende ya|le recomiendo (comprar|vender)|te recomiendo (comprar|vender)|"
+    r"debes (comprar|vender))\b",
+    re.IGNORECASE,
+)
+
+
+def _norm_texto(texto):
+    sin_acentos = unicodedata.normalize("NFKD", texto).encode("ascii", "ignore").decode()
+    return sin_acentos.lower().strip()
+
+
+def _leer_json_s3_opcional(s3, bucket, key, max_bytes=500_000):
+    if not bucket or s3 is None:
+        return None
+    try:
+        obj = s3.get_object(Bucket=bucket, Key=key)
+        raw = obj["Body"].read(max_bytes + 1)
+        if len(raw) > max_bytes:
+            return None
+        return json.loads(raw.decode("utf-8-sig"))
+    except Exception:
+        return None
+
+
+def _contar_cortes_ipc35(s3, bucket):
+    try:
+        page = s3.list_objects_v2(Bucket=bucket, Prefix="silver/ipc35_provisional/capturas/", MaxKeys=100)
+        return sum(1 for x in page.get("Contents", []) if x["Key"].endswith(".json"))
+    except Exception:
+        return None
+
+
+def _gobernanza(s3):
+    """Devuelve topología real del lakehouse y estado vivo de compuertas desde S3."""
+    bucket = os.environ.get("MERCADO_BUCKET", "")
+    if not bucket or s3 is None:
+        return respuesta(503, {"detail": "Gobernanza en S3 no configurada."})
+    avance = _leer_json_s3_opcional(s3, bucket, "evidencias/operacion/avance_ventana_limpia.json") or {}
+    permiso_yahoo = _leer_json_s3_opcional(s3, bucket, "evidencias/observaciones_yahoo/estado_permiso.json") or {}
+    cal_2027 = _leer_json_s3_opcional(s3, bucket, "evidencias/calendario_bmv/2027/estado.json") or {}
+    declaracion = (
+        _leer_json_s3_opcional(s3, bucket, "evidencias/gobernanza/declaracion_fuentes_v2.json")
+        or _leer_json_s3_opcional(s3, bucket, "evidencias/gobernanza/declaracion_fuentes.json")
+        or {}
+    )
+    cortes_ipc35 = _contar_cortes_ipc35(s3, bucket)
+    ventana = avance.get("ventana_limpia") or {}
+    sesiones = ventana.get("sesiones_consecutivas")
+    meta = ventana.get("meta", 21)
+    ultima_fecha = avance.get("ultima_fecha_capturada")
+    capturas_totales = avance.get("capturas_seguras_totales")
+    sha_bronze = avance.get("sha256_bronze")
+    sha_silver = avance.get("sha256_silver")
+    guardia = avance.get("guardia_resumen") or {}
+    yahoo_habilitada_api = os.environ.get("YAHOO_OBSERVACIONES_HABILITADAS") == "true"
+    yahoo_estado = permiso_yahoo.get("estado", "DESCONOCIDO")
+    cal_estado = cal_2027.get("estado", "PENDIENTE_FUENTE_OFICIAL")
+    emision = avance.get("emision", "NO_HABILITADA")
+
+    resumen_ventana = (
+        f"{sesiones}/{meta} sesiones consecutivas desde {ventana.get('desde_corte_limpio', '2026-11-20')}"
+        if sesiones is not None else "En seguimiento en evidencias/operacion/"
+    )
+    nodos = [
+        {"nombre": "EventBridge Scheduler",
+         "detalle": "DisparadorDiarioBMV (ENABLED) · cron(45 16 ? * MON-FRI *) America/Mexico_City"},
+        {"nombre": "Lambda recolector-seguro",
+         "detalle": "Captura diaria idempotente con validación estricta, IfNoneMatch='*' y cero imputación"},
+        {"nombre": "Boletín BMV (RSS)",
+         "detalle": f"Último corte capturado: {ultima_fecha or 'en consulta'} · SHA-256 {(sha_bronze or '')[:12] or 'pendiente'}"},
+        {"nombre": "S3 Bronze inmutable",
+         "detalle": "bronze/YYYY/MM/boletin_YYYYMMDD.html · integridad SHA-256 verificada"},
+        {"nombre": "S3 Silver (15 + IPC-35)",
+         "detalle": f"Capturas seguras: {capturas_totales if capturas_totales is not None else '—'} · Cortes IPC-35 provisionales: {cortes_ipc35 if cortes_ipc35 is not None else '—'}"},
+        {"nombre": "Compuerta Señales Gold",
+         "detalle": f"BLOQUEADA ({emision}) · Ventana limpia {resumen_ventana}"},
+        {"nombre": "Yahoo Observaciones",
+         "detalle": f"Separado en observaciones/yahoo/ · Permiso {yahoo_estado} · API {'ACTIVA' if yahoo_habilitada_api else 'DESHABILITADA'} · Nunca alimenta Silver/modelos"},
+        {"nombre": "API Gateway + Cognito",
+         "detalle": "Identidad exclusiva Amazon Cognito + DynamoDB (Supabase retirado)"},
+        {"nombre": "CloudWatch + SQS DLQ",
+         "detalle": "Alarmas de errores/duración/DLQ activas con notificación SNS"},
+        {"nombre": "IAM LabRole",
+         "detalle": (declaracion.get("iam") or {}).get("decision", "Rol operativo adoptado bajo restricción educativa AWS Academy")},
+    ]
+    enlaces = [
+        {"origen": 0, "destino": 1, "valor": 3},
+        {"origen": 2, "destino": 1, "valor": 3},
+        {"origen": 1, "destino": 3, "valor": 3},
+        {"origen": 3, "destino": 4, "valor": 3},
+        {"origen": 4, "destino": 5, "valor": 2},
+        {"origen": 4, "destino": 7, "valor": 3},
+        {"origen": 6, "destino": 7, "valor": 1},
+        {"origen": 1, "destino": 8, "valor": 1},
+        {"origen": 9, "destino": 1, "valor": 1},
+    ]
+    return respuesta(200, {
+        "nodos": nodos,
+        "enlaces": enlaces,
+        "estado_operativo": {
+            "actualizado_en_utc": avance.get("actualizado_en_utc"),
+            "scheduler": {
+                "nombre": "DisparadorDiarioBMV",
+                "estado": "ENABLED",
+                "expresion": "cron(45 16 ? * MON-FRI *)",
+                "zona_horaria": "America/Mexico_City",
+            },
+            "ventana_limpia": {
+                "desde_corte_limpio": ventana.get("desde_corte_limpio", "2026-11-20"),
+                "sesiones_consecutivas": sesiones,
+                "meta": meta,
+                "faltan": ventana.get("faltan"),
+                "completa": bool(ventana.get("completa", False)),
+                "ultima_fecha_capturada": ultima_fecha,
+                "fechas_racha": ventana.get("fechas_racha") or [],
+            },
+            "integridad": {
+                "capturas_seguras_totales": capturas_totales,
+                "cortes_ipc35_provisionales": cortes_ipc35,
+                "sha256_bronze": sha_bronze,
+                "sha256_silver": sha_silver,
+                "guardia_resumen": guardia,
+                "capturas_seguras_habilitadas": os.environ.get("CAPTURAS_SEGURAS_HABILITADAS") == "true",
+            },
+            "compuertas": {
+                "emision_senales": emision,
+                "yahoo_observaciones": {
+                    "estado_permiso": yahoo_estado,
+                    "habilitada_api": yahoo_habilitada_api,
+                    "separacion": "CIERRE_DIARIO_REPORTADO separado de PPP BMV y modelos",
+                },
+                "calendario_bmv_2027": {
+                    "estado": cal_estado,
+                    "habilita_operacion": bool(cal_2027.get("habilita_operacion", False)),
+                },
+                "ipc_35": {
+                    "estado_composicion": "PROVISIONAL_NO_OFICIAL",
+                    "componentes": 35,
+                    "alias_pendientes": ["RA -> R / A", "LIVEPOLC.1 -> LIVEPOL / C-1"],
+                },
+            },
+            "identidad": "Amazon Cognito + DynamoDB (Supabase retirado)",
+        },
+    })
+
+
+def _contexto_prismi_s3(s3, permitidas):
+    """Construye contexto real desde S3 respetando el plan del usuario y sin inventar cifras."""
+    bucket = os.environ.get("MERCADO_BUCKET", "")
+    avance = _leer_json_s3_opcional(s3, bucket, "evidencias/operacion/avance_ventana_limpia.json") or {}
+    permiso_yahoo = _leer_json_s3_opcional(s3, bucket, "evidencias/observaciones_yahoo/estado_permiso.json") or {}
+    ultima_fecha = None
+    por_emisora = {}
+    verificadas = 0
+    ausentes = 0
+    try:
+        _, filas, fechas = _leer_mercado(s3)
+        if fechas:
+            ultima_fecha = fechas[0]
+            sesion = [r for r in filas if r["fecha"] == ultima_fecha and r["emisora"] in PLANES["professional"]]
+            for r in sesion:
+                ok = r["estado_captura"] == "PPP_PUBLICADO_VERIFICADO"
+                ppp = _numero(r.get("ppp_bmv_mxn")) if ok else None
+                var = _numero(r.get("variacion_ppp_vs_anterior_pct")) if ok else None
+                if ppp is not None and ppp > 0:
+                    verificadas += 1
+                else:
+                    ausentes += 1
+                if r["emisora"] in permitidas:
+                    por_emisora[r["emisora"]] = {
+                        "serie": r.get("serie", ""),
+                        "sector": r.get("sector_economico", ""),
+                        "estado": r["estado_captura"],
+                        "ppp": ppp if (ppp is not None and ppp > 0) else None,
+                        "var": var,
+                    }
+    except Exception:
+        pass
+    ventana = avance.get("ventana_limpia") or {}
+    return {
+        "ultima_fecha": ultima_fecha or avance.get("ultima_fecha_capturada"),
+        "verificadas": verificadas,
+        "ausentes": ausentes,
+        "por_emisora": por_emisora,
+        "ventana": ventana,
+        "capturas_totales": avance.get("capturas_seguras_totales"),
+        "sha_bronze": avance.get("sha256_bronze"),
+        "yahoo_estado": permiso_yahoo.get("estado", "DESCONOCIDO"),
+        "yahoo_api_activa": os.environ.get("YAHOO_OBSERVACIONES_HABILITADAS") == "true",
+    }
+
+
+def _responder_prismi_local(pregunta, ctx, plan, permitidas):
+    p = _norm_texto(pregunta)
+    aviso = "Información estadística y de gobernanza; no constituye asesoría de inversión."
+
+    for em in PLANES["professional"]:
+        if re.search(rf"\b{re.escape(em.lower())}\b", p):
+            if em not in permitidas:
+                return (
+                    f"{em} no está incluida en tu plan actual ({plan}). El plan Explorer cubre WALMEX y "
+                    "el monitor público; Professional y Enterprise habilitan las 15 emisoras base y el universo "
+                    f"ampliado de 35 componentes IPC en análisis descriptivo. {aviso}"
+                )
+            d = ctx["por_emisora"].get(em)
+            if d and d["ppp"] is not None:
+                var_txt = f" ({d['var']:+.2f}% vs. sesión anterior)" if d["var"] is not None else ""
+                return (
+                    f"En la última sesión registrada ({ctx['ultima_fecha']}), {em} {d['serie']} registró un PPP "
+                    f"oficial verificado de ${d['ppp']:,.2f} MXN{var_txt}. Las señales G2 permanecen bloqueadas "
+                    f"hasta completar la ventana limpia 21/21 y las validaciones de eventos corporativos. {aviso}"
+                )
+            if d:
+                return (
+                    f"En la última sesión registrada ({ctx['ultima_fecha']}), {em} {d['serie']} no reportó PPP "
+                    f"verificado (estado: {d['estado']}). Prisma BMV aplica cero imputación y no estima el precio. {aviso}"
+                )
+
+    if any(k in p for k in ("ppp", "precio promedio")):
+        return (
+            "El PPP (Precio Promedio Ponderado) es el precio oficial que publica la BMV ponderando el volumen "
+            "de todas las operaciones de la sesión. A diferencia del último hecho, refleja dónde se negoció "
+            "realmente el volumen del día. En Prisma BMV cada boletín se verifica con huella SHA-256."
+        )
+    if any(k in p for k in ("yahoo", "secundaria", "cierre diario")):
+        estado = "activa" if ctx["yahoo_api_activa"] else "deshabilitada"
+        return (
+            f"La observación secundaria de Yahoo Finance está {estado} (permiso: {ctx['yahoo_estado']}) "
+            "como CIERRE_DIARIO_REPORTADO en los 35 símbolos .MX verificados. Vive separada en "
+            "observaciones/yahoo/, nunca se etiqueta como PPP oficial BMV y nunca entra a Silver ni a modelos."
+        )
+    if any(k in p for k in ("ipc", "35", "provisional", "naftrac", "candidato")):
+        return (
+            "El universo ampliado de 35 componentes del IPC usa la referencia provisional NAFTRAC (2026-11-17) "
+            "con almacenamiento versionado e inmutable en silver/ipc35_provisional/. Muestra PPP observado "
+            "cuando aparece en las tablas RSS y documenta los huecos sin imputar; las señales siguen bloqueadas "
+            "hasta validar la composición oficial fechada S&P/BMV y los alias pendientes (RA y LIVEPOLC.1)."
+        )
+    if any(k in p for k in ("ventana", "21", "gobernanza", "sha", "hash", "aws", "scheduler", "lambda")):
+        v = ctx["ventana"]
+        ses = v.get("sesiones_consecutivas")
+        meta = v.get("meta", 21)
+        progreso = f"{ses}/{meta} sesiones consecutivas" if ses is not None else "en seguimiento"
+        return (
+            f"La ingesta automatizada corre en AWS mediante DisparadorDiarioBMV (lunes a viernes 16:45 CDMX) "
+            f"hacia el recolector seguro con escrituras inmutables y validación SHA-256. La ventana limpia "
+            f"actual lleva {progreso} (última sesión: {ctx['ultima_fecha'] or '—'}, capturas seguras: "
+            f"{ctx['capturas_totales'] if ctx['capturas_totales'] is not None else '—'}). Las señales G2 "
+            "permanecen bloqueadas hasta cerrar las compuertas de validación."
+        )
+    if any(k in p for k in ("hueco", "imputa", "ausente", "faltante", "no publicada")):
+        return (
+            "Prisma BMV aplica política estricta de cero imputación: si una emisora no aparece en las tablas "
+            "del boletín RSS del día, se registra el hueco explícitamente sin rellenar ni interpolar precios."
+        )
+    if any(k in p for k in ("senal", "g2", "modelo", "consenso", "t+5", "predic")):
+        v = ctx["ventana"]
+        ses = v.get("sesiones_consecutivas")
+        meta = v.get("meta", 21)
+        progreso = f"{ses}/{meta}" if ses is not None else "pendiente"
+        return (
+            f"Las señales de 2ª generación (G2), el consenso y el seguimiento t+5 permanecen bloqueados por "
+            f"gobernanza en AWS hasta completar la ventana limpia ({progreso}), conciliar los avisos oficiales "
+            "de eventos corporativos, ejecutar la auditoría temporal sin fuga (excluyendo las 13 filas de "
+            f"unificación AMX L→B de 2023) y cerrar el periodo shadow de 20 sesiones. {aviso}"
+        )
+    if any(k in p for k in ("plan", "precio", "suscrip", "explorer", "professional", "enterprise")):
+        return (
+            "Planes institucionales de Prisma BMV: Explorer ($0 MXN/mes: monitor BMV de 35 componentes provisionales, "
+            "serie y estadística de WALMEX, verificación SHA-256 y Prismi); Professional ($399 MXN/mes, ~$20 USD: "
+            "panel completo, estadística ampliada, observación secundaria Yahoo y acceso a señales G2 cuando "
+            "completen validación); Enterprise ($3,490 MXN/mes, ~$175 USD: capacidades institucionales, API/Athena "
+            "y gestión de equipos). Los cambios de plan se administran sobre Cognito y DynamoDB."
+        )
+    resumen = (
+        f"Última sesión en el lakehouse: {ctx['ultima_fecha']} ({ctx['verificadas']} PPP verificados, "
+        f"{ctx['ausentes']} huecos en el panel base). "
+        if ctx["ultima_fecha"] else ""
+    )
+    return (
+        f"{resumen}Tu plan actual es {plan}. Puedo explicarte el PPP oficial de la BMV, la cobertura provisional "
+        "de los 35 componentes del IPC, el avance de la ventana limpia 21/21, las observaciones secundarias "
+        "Yahoo Finance, la política de cero imputación o los planes disponibles."
+    )
+
+
+def _prismi(evento, s3, plan, permitidas):
+    try:
+        body = evento.get("body")
+        if evento.get("isBase64Encoded") or not isinstance(body, str) or len(body) > 12_000:
+            raise ValueError()
+        datos = json.loads(body)
+        if not isinstance(datos, dict):
+            raise ValueError()
+        pregunta = datos.get("pregunta")
+        if not isinstance(pregunta, str) or not pregunta.strip() or len(pregunta) > 1500:
+            raise ValueError()
+        historial = datos.get("historial") or []
+        if not isinstance(historial, list):
+            raise ValueError()
+        contexto_grafica = datos.get("contexto_grafica")
+        if contexto_grafica is not None and (not isinstance(contexto_grafica, str) or len(contexto_grafica) > 4000):
+            raise ValueError()
+    except (TypeError, ValueError):
+        return respuesta(422, {"detail": "Indica una pregunta válida (1..1500 caracteres)."})
+
+    pregunta_limpia = pregunta.strip()
+    norm = _norm_texto(pregunta_limpia)
+    if any(re.search(rf"\b{re.escape(t)}", norm) for t in _TEMAS_EXTERNOS_PRISMI):
+        return respuesta(200, {"respuesta": _MENSAJE_FRONTERA_PRISMI, "origen": "GUARDRAIL"})
+
+    ctx = _contexto_prismi_s3(s3, permitidas)
+    if _PIDE_ASESORIA_PRISMI.search(norm):
+        detalle = _responder_prismi_local(pregunta_limpia, ctx, plan, permitidas)
+        return respuesta(200, {"respuesta": f"{_MENSAJE_NO_ASESORIA_PRISMI}\n\n{detalle}", "origen": "GUARDRAIL"})
+
+    api_key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
+    if api_key:
+        try:
+            lineas_ctx = [
+                f"Última sesión BMV: {ctx['ultima_fecha'] or 'sin fecha'} "
+                f"({ctx['verificadas']} verificadas, {ctx['ausentes']} huecos).",
+                f"Plan del usuario: {plan}. Señales G2: BLOQUEADAS hasta cerrar ventana limpia 21/21 y validaciones.",
+                f"Ventana limpia: {(ctx['ventana'] or {}).get('sesiones_consecutivas', '—')}/"
+                f"{(ctx['ventana'] or {}).get('meta', 21)}.",
+                f"Yahoo Finance secundario: permiso {ctx['yahoo_estado']}, separado de PPP BMV.",
+            ]
+            for em, d in list(ctx["por_emisora"].items())[:15]:
+                val = f"${d['ppp']:,.2f} MXN" if d["ppp"] is not None else d["estado"]
+                lineas_ctx.append(f"{em} ({d['serie']}): {val}")
+            if contexto_grafica:
+                lineas_ctx.append(f"Gráfica actual en terminal: {contexto_grafica[:1200]}")
+            sys_prompt = (
+                "Eres Prismi, asistente cuantitativo institucional de Prisma BMV. Responde en español en <=160 palabras. "
+                "Solo responde sobre Prisma BMV, PPP BMV, IPC-35, gobernanza AWS, Yahoo secundario separado y planes. "
+                f"Si preguntan temas externos responde exactamente: {_MENSAJE_FRONTERA_PRISMI} "
+                "Nunca recomiendes comprar ni vender. Nunca inventes precios ni digas que las señales G2 están activas "
+                "mientras estén bloqueadas. Nunca menciones proyectos escolares ni universidades.\nCONTEXTO:\n"
+                + "\n".join(lineas_ctx)
+            )
+            mensajes = []
+            for h in historial[-6:]:
+                if isinstance(h, dict) and h.get("role") in ("user", "assistant") and isinstance(h.get("content"), str):
+                    mensajes.append({"role": h["role"], "content": h["content"][:800]})
+            while mensajes and mensajes[0]["role"] != "user":
+                mensajes.pop(0)
+            mensajes.append({"role": "user", "content": pregunta_limpia})
+            payload = {
+                "model": os.environ.get("PRISMI_MODELO", "claude-3-5-sonnet-20241022"),
+                "max_tokens": 450,
+                "system": sys_prompt,
+                "messages": mensajes,
+            }
+            req = urllib.request.Request(
+                "https://api.anthropic.com/v1/messages",
+                data=json.dumps(payload).encode("utf-8"),
+                headers={
+                    "x-api-key": api_key,
+                    "anthropic-version": "2023-06-01",
+                    "content-type": "application/json",
+                },
+            )
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                data = json.loads(resp.read(100_000).decode("utf-8"))
+            texto = "".join(b.get("text", "") for b in data.get("content", []) if b.get("type") == "text").strip()
+            if texto:
+                if _SALIDA_IMPERATIVA_PRISMI.search(texto):
+                    detalle = _responder_prismi_local(pregunta_limpia, ctx, plan, permitidas)
+                    return respuesta(200, {"respuesta": f"{_MENSAJE_NO_ASESORIA_PRISMI}\n\n{detalle}", "origen": "GUARDRAIL"})
+                return respuesta(200, {"respuesta": texto, "origen": "CLAUDE"})
+        except Exception as exc:
+            logger.warning("prismi_claude_fallido tipo=%s", type(exc).__name__)
+
+    return respuesta(200, {
+        "respuesta": _responder_prismi_local(pregunta_limpia, ctx, plan, permitidas),
+        "origen": "LOCAL_AWS",
+    })
+
+
 def ejecutar(evento, tabla, s3=None, ddb=None, cognito=None):
     ruta = evento.get("routeKey")
     if ruta == "GET /health":
@@ -1001,10 +1403,12 @@ def ejecutar(evento, tabla, s3=None, ddb=None, cognito=None):
         return _mercado(evento, s3)
     if ruta == "GET /api/terminal/sectores":
         return _sectores(evento, s3)
+    if ruta == "GET /api/terminal/gobernanza":
+        return _gobernanza(s3)
     admin_rutas = ("GET /api/admin/usuarios", "PATCH /api/admin/usuarios/{uid}", "POST /api/admin/usuarios")
     senal_rutas = ("GET /api/senales/panel", "GET /api/terminal/senal", "GET /api/terminal/seguimiento",
                    "GET /api/terminal/consenso", "GET /api/terminal/marcador")
-    if ruta not in ("GET /api/me", "GET /api/terminal/serie", "GET /api/serie/walmex", "GET /api/terminal/estadistica", "GET /api/observaciones/yahoo", *admin_rutas, *senal_rutas):
+    if ruta not in ("GET /api/me", "GET /api/terminal/serie", "GET /api/serie/walmex", "GET /api/terminal/estadistica", "GET /api/observaciones/yahoo", "POST /api/terminal/prismi", *admin_rutas, *senal_rutas):
         return respuesta(404, {"detail": "Ruta no disponible."})
     claims = evento.get("requestContext", {}).get("authorizer", {}).get("jwt", {}).get("claims", {})
     sub = claims.get("sub")
@@ -1032,6 +1436,8 @@ def ejecutar(evento, tabla, s3=None, ddb=None, cognito=None):
         return _admin_actualizar(evento, tabla, ddb, sub)
     if ruta in senal_rutas:
         return _senales_bloqueadas(evento, PLANES[plan])
+    if ruta == "POST /api/terminal/prismi":
+        return _prismi(evento, s3, plan, PLANES[plan])
     if ruta == "GET /api/observaciones/yahoo":
         return _yahoo(evento, s3, PLANES[plan])
     if ruta == "GET /api/terminal/estadistica":

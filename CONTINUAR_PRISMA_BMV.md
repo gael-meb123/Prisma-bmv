@@ -61,16 +61,34 @@ las señales que aún no tienen validación suficiente.
   tiempos acotados. Pasó en pool aislado y principal.
 - El pool adicional de pruebas terminó con registro público deshabilitado.
   Se eliminaron únicamente las cuentas/perfiles sintéticos nuevos de esos ensayos.
-- React publicado en Amplify, rama `react-demo`, **trabajo 12: SUCCEED**
-  (incorpora Estadística descriptiva para los 35 componentes provisionales del
-  IPC sobre `silver/ipc35_provisional/`, tarjeta de compuerta Yahoo con 35
-  símbolos `.MX` verificados y selector `Panel base (15)` vs `IPC provisional (35)`
-  en Mercado y Estadística; señales estrictamente bloqueadas).
-- Chrome headless con seguridad web habilitada comprobó en el sitio público
-  (usuario sintético, sin enviar correos) Estadística base + `IPC provisional (35)`
-  para `VOLAR` (19 registros históricos, 12 PPP observados en Bronze, `2026-10-20`
-  a `2026-11-20`, `Panel no disponible`), tarjeta de compuerta Yahoo, cero errores
-  de consola y cero excepciones JS.
+- React publicado en Amplify, rama `react-demo`, **trabajo 13: SUCCEED**
+  (`sha256_zip: 53391e24639f8dd97b1b8eab277e345709097e65c06e5040d781ef5403e3131b`).
+  Incorpora **retiro definitivo de Supabase** (`@supabase/supabase-js` y `supabase.mjs`
+  eliminados; identidad exclusiva Amazon Cognito + DynamoDB), **Yahoo Finance secundario
+  habilitado** (`VITE_YAHOO_OBSERVACIONES=true` + `YahooObservacionesHabilitadas=true`,
+  70 observaciones archivadas en `observaciones/yahoo/` para los 35 símbolos `.MX`,
+  separado de PPP BMV y modelos), **Datos y Gobernanza en vivo** (`GET /api/terminal/gobernanza`),
+  **Prismi en AWS** (`POST /api/terminal/prismi` con guardrails y contexto real S3),
+  **Planes calibrados MXN/USD** (`#/planes`: `$0` / `$399` / `$3,490 MXN`) y
+  **sectores BMV provisionales** para los 20 candidatos IPC-35. Señales G2, consenso,
+  seguimiento t+5 y calidad permanecen estrictamente bloqueados (`503`).
+- Chrome headless (CDP, usuario sintético `prisma-prueba-2026@example.invalid`)
+  verificó en vivo el 21-11-2026: `#/planes`, login SRP Cognito, `#/sistema/gobernanza`
+  (`DisparadorDiarioBMV`, `1/21`, `Yahoo APROBADO`, `NO_HABILITADA`), `#/sistema/mercado`
+  IPC-35 con sectores BMV provisionales (`0` sin clasificar), `#/sistema/estadistica` +
+  Yahoo (`WALMEX.MX · 2026-11-20 = 54.42 MXN`, `VOLARA.MX = 15.20 MXN`), Prismi AWS
+  (`LOCAL_AWS` + `GUARDRAIL`), `#/sistema/senales` bloqueado (`503`), **0 errores de
+  consola y 0 excepciones JS**.
+- **Avisos oficiales de eventos corporativos BMV (Ola 1, 2024–2026):** descargados y
+  archivados inmutablemente **61 PDFs oficiales `Aviso de Derechos`** desde
+  `www.bmv.com.mx/docs-pub/derechos/` en `evidencias/eventos_corporativos/v1/documentos/<EMISORA>/`
+  mediante `scripts/descargar_avisos_corporativos_bmv_s3.py`. Auditoría
+  `evidencias/auditorias/conciliacion_eventos_20261122T020250Z.json`: **33/33** eventos
+  respaldados por PDF BMV (**31/33 `VERIFICADO_OFICIAL`**, **0 pendientes**, **2
+  divergencias reales de Yahoo Finance** demostradas con SHA-256 oficial:
+  `AMX_2024-07-12_DIVIDENDO` BMV `$0.24` vs Yahoo `$0.48`, y `FEMSA_2024-04-16_DIVIDENDO`
+  BMV `$1.8694` vs Yahoo `$11.8746`). Panel ajustado sigue bloqueado hasta resolver esas
+  2 correcciones y completar ventana `21/21`.
 - Cuenta `djlexus134@gmail.com` promovida a **`rol: admin`** en DynamoDB el
   21-11-2026 (con autorización del usuario) para validar `#/admin` antes de
   retirar Supabase.
@@ -252,7 +270,7 @@ Rol autorizado: `arn:aws:iam::886457183564:role/LabRole`.
 | Recurso | Identificador |
 |---|---|
 | React actual | https://react-demo.d315dh37vi024o.amplifyapp.com/ |
-| Amplify | app `d315dh37vi024o`, rama `react-demo`, trabajo 12 (`demo` eliminada) |
+| Amplify | app `d315dh37vi024o`, rama `react-demo`, trabajo 13 (`demo` eliminada) |
 | API experimental | https://j42hw8l6rl.execute-api.us-east-1.amazonaws.com |
 | API de pruebas | https://qpjhzniemh.execute-api.us-east-1.amazonaws.com |
 | Cognito principal | pool `us-east-1_mKU76i6gl`, cliente `3k7iv4ebko2us1bbk78v07cg09` |
@@ -282,11 +300,11 @@ del 18-11: no “repararlo” ni usarlo como fuente real.
 
 | Artefacto | SHA-256 |
 |---|---|
-| API | `762d336a44406746d1bdaa73b50b18cfb2c2812b5485e6efc48d5b9af7c816b8` |
+| API | `c493b2f1590e93d2cb657ecdd4f6aaccec388718295c3e65330c37a3168a692f` |
 | Recolector | `49f704d7ce00bd4ca4b46b7a1fafc60533ae46c34f406415edbb544bb603973c` |
 | Guardia | `469b1be94a8a732f19075779d915945bd57cf410c1f0b95a44f6bcc6285bcf7c` |
 | Trigger | `617ed60f2025cb071292d5c28d5242c0012488d58805c989b085df001eea4331` |
-| ZIP frontend trabajo 12 | `dfefe69d628c3e2000ac716b264f0c3b30a08297afcfcd9682e39645aeb261dc` |
+| ZIP frontend trabajo 13 | `53391e24639f8dd97b1b8eab277e345709097e65c06e5040d781ef5403e3131b` |
 
 API/recolector/guardia: `artifacts/entrega/<sha>.zip` en bucket de artefactos.
 Trigger: `artifacts/registro/<sha>.zip`.
@@ -341,7 +359,7 @@ VITE_COGNITO_CLIENT_ID=3k7iv4ebko2us1bbk78v07cg09
 VITE_API_URL=https://j42hw8l6rl.execute-api.us-east-1.amazonaws.com
 VITE_REQUIRE_REAL_API=true
 VITE_COGNITO_SELF_SIGNUP=true
-VITE_YAHOO_OBSERVACIONES=false
+VITE_YAHOO_OBSERVACIONES=true
 ```
 
 Atención: la variable correcta es `VITE_COGNITO_POOL_ID`, no `...USER_POOL_ID`.

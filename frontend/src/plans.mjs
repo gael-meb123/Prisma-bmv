@@ -1,22 +1,30 @@
 /**
- * Prisma BMV - Definición de Planes y Matriz de Control de Acceso (Freemium)
- * Basado en la arquitectura formal de suscripciones de Proyecto-geo.
+ * Prisma BMV - Definición de Planes y Matriz de Control de Acceso Institucional
+ *
+ * Escalera calibrada en MXN/USD para el mercado mexicano con cobertura provisional
+ * de los 35 componentes del IPC y compuerta estricta de validación para señales G2.
  */
+
+const BASE_15 = [
+  "WALMEX", "GMEXICO", "GFNORTE", "AMX", "FEMSA", "CEMEX", "BIMBO", "GAP",
+  "PE&OLES", "AC", "ASUR", "GFINBUR", "VESTA", "LIVEPOL", "GRUMA",
+];
 
 export const PLANS = [
   {
     id: "explorer",
     name: "Explorer",
     audience: "Plan Gratuito",
-    cost: "Sin costo",
-    price: { amount: "$0", detail: "USD al mes · Acceso Libre" },
-    summary: "Monitoreo oficial del mercado BMV y modelo prospectivo para la emisora líder (WALMEX).",
+    cost: "$0 MXN al mes",
+    price: { amount: "$0", detail: "MXN al mes · Acceso Libre" },
+    summary: "Monitor BMV de 35 componentes IPC (vista provisional), serie histórica y estadística de WALMEX con integridad SHA-256.",
     includes: [
-      "Monitoreo en vivo de las 15 emisoras del IPC",
-      "Cotizaciones ponderadas (PPP) oficiales de la BMV",
-      "Acceso completo a inferencia IA de WALMEX",
-      "Verificación de integridad SHA-256 del boletín",
-      "Asistente cuantitativo Prismi (consultas estándar)"
+      "Monitor diario del panel base (15) e IPC provisional (35) sin imputaciones",
+      "Cotizaciones ponderadas (PPP) oficiales del boletín BMV",
+      "Serie histórica y estadística descriptiva de WALMEX",
+      "Observación secundaria Yahoo Finance separada del PPP BMV",
+      "Verificación de integridad SHA-256 y panel de gobernanza AWS en vivo",
+      "Asistente cuantitativo Prismi con guardrails institucionales"
     ],
     allowedTickers: ["WALMEX"],
     canCompare: false,
@@ -26,19 +34,19 @@ export const PLANS = [
   {
     id: "professional",
     name: "Professional",
-    audience: "Inversionistas Cuantitativos",
-    cost: "$49 USD al mes",
-    price: { amount: "$49", detail: "USD al mes · por analista" },
-    summary: "Desbloquea el panel G2 multi-modelo completo, consenso simultáneo y gráficas interactivas.",
+    audience: "Inversionistas y Analistas Cuantitativos",
+    cost: "$399 MXN al mes (~$20 USD)",
+    price: { amount: "$399", detail: "MXN al mes (~$20 USD)" },
+    summary: "Cobertura completa del panel base (15) y universo IPC-35 provisional en estadística, series y módulos G2 al cerrar validación.",
     includes: [
-      "Cobertura completa del panel (WALMEX, GMEXICO, GFNORTE, AMX)",
-      "Matriz de consenso de los 3 modelos G2 (V1, V2 y V3)",
-      "Gráficas interactivas avanzadas en Plotly.js",
-      "Seguimiento temporal de maduración de la señal (t+1 a t+5)",
-      "Comparación simultánea A/B de emisoras del panel",
-      "Ficha de auditoría financiera exportable e imprimible"
+      "Acceso completo a las 15 emisoras base y 35 componentes provisionales del IPC",
+      "Series históricas verificadas y estadística descriptiva ampliada",
+      "Observación secundaria Yahoo Finance (.MX) en los 35 componentes",
+      "Acceso prioritario a señales G2, consenso y seguimiento t+5 al cerrar compuerta 21/21",
+      "Panel de gobernanza en vivo y trazabilidad SHA-256 por sesión",
+      "Asistente cuantitativo Prismi con consultas ampliadas"
     ],
-    allowedTickers: ["WALMEX", "GMEXICO", "GFNORTE", "AMX", "FEMSA", "CEMEX", "BIMBO", "GAP", "PE&OLES", "AC", "ASUR", "GFINBUR", "VESTA", "LIVEPOL", "GRUMA"],
+    allowedTickers: BASE_15,
     canCompare: true,
     canExportPdf: true,
     maxQueriesPerDay: 100
@@ -46,18 +54,18 @@ export const PLANS = [
   {
     id: "enterprise",
     name: "Enterprise",
-    audience: "Mesas de Dinero y Fondos",
-    cost: "$199 USD al mes",
-    price: { amount: "$199", detail: "USD al mes · equipo institucional" },
-    summary: "Para mesas institucionales que requieren integración directa, latencia mínima y auditoría serverless.",
+    audience: "Mesas de Dinero, Fondos y Equipos",
+    cost: "$3,490 MXN al mes (~$175 USD)",
+    price: { amount: "$3,490", detail: "MXN al mes (~$175 USD)" },
+    summary: "Para equipos institucionales que requieren trazabilidad completa, administración multiusuario en AWS y acceso analítico ampliado.",
     includes: [
       "Todas las capacidades del Plan Professional",
-      "API REST institucional de inferencia con latencia < 50ms",
-      "Acceso directo a tablas Amazon Athena y S3 Gold Parquet",
-      "Consultas y ejecuciones de modelo ilimitadas",
-      "Soporte cuantitativo 24/7 y SLA garantizado de 99.9%"
+      "Administración centralizada de usuarios y roles sobre Cognito + DynamoDB",
+      "Acceso a arquitectura Lakehouse S3 (Bronze / Silver / Evidencias SHA-256)",
+      "Consultas ampliadas sobre API REST y bitácoras auditables",
+      "Soporte institucional prioritario y seguimiento de compuertas operativas"
     ],
-    allowedTickers: ["WALMEX", "GMEXICO", "GFNORTE", "AMX", "FEMSA", "CEMEX", "BIMBO", "GAP", "PE&OLES", "AC", "ASUR", "GFINBUR", "VESTA", "LIVEPOL", "GRUMA"],
+    allowedTickers: BASE_15,
     canCompare: true,
     canExportPdf: true,
     maxQueriesPerDay: null

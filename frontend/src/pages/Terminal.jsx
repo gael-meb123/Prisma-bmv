@@ -184,7 +184,7 @@ export function Terminal({ route, seccion, setSeccion, selectedTicker, setSelect
 
         <div className="tm-side-foot tm-nav">
           {!real && <button type="button" onClick={onOpenReport}><FileText size={17} /> Ficha ejecutiva</button>}
-          {!real && <a href="#/planes"><Tag size={17} /> Planes</a>}
+          <a href="#/planes"><Tag size={17} /> Planes</a>
           {account.userRole === "admin" && <a href="#/admin"><Users size={17} /> Administración</a>}
           {real && <a href="#/seguridad"><ShieldCheck size={17} /> Seguridad de la cuenta</a>}
           <a href="#/"><Home size={17} /> Portal</a>
@@ -223,7 +223,7 @@ export function Terminal({ route, seccion, setSeccion, selectedTicker, setSelect
                 </select>
               </div>
             )}
-            {!real && <button
+            <button
               type="button"
               className="tm-icon-btn"
               onClick={() => window.dispatchEvent(new CustomEvent("prisma:open-guide"))}
@@ -232,17 +232,17 @@ export function Terminal({ route, seccion, setSeccion, selectedTicker, setSelect
               style={{ width: 44, height: 44, padding: 0, overflow: "hidden" }}
             >
               <Mascot size={30} expression="happy" title="" />
-            </button>}
+            </button>
           </div>
         </header>
 
         <main id="main-content" className="tm-content">
-          {real && <p role="status">Versión experimental: ingesta automática pausada; cobertura parcial. Las señales y el panel ajustado no están disponibles.</p>}
+          {real && <p role="status">Ingesta diaria BMV automatizada activa (ventana limpia hacia 21/21) · Observación secundaria Yahoo separada del PPP BMV · Señales G2 y panel ajustado bloqueados hasta concluir validaciones.</p>}
           {seccion === "resumen" && <Resumen ctx={ctx} />}
           {seccion === "mercado" && <Mercado ctx={ctx} />}
-          {real && ["consenso", "senales", "seguimiento", "calidad", "gobernanza"].includes(seccion) &&
+          {real && ["consenso", "senales", "seguimiento", "calidad"].includes(seccion) &&
             <div className="bk-card bk-card-pad"><h2>Sección no disponible</h2>
-              <p>La procedencia y las ventanas están pendientes de validación. No se muestran predicciones.</p></div>}
+              <p>Las señales G2, el consenso y el seguimiento t+5 permanecen bloqueados hasta completar la ventana limpia 21/21, conciliar eventos corporativos y cerrar la auditoría sin fuga.</p></div>}
           {!real && seccion === "consenso" && <ConsensoModelos ctx={ctx} />}
           {!real && seccion === "senales" && <Senales ctx={ctx} />}
           {!real && seccion === "seguimiento" && <Seguimiento ctx={ctx} />}
@@ -252,7 +252,7 @@ export function Terminal({ route, seccion, setSeccion, selectedTicker, setSelect
               <Estadistica ctx={ctx} />
             </div>
           )}
-          {!real && seccion === "gobernanza" && <Gobernanza ctx={ctx} />}
+          {seccion === "gobernanza" && <Gobernanza ctx={ctx} />}
           <p className="bk-muted" style={{ fontSize: 12, margin: "8px 0 0" }}>
             {real ? "Información experimental; no constituye recomendación ni asesoría de inversión." : "Probabilidades estadísticas sobre el PPP oficial de la BMV; no constituyen recomendación ni asesoría de inversión."}
           </p>

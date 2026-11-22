@@ -784,21 +784,54 @@ export function Calidad({ ctx }) {
 export function Gobernanza({ ctx }) {
   const { datos } = ctx;
   const g = datos.gobernanza.data;
-  const piezas = [
-    [Timer, "EventBridge", "16:45 CDMX", "Dispara la ingesta de lunes a viernes tras el cierre."],
-    [BrainCircuit, "AWS Lambda", "recolector-diario-bmv", "Descarga el boletín, calcula señales y escribe en S3."],
-    [Database, "Amazon S3", "Bronze · Silver · Gold", "El almacenamiento y la procedencia de cada objeto requieren verificación."],
-    [Cloud, "Amazon Athena", "SQL sin servidores", "Consultas de auditoría sobre Silver y Gold."],
-  ];
+  const op = g?.estado_operativo || null;
+  const v = op?.ventana_limpia || {};
+  const integ = op?.integridad || {};
+  const comp = op?.compuertas || {};
+  const piezas = op
+    ? [
+        [
+          Timer,
+          "EventBridge Scheduler",
+          `${op.scheduler?.estado || "ENABLED"} · 16:45 CDMX`,
+          `${op.scheduler?.nombre || "DisparadorDiarioBMV"} (${op.scheduler?.expresion || "cron(45 16 ? * MON-FRI *)"})`,
+        ],
+        [
+          ShieldCheck,
+          "Ventana limpia BMV",
+          v.sesiones_consecutivas != null ? `${v.sesiones_consecutivas}/${v.meta || 21} sesiones` : "En seguimiento",
+          `Última captura: ${v.ultima_fecha_capturada || "—"} · Faltan ${v.faltan ?? "—"} para cerrar compuerta.`,
+        ],
+        [
+          Database,
+          "Integridad S3 (SHA-256)",
+          `${integ.capturas_seguras_totales ?? "—"} capturas · ${integ.cortes_ipc35_provisionales ?? "—"} cortes IPC-35`,
+          integ.sha256_bronze
+            ? `Bronze SHA-256: ${integ.sha256_bronze.slice(0, 16)}… · Cero imputación.`
+            : "Manifiestos inmutables IfNoneMatch='*'.",
+        ],
+        [
+          Cloud,
+          "Compuertas e Identidad",
+          `Señales: ${comp.emision_senales || "NO_HABILITADA"}`,
+          `Yahoo: ${comp.yahoo_observaciones?.estado_permiso || "—"} (${comp.yahoo_observaciones?.habilitada_api ? "API activa" : "inactiva"}) · ${op.identidad || "Cognito + DynamoDB"}.`,
+        ],
+      ]
+    : [
+        [Timer, "EventBridge", "16:45 CDMX", "Dispara la ingesta de lunes a viernes tras el cierre."],
+        [BrainCircuit, "AWS Lambda", "recolector-seguro", "Descarga el boletín BMV con validación estricta y escribe en S3."],
+        [Database, "Amazon S3", "Bronze · Silver · Evidencias", "Almacenamiento versionado e inmutable con verificación SHA-256."],
+        [Cloud, "Identidad AWS", "Cognito + DynamoDB", "Control de acceso y roles verificados en servidor."],
+      ];
   return (
     <>
       <ChartCard
-        title="Flujo de datos en AWS"
-        subtitle="Pasa el cursor por cada bloque para ver su configuración"
+        title="Flujo de datos y gobernanza en AWS"
+        subtitle="Estado vivo del lakehouse S3, compuertas operativas y trazabilidad SHA-256"
         explicar={g ? () => explicarGobernanza(g) : null}
         tour="gobernanza"
       >
-        {g ? <GobernanzaSankey nodos={g.nodos} enlaces={g.enlaces} /> : <Estado loading={datos.gobernanza.loading} />}
+        {g ? <GobernanzaSankey nodos={g.nodos} enlaces={g.enlaces} /> : <Estado loading={datos.gobernanza.loading} titulo={datos.gobernanza.error ? "Gobernanza no disponible" : "Cargando gobernanza"} texto={datos.gobernanza.error?.message} />}
       </ChartCard>
       <div className="tm-kpis">
         {piezas.map(([Icon, titulo, valor, texto]) => (
@@ -810,9 +843,22 @@ export function Gobernanza({ ctx }) {
           </div>
         ))}
       </div>
-      <a href="#/fuentes" className="bk-btn bk-btn-ghost" style={{ justifySelf: "start" }}>
-        Ver fuentes y gobernanza completas <ArrowRight size={15} />
-      </a>
+      {op && (
+        <section className="bk-card bk-card-pad" style={{ display: "grid", gap: 10 }}>
+          <strong style={{ color: "var(--bk-navy)" }}>Estado detallado de compuertas operativas</strong>
+          <div className="estadistica-lista" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 10 }}>
+            <div><span>Emisión de señales G2</span><strong>{comp.emision_senales || "NO_HABILITADA"}</strong></div>
+            <div><span>Observación secundaria Yahoo</span><strong>{comp.yahoo_observaciones?.estado_permiso || "—"} · {comp.yahoo_observaciones?.habilitada_api ? "Activa (separada)" : "Bloqueada"}</strong></div>
+            <div><span>Catálogo IPC-35</span><strong>{comp.ipc_35?.estado_composicion || "PROVISIONAL_NO_OFICIAL"} ({comp.ipc_35?.componentes || 35})</strong></div>
+            <div><span>Calendario BMV 2027</span><strong>{comp.calendario_bmv_2027?.estado || "PENDIENTE_FUENTE_OFICIAL"}</strong></div>
+          </div>
+          {integ.sha256_bronze && (
+            <p className="bk-mono bk-muted" style={{ margin: 0, fontSize: 12, overflowWrap: "anywhere" }}>
+              Último boletín Bronze ({v.ultima_fecha_capturada || "—"}) · SHA-256: {integ.sha256_bronze}
+            </p>
+          )}
+        </section>
+      )}
     </>
   );
 }
