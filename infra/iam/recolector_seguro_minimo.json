@@ -1,0 +1,45 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "s3:GetObject",
+      "Resource": [
+        "arn:aws:s3:::prisma-bmv-datalake-tunombre-2026/bronze/*",
+        "arn:aws:s3:::prisma-bmv-datalake-tunombre-2026/silver/precios_ppp/*",
+        "arn:aws:s3:::prisma-bmv-datalake-tunombre-2026/silver/recolector_seguro/*",
+        "arn:aws:s3:::prisma-bmv-datalake-tunombre-2026/silver/capturas_seguras/*",
+        "arn:aws:s3:::prisma-bmv-datalake-tunombre-2026/silver/capturas_en_curso/*",
+        "arn:aws:s3:::prisma-bmv-datalake-tunombre-2026/cuarentena/recolector-seguro/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::prisma-bmv-datalake-tunombre-2026",
+      "Condition": {"StringLike": {"s3:prefix": ["bronze/*", "silver/precios_ppp/*", "silver/recolector_seguro/*", "silver/capturas_seguras/*", "silver/capturas_en_curso/*", "cuarentena/recolector-seguro/*"]}}
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:PutObject",
+      "Resource": [
+        "arn:aws:s3:::prisma-bmv-datalake-tunombre-2026/bronze/*",
+        "arn:aws:s3:::prisma-bmv-datalake-tunombre-2026/silver/recolector_seguro/*",
+        "arn:aws:s3:::prisma-bmv-datalake-tunombre-2026/silver/capturas_seguras/*",
+        "arn:aws:s3:::prisma-bmv-datalake-tunombre-2026/silver/capturas_en_curso/*",
+        "arn:aws:s3:::prisma-bmv-datalake-tunombre-2026/cuarentena/recolector-seguro/*"
+      ],
+      "Condition": {"StringEquals": {"s3:if-none-match": "*"}}
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:sqs:us-east-1:886457183564:prisma-bmv-recolector-seguro-operacion-2026-Fallos-lmhg8svxhDp1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["logs:CreateLogStream", "logs:PutLogEvents"],
+      "Resource": "arn:aws:logs:us-east-1:886457183564:log-group:/aws/lambda/prisma-bmv-recolector-seguro-operacion-202-Funcion-soS1hmdqF61u:*"
+    }
+  ]
+}

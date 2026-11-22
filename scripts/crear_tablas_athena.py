@@ -12,8 +12,6 @@ import argparse
 
 import _ruta  # noqa: F401
 
-from prisma.data.athena import ClienteAthena
-
 DIR_SQL = _ruta.RAIZ / "infra" / "athena"
 
 
@@ -38,12 +36,11 @@ def main() -> None:
         for nombre, sql in sentencias(a.bucket):
             print(f"-- {nombre}\n{sql};\n")
         return
-    cliente = ClienteAthena("default", a.workgroup, f"s3://{a.bucket}/athena-results/", a.region, timeout_s=60)
-    for nombre, sql in sentencias(a.bucket):
-        cliente.ejecutar(sql, leer_resultados=False)
-        print(f"OK  {nombre}")
-    r = cliente.ejecutar("SELECT COUNT(*) AS filas FROM prisma_bmv.bmv_silver_ppp WHERE anio >= 2026")
-    print("Filas Silver 2026+:", r.datos.iloc[0, 0])
+    raise SystemExit(
+        "Creación bloqueada: los DDL 0*.sql corresponden a la Lambda alternativa "
+        "y no son compatibles con el Gold desplegado. Use --solo-imprimir para "
+        "inspección y consulte docs/ARQUITECTURA_AWS.md."
+    )
 
 
 if __name__ == "__main__":

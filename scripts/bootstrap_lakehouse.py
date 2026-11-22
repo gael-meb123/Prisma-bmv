@@ -21,6 +21,13 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
+
+if __name__ == "__main__":
+    sys.exit(
+        "Carga inicial bloqueada: puede sobrescribir datos Gold de la Lambda "
+        "activa con otro contrato. Consulte docs/ARQUITECTURA_AWS.md."
+    )
 
 import _ruta  # noqa: F401
 import pandas as pd

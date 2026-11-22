@@ -1,0 +1,96 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: API y fuente sintetica aisladas para probar capturas sin tocar Silver productivo.
+Parameters:
+  LambdaRoleArn:
+    Type: String
+  ArtifactBucket:
+    Type: String
+  ArtifactKey:
+    Type: String
+Resources:
+  Fuente:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      VersioningConfiguration:
+        Status: Enabled
+  Funcion:
+    Type: AWS::Lambda::Function
+    Properties:
+      Runtime: python3.11
+      Handler: handler.lambda_handler
+      Role: !Ref LambdaRoleArn
+      MemorySize: 256
+      Timeout: 15
+      ReservedConcurrentExecutions: 2
+      Environment:
+        Variables:
+          PERFILES_TABLE: tabla-no-utilizada-en-prueba
+          MERCADO_BUCKET: !Ref Fuente
+          MERCADO_KEY: snapshot.csv
+          CAPTURAS_SEGURAS_HABILITADAS: 'true'
+      Code:
+        S3Bucket: !Ref ArtifactBucket
+        S3Key: !Ref ArtifactKey
+  Api:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: !Sub '${AWS::StackName}-http-prueba'
+      ProtocolType: HTTP
+  Integracion:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref Api
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !GetAtt Funcion.Arn
+      PayloadFormatVersion: '2.0'
+  Salud:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: 'GET /health'
+      Target: !Join ['/', [integrations, !Ref Integracion]]
+  Fechas:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: 'GET /api/mercado/fechas'
+      Target: !Join ['/', [integrations, !Ref Integracion]]
+  Resumen:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: 'GET /api/mercado/resumen'
+      Target: !Join ['/', [integrations, !Ref Integracion]]
+  PermisoGateway:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref Funcion
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub 'arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${Api}/*/GET/*'
+  Stage:
+    Type: AWS::ApiGatewayV2::Stage
+    DependsOn: [Salud, Fechas, Resumen]
+    Properties:
+      ApiId: !Ref Api
+      StageName: '$default'
+      AutoDeploy: true
+      DefaultRouteSettings:
+        ThrottlingBurstLimit: 5
+        ThrottlingRateLimit: 2
+Outputs:
+  Fuente:
+    Value: !Ref Fuente
+  ApiEndpoint:
+    Value: !GetAtt Api.ApiEndpoint

@@ -1,0 +1,99 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Base experimental de identidad y perfiles; no conecta ni migra usuarios.
+Parameters:
+  RegistroPublico:
+    Type: String
+    Default: 'false'
+    AllowedValues: ['true', 'false']
+  PostConfirmacionArn:
+    Type: String
+    Default: ''
+Rules:
+  PerfilObligatorio:
+    RuleCondition: !Equals [!Ref RegistroPublico, 'true']
+    Assertions:
+      - Assert: !Not [!Equals [!Ref PostConfirmacionArn, '']]
+        AssertDescription: El registro requiere trigger de perfil desplegado y probado.
+Conditions:
+  RegistroHabilitado: !Equals [!Ref RegistroPublico, 'true']
+Resources:
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      UserPoolName: !Sub '${AWS::StackName}-usuarios'
+      UsernameAttributes:
+        - email
+      AutoVerifiedAttributes:
+        - email
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: !If [RegistroHabilitado, false, true]
+      LambdaConfig: !If
+        - RegistroHabilitado
+        - PostConfirmation: !Ref PostConfirmacionArn
+        - !Ref AWS::NoValue
+      DeletionProtection: ACTIVE
+      UserPoolTier: LITE
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 12
+          RequireLowercase: true
+          RequireUppercase: true
+          RequireNumbers: true
+          RequireSymbols: true
+      MfaConfiguration: OPTIONAL
+      EnabledMfas:
+        - SOFTWARE_TOKEN_MFA
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+          - Name: verified_email
+            Priority: 1
+  BrowserClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref UserPool
+      ClientName: navegador-experimental
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+      PreventUserExistenceErrors: ENABLED
+      EnableTokenRevocation: true
+      AccessTokenValidity: 15
+      IdTokenValidity: 15
+      RefreshTokenValidity: 1
+      TokenValidityUnits:
+        AccessToken: minutes
+        IdToken: minutes
+        RefreshToken: days
+      ReadAttributes:
+        - email
+        - email_verified
+        - name
+      WriteAttributes:
+        - name
+        - email
+  Perfiles:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: sub
+          AttributeType: S
+      KeySchema:
+        - AttributeName: sub
+          KeyType: HASH
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: false
+      SSESpecification:
+        SSEEnabled: true
+Outputs:
+  UserPoolId:
+    Value: !Ref UserPool
+  BrowserClientId:
+    Value: !Ref BrowserClient
+  TablaPerfiles:
+    Value: !Ref Perfiles

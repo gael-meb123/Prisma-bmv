@@ -22,6 +22,19 @@
 # =============================================================================
 set -euo pipefail
 
+# La implementación que este script empaqueta no es la Lambda activa y escribe
+# Gold con un esquema incompatible en el mismo prefijo. Además, las operaciones
+# siguientes sustituyen configuración del bucket, entorno Lambda y Scheduler.
+# No existe todavía una migración aprobada que haga seguras esas escrituras.
+cat >&2 <<'BLOQUEADO'
+DESPLIEGUE BLOQUEADO: este script corresponde a la implementación alternativa
+infra/lambda/recolector_diario_bmv y NO debe ejecutarse sobre AWS actual.
+No se modificó ningún recurso. Consulte docs/ARQUITECTURA_AWS.md y ejecute:
+python scripts/verificar_contrato_aws.py --bucket <bucket> --region <region>
+La migración y el despliegue requieren un procedimiento aislado y aprobado.
+BLOQUEADO
+exit 1
+
 : "${BUCKET:?Defina BUCKET}"
 : "${LAYER_ARN:?Defina LAYER_ARN (ver encabezado del script)}"
 REGION="${REGION:-us-east-1}"
@@ -63,7 +76,8 @@ paso "Empaquetando Lambda $FUNCION"
 TMP="$(mktemp -d)"
 cp "$RAIZ/infra/lambda/recolector_diario_bmv/lambda_function.py" "$TMP/"
 cp "$RAIZ/prisma/domain/bmv_core.py" "$TMP/"
-(cd "$TMP" && zip -q -r lambda.zip lambda_function.py bmv_core.py)
+cp "$RAIZ/prisma/domain/calendario_bmv.py" "$TMP/"
+(cd "$TMP" && zip -q -r lambda.zip lambda_function.py bmv_core.py calendario_bmv.py)
 ENV_VARS="Variables={BUCKET_NAME=$BUCKET}"
 
 if aws lambda get-function --function-name "$FUNCION" >/dev/null 2>&1; then

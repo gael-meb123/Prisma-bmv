@@ -1,0 +1,95 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Captura experimental BMV aislada, sin Scheduler ni senales.
+Parameters:
+  RoleArn:
+    Type: String
+    Description: Rol Lambda existente, con permisos de laboratorio.
+  ArtifactBucket:
+    Type: String
+  ArtifactKey:
+    Type: String
+Resources:
+  Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      VersioningConfiguration:
+        Status: Enabled
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+  Database:
+    Type: AWS::Glue::Database
+    Properties:
+      CatalogId: !Ref AWS::AccountId
+      DatabaseInput:
+        Name: !Join ['_', !Split ['-', !Ref AWS::StackName]]
+        Description: Laboratorio de captura provisional; no es produccion.
+  Silver:
+    Type: AWS::Glue::Table
+    Properties:
+      CatalogId: !Ref AWS::AccountId
+      DatabaseName: !Ref Database
+      TableInput:
+        Name: silver_captura_provisional_v1
+        TableType: EXTERNAL_TABLE
+        Parameters:
+          EXTERNAL: 'TRUE'
+          skip.header.line.count: '1'
+          use.null.for.invalid.data: 'true'
+        StorageDescriptor:
+          Columns:
+            - {Name: fecha, Type: string}
+            - {Name: emisora_propuesta, Type: string}
+            - {Name: serie_propuesta, Type: string}
+            - {Name: origen_catalogo, Type: string}
+            - {Name: alias_blackrock, Type: string}
+            - {Name: estado_composicion, Type: string}
+            - {Name: estado_mapeo, Type: string}
+            - {Name: estado_captura, Type: string}
+            - {Name: ppp_bmv_mxn, Type: double}
+            - {Name: ultimo_bmv_mxn, Type: double}
+            - {Name: anterior_bmv_mxn, Type: double}
+            - {Name: apariciones, Type: int}
+            - {Name: url_fuente, Type: string}
+            - {Name: sha256_boletin, Type: string}
+            - {Name: version_catalogo, Type: string}
+          Location: !Sub 's3://${Bucket}/experimental/v1/silver/'
+          InputFormat: org.apache.hadoop.mapred.TextInputFormat
+          OutputFormat: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+          SerdeInfo:
+            SerializationLibrary: org.apache.hadoop.hive.serde2.OpenCSVSerde
+            Parameters:
+              separatorChar: ','
+              quoteChar: '"'
+  Capturador:
+    Type: AWS::Lambda::Function
+    Properties:
+      Runtime: python3.11
+      Handler: handler.lambda_handler
+      Role: !Ref RoleArn
+      ReservedConcurrentExecutions: 1
+      Timeout: 60
+      MemorySize: 256
+      Code:
+        S3Bucket: !Ref ArtifactBucket
+        S3Key: !Ref ArtifactKey
+      Environment:
+        Variables:
+          BUCKET_NAME: !Ref Bucket
+Outputs:
+  Bucket:
+    Value: !Ref Bucket
+  Database:
+    Value: !Ref Database
+  Lambda:
+    Value: !Ref Capturador
+  Tabla:
+    Value: silver_captura_provisional_v1

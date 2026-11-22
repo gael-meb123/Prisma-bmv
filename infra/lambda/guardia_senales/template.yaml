@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Guardia aislada de ventanas; lectura S3 sin escrituras ni predicciones.
+Parameters:
+  LambdaRoleArn:
+    Type: String
+  ArtifactBucket:
+    Type: String
+  ArtifactKey:
+    Type: String
+  FuentesBucket:
+    Type: String
+    Default: prisma-bmv-datalake-tunombre-2026
+Resources:
+  Guardia:
+    Type: AWS::Lambda::Function
+    Properties:
+      Runtime: python3.11
+      Handler: handler.lambda_handler
+      Role: !Ref LambdaRoleArn
+      MemorySize: 256
+      Timeout: 45
+      ReservedConcurrentExecutions: 1
+      Environment:
+        Variables:
+          FUENTE_BUCKET: !Ref FuentesBucket
+      Code:
+        S3Bucket: !Ref ArtifactBucket
+        S3Key: !Ref ArtifactKey
+Outputs:
+  Funcion:
+    Value: !Ref Guardia

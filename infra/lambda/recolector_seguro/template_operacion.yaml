@@ -1,0 +1,114 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Recolector seguro sin Scheduler; fallo asincrono retenido y alertas.
+Parameters:
+  LambdaRoleArn:
+    Type: String
+  LayerArn:
+    Type: String
+  ArtifactBucket:
+    Type: String
+  ArtifactKey:
+    Type: String
+  BucketDatos:
+    Type: String
+    AllowedValues: [prisma-bmv-datalake-tunombre-2026]
+  CorreoAlertas:
+    Type: String
+    AllowedPattern: '^[^ @]+@[^ @]+\.[^ @]+$'
+Resources:
+  Fallos:
+    Type: AWS::SQS::Queue
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      MessageRetentionPeriod: 1209600
+      SqsManagedSseEnabled: true
+  Avisos:
+    Type: AWS::SNS::Topic
+  Suscripcion:
+    Type: AWS::SNS::Subscription
+    Properties:
+      TopicArn: !Ref Avisos
+      Protocol: email
+      Endpoint: !Ref CorreoAlertas
+  Funcion:
+    Type: AWS::Lambda::Function
+    Properties:
+      Runtime: python3.11
+      Handler: infra.lambda.recolector_seguro.handler.lambda_handler
+      Role: !Ref LambdaRoleArn
+      Layers: [!Ref LayerArn]
+      MemorySize: 512
+      Timeout: 120
+      ReservedConcurrentExecutions: 1
+      Environment:
+        Variables:
+          BUCKET_NAME: !Ref BucketDatos
+      Code:
+        S3Bucket: !Ref ArtifactBucket
+        S3Key: !Ref ArtifactKey
+  Reintentos:
+    Type: AWS::Lambda::EventInvokeConfig
+    Properties:
+      FunctionName: !Ref Funcion
+      Qualifier: $LATEST
+      MaximumEventAgeInSeconds: 3600
+      MaximumRetryAttempts: 2
+      DestinationConfig:
+        OnFailure:
+          Destination: !GetAtt Fallos.Arn
+  AlarmaErrores:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: Fallo del recolector seguro, incluyendo boletin no disponible.
+      Namespace: AWS/Lambda
+      MetricName: Errors
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref Funcion
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+      AlarmActions: [!Ref Avisos]
+  AlarmaCola:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: Invocacion fallida pendiente de revision manual.
+      Namespace: AWS/SQS
+      MetricName: ApproximateNumberOfMessagesVisible
+      Dimensions:
+        - Name: QueueName
+          Value: !GetAtt Fallos.QueueName
+      Statistic: Maximum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+      AlarmActions: [!Ref Avisos]
+  AlarmaDestino:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: Lambda no pudo entregar un fallo a la cola.
+      Namespace: AWS/Lambda
+      MetricName: DestinationDeliveryFailures
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref Funcion
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+      AlarmActions: [!Ref Avisos]
+Outputs:
+  Funcion:
+    Value: !GetAtt Funcion.Arn
+  ColaFallos:
+    Value: !GetAtt Fallos.Arn
+  TemaAlertas:
+    Value: !Ref Avisos

@@ -1,0 +1,247 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: API HTTP experimental aislada; no sustituye FastAPI ni publica senales.
+Parameters:
+  LambdaRoleArn:
+    Type: String
+    Description: Rol existente; debe autorizar lectura de la tabla de perfiles.
+  ArtifactBucket:
+    Type: String
+  ArtifactKey:
+    Type: String
+  UserPoolId:
+    Type: String
+  UserPoolClientId:
+    Type: String
+  ProfilesTable:
+    Type: String
+  FrontendOrigin:
+    Type: String
+    AllowedPattern: '^https://[a-zA-Z0-9.-]+(:[0-9]+)?$'
+  ExperimentalFrontendOrigin:
+    Type: String
+    Default: https://react-demo.d315dh37vi024o.amplifyapp.com
+    AllowedPattern: '^https://[a-zA-Z0-9.-]+(:[0-9]+)?$'
+  MercadoBucket:
+    Type: String
+    Default: prisma-bmv-datalake-tunombre-2026
+  MercadoKey:
+    Type: String
+    Default: silver/serie_unificada_reciente.csv
+  CapturasSegurasHabilitadas:
+    Type: String
+    Default: 'false'
+    AllowedValues: ['true', 'false']
+  YahooObservacionesHabilitadas:
+    Type: String
+    Default: 'false'
+    AllowedValues: ['true', 'false']
+Resources:
+  Api:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: !Sub '${AWS::StackName}-http'
+      ProtocolType: HTTP
+      CorsConfiguration:
+        AllowOrigins: [!Ref FrontendOrigin, !Ref ExperimentalFrontendOrigin]
+        AllowMethods: [GET, POST, PATCH, OPTIONS]
+        AllowHeaders: [authorization, content-type]
+        MaxAge: 300
+  Autorizador:
+    Type: AWS::ApiGatewayV2::Authorizer
+    Properties:
+      ApiId: !Ref Api
+      Name: cognito-experimental
+      AuthorizerType: JWT
+      IdentitySource: ['$request.header.Authorization']
+      JwtConfiguration:
+        Audience: [!Ref UserPoolClientId]
+        Issuer: !Sub 'https://cognito-idp.${AWS::Region}.amazonaws.com/${UserPoolId}'
+  Funcion:
+    Type: AWS::Lambda::Function
+    Properties:
+      Runtime: python3.11
+      Handler: handler.lambda_handler
+      Role: !Ref LambdaRoleArn
+      MemorySize: 256
+      Timeout: 15
+      ReservedConcurrentExecutions: 4
+      Environment:
+        Variables:
+          PERFILES_TABLE: !Ref ProfilesTable
+          COGNITO_POOL_ID: !Ref UserPoolId
+          MERCADO_BUCKET: !Ref MercadoBucket
+          MERCADO_KEY: !Ref MercadoKey
+          CAPTURAS_SEGURAS_HABILITADAS: !Ref CapturasSegurasHabilitadas
+          YAHOO_OBSERVACIONES_HABILITADAS: !Ref YahooObservacionesHabilitadas
+      Code:
+        S3Bucket: !Ref ArtifactBucket
+        S3Key: !Ref ArtifactKey
+  Integracion:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref Api
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !GetAtt Funcion.Arn
+      PayloadFormatVersion: '2.0'
+  Salud:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: 'GET /health'
+      Target: !Join ['/', [integrations, !Ref Integracion]]
+  Perfil:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: 'GET /api/me'
+      AuthorizationType: JWT
+      AuthorizerId: !Ref Autorizador
+      Target: !Join ['/', [integrations, !Ref Integracion]]
+  FechasMercado:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: 'GET /api/mercado/fechas'
+      Target: !Join ['/', [integrations, !Ref Integracion]]
+  ResumenMercado:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: 'GET /api/mercado/resumen'
+      Target: !Join ['/', [integrations, !Ref Integracion]]
+  SectoresTerminal:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: 'GET /api/terminal/sectores'
+      Target: !Join ['/', [integrations, !Ref Integracion]]
+  SerieTerminal:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: 'GET /api/terminal/serie'
+      AuthorizationType: JWT
+      AuthorizerId: !Ref Autorizador
+      Target: !Join ['/', [integrations, !Ref Integracion]]
+  SerieWalmex:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: 'GET /api/serie/walmex'
+      AuthorizationType: JWT
+      AuthorizerId: !Ref Autorizador
+      Target: !Join ['/', [integrations, !Ref Integracion]]
+  EstadisticaTerminal:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: 'GET /api/terminal/estadistica'
+      AuthorizationType: JWT
+      AuthorizerId: !Ref Autorizador
+      Target: !Join ['/', [integrations, !Ref Integracion]]
+  AdminListar:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: 'GET /api/admin/usuarios'
+      AuthorizationType: JWT
+      AuthorizerId: !Ref Autorizador
+      Target: !Join ['/', [integrations, !Ref Integracion]]
+  YahooObservacion:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: 'GET /api/observaciones/yahoo'
+      AuthorizationType: JWT
+      AuthorizerId: !Ref Autorizador
+      Target: !Join ['/', [integrations, !Ref Integracion]]
+  AdminActualizar:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: 'PATCH /api/admin/usuarios/{uid}'
+      AuthorizationType: JWT
+      AuthorizerId: !Ref Autorizador
+      Target: !Join ['/', [integrations, !Ref Integracion]]
+  AdminCrear:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: 'POST /api/admin/usuarios'
+      AuthorizationType: JWT
+      AuthorizerId: !Ref Autorizador
+      Target: !Join ['/', [integrations, !Ref Integracion]]
+  SenalesPanel:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: 'GET /api/senales/panel'
+      AuthorizationType: JWT
+      AuthorizerId: !Ref Autorizador
+      Target: !Join ['/', [integrations, !Ref Integracion]]
+  SenalTerminal:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: 'GET /api/terminal/senal'
+      AuthorizationType: JWT
+      AuthorizerId: !Ref Autorizador
+      Target: !Join ['/', [integrations, !Ref Integracion]]
+  SeguimientoTerminal:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: 'GET /api/terminal/seguimiento'
+      AuthorizationType: JWT
+      AuthorizerId: !Ref Autorizador
+      Target: !Join ['/', [integrations, !Ref Integracion]]
+  ConsensoTerminal:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: 'GET /api/terminal/consenso'
+      AuthorizationType: JWT
+      AuthorizerId: !Ref Autorizador
+      Target: !Join ['/', [integrations, !Ref Integracion]]
+  MarcadorTerminal:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: 'GET /api/terminal/marcador'
+      AuthorizationType: JWT
+      AuthorizerId: !Ref Autorizador
+      Target: !Join ['/', [integrations, !Ref Integracion]]
+  PermisoGateway:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref Funcion
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub 'arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${Api}/*/GET/*'
+  PermisoGatewayPatch:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref Funcion
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub 'arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${Api}/*/PATCH/api/admin/usuarios/*'
+  PermisoGatewayPost:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref Funcion
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub 'arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${Api}/*/POST/api/admin/usuarios'
+  Stage:
+    Type: AWS::ApiGatewayV2::Stage
+    DependsOn: [Salud, Perfil, FechasMercado, ResumenMercado, SectoresTerminal, SerieTerminal, SerieWalmex, EstadisticaTerminal, AdminListar, AdminActualizar, AdminCrear, SenalesPanel, SenalTerminal, SeguimientoTerminal, ConsensoTerminal, MarcadorTerminal, YahooObservacion]
+    Properties:
+      ApiId: !Ref Api
+      StageName: '$default'
+      AutoDeploy: true
+      DefaultRouteSettings:
+        ThrottlingBurstLimit: 5
+        ThrottlingRateLimit: 2
+Outputs:
+  ApiEndpoint:
+    Value: !GetAtt Api.ApiEndpoint

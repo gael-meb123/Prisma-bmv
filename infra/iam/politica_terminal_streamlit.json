@@ -37,8 +37,8 @@
       "Action": ["glue:GetDatabase", "glue:GetTable", "glue:GetTables", "glue:GetPartitions"],
       "Resource": [
         "arn:aws:glue:${REGION}:${ACCOUNT_ID}:catalog",
-        "arn:aws:glue:${REGION}:${ACCOUNT_ID}:database/prisma_bmv",
-        "arn:aws:glue:${REGION}:${ACCOUNT_ID}:table/prisma_bmv/*"
+        "arn:aws:glue:${REGION}:${ACCOUNT_ID}:database/${DATABASE}",
+        "arn:aws:glue:${REGION}:${ACCOUNT_ID}:table/${DATABASE}/*"
       ]
     }
   ]

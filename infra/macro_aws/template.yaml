@@ -1,0 +1,119 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Indicadores oficiales de Banxico y notificaciones WebSocket de Prisma BMV.
+Parameters:
+  MacroBucket:
+    Type: String
+    Description: Bucket S3 existente en esta región para la instantánea macro.
+  BanxicoSecretArn:
+    Type: String
+    Description: ARN de Secrets Manager cuyo valor de texto es el token de Banxico.
+Resources:
+  Conexiones:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: connectionId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: connectionId
+          KeyType: HASH
+      TimeToLiveSpecification:
+        AttributeName: expiresAt
+        Enabled: true
+  WebSocket:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: prisma-macro-websocket
+      ProtocolType: WEBSOCKET
+      RouteSelectionExpression: '$request.body.action'
+  ConexionLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: handler.conexiones
+      Runtime: python3.12
+      Timeout: 10
+      Environment:
+        Variables:
+          CONNECTIONS_TABLE: !Ref Conexiones
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action: [dynamodb:PutItem, dynamodb:DeleteItem]
+              Resource: !GetAtt Conexiones.Arn
+  Integracion:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref WebSocket
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub 'arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ConexionLambda.Arn}/invocations'
+  RutaConnect:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref WebSocket
+      RouteKey: '$connect'
+      Target: !Join [/, [integrations, !Ref Integracion]]
+  RutaDisconnect:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref WebSocket
+      RouteKey: '$disconnect'
+      Target: !Join [/, [integrations, !Ref Integracion]]
+  PermisoApi:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref ConexionLambda
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub 'arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocket}/*'
+  Stage:
+    Type: AWS::ApiGatewayV2::Stage
+    DependsOn: [RutaConnect, RutaDisconnect]
+    Properties:
+      ApiId: !Ref WebSocket
+      StageName: prod
+      AutoDeploy: true
+  Publicador:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: handler.publicar
+      Runtime: python3.12
+      Timeout: 60
+      MemorySize: 256
+      Environment:
+        Variables:
+          MACRO_BUCKET: !Ref MacroBucket
+          MACRO_KEY: macro/indicadores.json
+          CONNECTIONS_TABLE: !Ref Conexiones
+          BANXICO_SECRET_ARN: !Ref BanxicoSecretArn
+          WS_MANAGEMENT_URL: !Sub 'https://${WebSocket}.execute-api.${AWS::Region}.${AWS::URLSuffix}/prod'
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action: [s3:GetObject, s3:PutObject]
+              Resource: !Sub 'arn:${AWS::Partition}:s3:::${MacroBucket}/macro/indicadores.json'
+            - Effect: Allow
+              Action: secretsmanager:GetSecretValue
+              Resource: !Ref BanxicoSecretArn
+            - Effect: Allow
+              Action: [dynamodb:Scan, dynamodb:DeleteItem]
+              Resource: !GetAtt Conexiones.Arn
+            - Effect: Allow
+              Action: execute-api:ManageConnections
+              Resource: !Sub 'arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocket}/prod/POST/@connections/*'
+      Events:
+        CadaQuinceMinutos:
+          Type: Schedule
+          Properties:
+            Schedule: rate(15 minutes)
+            Enabled: true
+Outputs:
+  WebSocketUrl:
+    Value: !Sub 'wss://${WebSocket}.execute-api.${AWS::Region}.${AWS::URLSuffix}/prod'
+  PublicadorNombre:
+    Value: !Ref Publicador
+  ObjetoS3:
+    Value: !Sub 's3://${MacroBucket}/macro/indicadores.json'

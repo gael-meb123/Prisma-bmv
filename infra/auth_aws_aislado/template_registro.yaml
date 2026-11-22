@@ -1,0 +1,40 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Trigger de registro para un pool existente; no habilita registro por si solo.
+Parameters:
+  LambdaRoleArn:
+    Type: String
+  UserPoolId:
+    Type: String
+  ProfilesTable:
+    Type: String
+  ArtifactBucket:
+    Type: String
+  ArtifactKey:
+    Type: String
+Resources:
+  Funcion:
+    Type: AWS::Lambda::Function
+    Properties:
+      Runtime: python3.11
+      Handler: post_confirmacion.lambda_handler
+      Role: !Ref LambdaRoleArn
+      Timeout: 5
+      MemorySize: 512
+      Environment:
+        Variables:
+          PERFILES_TABLE: !Ref ProfilesTable
+          COGNITO_POOL_ID: !Ref UserPoolId
+      Code:
+        S3Bucket: !Ref ArtifactBucket
+        S3Key: !Ref ArtifactKey
+  Permiso:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref Funcion
+      Action: lambda:InvokeFunction
+      Principal: cognito-idp.amazonaws.com
+      SourceAccount: !Ref AWS::AccountId
+      SourceArn: !Sub 'arn:${AWS::Partition}:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/${UserPoolId}'
+Outputs:
+  PostConfirmacionArn:
+    Value: !GetAtt Funcion.Arn
