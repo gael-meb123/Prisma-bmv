@@ -13,7 +13,6 @@ import { TerminalGate } from "./pages/TerminalGate";
 import { EmptyArt } from "./components/Illustrations";
 import { MacroTicker } from "./components/MacroTicker/MacroTicker";
 import { Security } from "./pages/Security";
-import { Experimental, ExperimentalNoDisponible } from "./pages/Experimental";
 import { isCognito } from "./lib/auth.mjs";
 const Report = lazy(() => import("./pages/Report").then(m => ({ default: m.Report })));
 const Terminal = lazy(() => import("./pages/Terminal").then(m => ({ default: m.Terminal })));
@@ -70,9 +69,7 @@ function AppInner() {
   } else if (isTerminalRoute(route) && !account.session) {
     content = <TerminalGate />;
   } else if (route === "/") {
-    content = real ? <Experimental /> : <Landing />;
-  } else if (real && ["/metodologia", "/fuentes", "/estados"].includes(route)) {
-    content = <ExperimentalNoDisponible />;
+    content = <Landing />;
   } else if (route === "/planes") {
     content = <Plans />;
   } else if (route === "/acceso" || route === "/registro") {

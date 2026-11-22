@@ -80,14 +80,9 @@ export function Header() {
             </span>
           </div>
           <div className="bk-util-right">
-            {real ? <>
-              <span>Ingesta BMV activa · Señales en validación</span>
-              <a href="#/planes">Planes</a>
-            </> : <>
-              <a href="#/fuentes"><ShieldCheck size={13} style={{ verticalAlign: "-2px", marginRight: 4 }} />Seguridad</a>
-              <a href="#/estados"><CircleHelp size={13} style={{ verticalAlign: "-2px", marginRight: 4 }} />Ayuda</a>
-              <a href="#/planes">Planes</a>
-            </>}
+            <a href="#/fuentes"><ShieldCheck size={13} style={{ verticalAlign: "-2px", marginRight: 4 }} />Seguridad</a>
+            <a href="#/estados"><CircleHelp size={13} style={{ verticalAlign: "-2px", marginRight: 4 }} />Ayuda</a>
+            <a href="#/planes">Planes</a>
           </div>
         </div>
       </div>
@@ -97,7 +92,7 @@ export function Header() {
           <Logo light />
 
           <nav className={`bk-nav ${menuOpen ? "is-open" : ""}`} aria-label="Navegación principal">
-            {(real ? [["Inicio", "#/"], ["Terminal", "#/sistema"], ["Planes", "#/planes"]] : LINKS).map(([label, href]) => (
+            {LINKS.map(([label, href]) => (
               <a
                 key={label}
                 href={href}
@@ -150,9 +145,9 @@ export function Header() {
               </>
             ) : (
               <>
-                {!real && <a href="#/registro" className="bk-btn bk-btn-outline bk-btn-sm bk-hide-sm">
+                <a href="#/registro" className="bk-btn bk-btn-outline bk-btn-sm bk-hide-sm">
                   <UserPlus size={15} /> Abrir cuenta
-                </a>}
+                </a>
                 <a href="#/acceso" data-tour="login" className="bk-btn bk-btn-navy bk-btn-sm">
                   <Lock size={14} /> Ingresar
                 </a>

@@ -73,13 +73,22 @@ export function Landing() {
     if (ancla) document.getElementById(ancla)?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
-  const quick = [
-    [BarChart3, "Ver el mercado", "#/sistema/mercado"],
-    [LineChart, "Señales del día", "#/sistema/senales"],
-    [Timer, "Seguimiento t+5", "#/sistema/seguimiento"],
-    [CreditCard, "Comparar planes", "#/planes"],
-    [MessageCircle, "Hablar con Prismi", null],
-  ];
+  const goldEval = import.meta.env.VITE_GOLD_EVALUACION === "true" || import.meta.env.VITE_REQUIRE_REAL_API !== "true";
+  const quick = goldEval
+    ? [
+        [BarChart3, "Ver el mercado", "#/sistema/mercado"],
+        [LineChart, "Señales del día", "#/sistema/senales"],
+        [Timer, "Seguimiento t+5", "#/sistema/seguimiento"],
+        [CreditCard, "Comparar planes", "#/planes"],
+        [MessageCircle, "Hablar con Prismi", null],
+      ]
+    : [
+        [BarChart3, "Ver el mercado", "#/sistema/mercado"],
+        [LineChart, "Estadística e IPC-35", "#/sistema/estadistica"],
+        [ShieldCheck, "Gobernanza AWS", "#/sistema/gobernanza"],
+        [CreditCard, "Comparar planes", "#/planes"],
+        [MessageCircle, "Hablar con Prismi", null],
+      ];
 
   return (
     <>
