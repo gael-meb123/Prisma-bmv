@@ -1,12 +1,11 @@
 import { CognitoUserPool, CognitoUser, CognitoUserAttribute, AuthenticationDetails } from "amazon-cognito-identity-js";
-import { supabase } from "./supabase.mjs";
 import { asociarTotp, verificarTotp, activarTotp } from "./totp.mjs";
 import { asegurarSesion, solicitarCodigoEmail, verificarCodigoEmail } from "./emailVerification.mjs";
 import { registrar, confirmarRegistro, reenviarRegistro } from "./cognitoRegistration.mjs";
 import { solicitarRecuperacion, confirmarRecuperacion } from "./cognitoRecovery.mjs";
 
-const useCognito = import.meta.env.VITE_AUTH_PROVIDER === "cognito";
-export const publicRegistration = !useCognito || import.meta.env.VITE_COGNITO_SELF_SIGNUP === "true";
+export const isCognito = true;
+export const publicRegistration = import.meta.env.VITE_COGNITO_SELF_SIGNUP === "true";
 const listeners = new Set();
 let pool;
 let pendingChallenge = null;
@@ -129,8 +128,7 @@ const cognito = {
       return reenviarRegistro(new CognitoUser({ Username: email, Pool: userPool() }));
     },
   },
-  async rpc() { return { error: new Error("El cambio de plan aún no está habilitado con Cognito.") }; },
+  async rpc() { return { error: new Error("Los cambios de plan se gestionan desde Administración (Cognito + DynamoDB).") }; },
 };
 
-export const authClient = useCognito ? cognito : supabase;
-export const isCognito = useCognito;
+export const authClient = cognito;

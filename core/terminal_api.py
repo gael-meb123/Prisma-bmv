@@ -7,7 +7,7 @@ factor clave, trayectoria t0 → t+5, efectividad por modelo, marcador y goberna
 
 Toda la lógica cuantitativa viene de `prisma.data.analytics` (la misma que usa la Lambda y
 la terminal Streamlit), leída sobre los CSV vivos de la raíz del repositorio. Las reglas de
-plan son las de `core.supabase_auth` (fuente de verdad del backend).
+plan son las de `core.local_auth` (en producción: Cognito + DynamoDB en API Gateway).
 """
 
 from __future__ import annotations
@@ -23,7 +23,7 @@ import pandas as pd
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 
-from core.supabase_auth import Usuario, exigir_emisora, usuario_actual
+from core.local_auth import Usuario, exigir_emisora, usuario_actual
 from prisma.data import analytics as an
 from prisma.data.estadistica_descriptiva import generar_reporte
 from prisma.data.repository import RepositorioLocal

@@ -1,16 +1,13 @@
 /**
- * Prisma BMV - Cliente de API Institucional con Fallback Automático a Mocks
- * Basado en la arquitectura resiliente de request() de Proyecto-geo.
+ * Prisma BMV - Cliente de API Institucional
  *
- * Cambios Fase 3:
- *  - Token JWT de Supabase en cada petición autenticada.
+ *  - Token JWT de Amazon Cognito en cada petición autenticada.
  *  - 401 → cierra sesión y redirige a #/acceso.
  *  - 403 → lanza APIError con el mensaje del backend (plan insuficiente).
- *  - Endpoints de mercado siguen sin auth (públicos).
- *  - Nuevos: me(), admin.*
+ *  - Endpoints de mercado, sectores y gobernanza son públicos.
  */
 
-import { authClient as supabase, isCognito } from "../lib/auth.mjs";
+import { authClient, isCognito } from "../lib/auth.mjs";
 import { crearLimitador } from "./requestLimiter.mjs";
 import { fetchLectura } from "./retryRead.mjs";
 import { cuerpoAlta } from "./adminInvite.mjs";
@@ -33,9 +30,7 @@ function fallback(value) {
   return value;
 }
 
-// Token de la sesión activa. Lo fija useAccount en cada cambio de sesión (login, refresh, logout).
-// Leerlo de aquí evita llamar a supabase.auth.getSession() en cada petición: varias llamadas
-// concurrentes compiten por el mismo candado de Supabase y pueden dejar peticiones colgadas.
+// Token de la sesión activa (Cognito). Lo fija useAccount en cada cambio de sesión.
 let tokenSesion = null;
 export function setAuthToken(token) {
   tokenSesion = token || null;
@@ -69,10 +64,14 @@ export async function request(path, { body, method, signal, timeoutMs = 8000, au
 
     if (auth) {
       let token = tokenSesion;
-      if (!token || import.meta.env.VITE_AUTH_PROVIDER === "cognito") {
-        const { data: { session } } = await supabase.auth.getSession();
-        token = session?.access_token || null;
-        if (import.meta.env.VITE_AUTH_PROVIDER === "cognito") tokenSesion = token;
+      if (!token || isCognito) {
+        try {
+          const { data: { session } } = await authClient.auth.getSession();
+          token = session?.access_token || null;
+          if (isCognito) tokenSesion = token;
+        } catch {
+          token = tokenSesion;
+        }
       }
       if (token) {
         headers["Authorization"] = `Bearer ${token}`;
@@ -106,7 +105,7 @@ export async function request(path, { body, method, signal, timeoutMs = 8000, au
       // Visitante sin cuenta: no es un error, se usan los mocks
       if (!tieneToken) return null;
       // Tenía sesión y el token fue rechazado: cerrar sesión
-      await supabase.auth.signOut();
+      await authClient.auth.signOut();
       window.location.hash = "/acceso";
       throw new APIError("Sesión vencida. Inicia sesión de nuevo.", "AUTH_EXPIRED", 401);
     }

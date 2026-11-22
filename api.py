@@ -3,7 +3,8 @@ Prisma BMV - API REST Backend (FastAPI)
 Conecta los insumos oficiales de Big Data e IA con la interfaz web en React.
 Ejecución: uvicorn api:app --reload --port 8000
 
-Autenticación: Supabase (JWT en 'Authorization: Bearer ...'). Ver core/supabase_auth.py.
+Autenticación productiva: Amazon Cognito + DynamoDB (infra/api_gateway_aislada/handler.py).
+En local, core/local_auth.py conserva el contrato de tipos para pruebas unitarias.
 """
 
 from __future__ import annotations
@@ -27,7 +28,7 @@ from core.data_provider import (
 )
 from core.terminal_api import router as terminal_router
 from core.macro_provider import obtener_desde_s3, obtener_indicadores
-from core.supabase_auth import (
+from core.local_auth import (
     Usuario,
     actualizar_usuario,
     crear_usuario,

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
-import { authClient as supabase } from "../lib/auth.mjs";
+import { authClient } from "../lib/auth.mjs";
 import { planById } from "../plans.mjs";
 import { setAuthToken } from "../services/api.mjs";
 
@@ -8,7 +8,7 @@ const AccountContext = createContext(null);
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 export function AccountProvider({ children }) {
-  const [session, setSession] = useState(null);   // Supabase session (tiene .access_token)
+  const [session, setSession] = useState(null);   // Sesión Cognito (tiene .access_token)
   const [profile, setProfile] = useState(null);    // { id, email, nombre, rol, plan, emisoras }
   const [loading, setLoading] = useState(true);    // true mientras se valida la sesión
   const versionPerfil = useRef(0);
@@ -22,7 +22,7 @@ export function AccountProvider({ children }) {
       if (!res.ok) {
         // Token vencido o inválido: cerrar sesión
         if (res.status === 401 && versionPerfil.current === version) {
-          await supabase.auth.signOut();
+          await authClient.auth.signOut();
           return;
         }
         throw new Error(`/api/me → ${res.status}`);
@@ -53,14 +53,14 @@ export function AccountProvider({ children }) {
       });
     }
     // 1. Sesión actual (si ya había una guardada)
-    supabase.auth.getSession().then(({ data: { session: s } }) => {
+    authClient.auth.getSession().then(({ data: { session: s } }) => {
       if (activo && !eventoRecibido) aplicarSesion(s);
     }).catch(() => {
       if (activo && !eventoRecibido) aplicarSesion(null);
     });
 
     // 2. Cambios de sesión (login, logout, token refresh)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+    const { data: { subscription } } = authClient.auth.onAuthStateChange(
       (_event, s) => {
         if (!activo) return;
         eventoRecibido = true;
@@ -77,36 +77,36 @@ export function AccountProvider({ children }) {
 
   // --- Acciones ---
   async function enter(email, password) {
-    const { error, challenge } = await supabase.auth.signInWithPassword({ email, password });
+    const { error, challenge } = await authClient.auth.signInWithPassword({ email, password });
     if (error) throw error;
     return challenge;
     // onAuthStateChange se encarga de cargar el perfil
   }
 
   async function completeChallenge(value) {
-    const { error, challenge } = await supabase.auth.completeChallenge(value);
+    const { error, challenge } = await authClient.auth.completeChallenge(value);
     if (error) throw error;
     return challenge;
   }
 
   async function startPasswordReset(email) {
-    const { error } = await supabase.auth.resetPasswordForEmail(email);
+    const { error } = await authClient.auth.resetPasswordForEmail(email);
     if (error) throw error;
   }
 
   async function confirmPasswordReset(email, code, password) {
-    const { error } = await supabase.auth.confirmPasswordReset(email, code, password);
+    const { error } = await authClient.auth.confirmPasswordReset(email, code, password);
     if (error) throw error;
   }
 
-  async function startTotpEnrollment() { return supabase.auth.startTotpEnrollment(); }
-  async function finishTotpEnrollment(code) { return supabase.auth.finishTotpEnrollment(code); }
-  function cancelTotpEnrollment() { supabase.auth.cancelTotpEnrollment?.(); }
-  async function startEmailVerification() { return supabase.auth.startEmailVerification(); }
-  async function finishEmailVerification(code) { return supabase.auth.finishEmailVerification(code); }
+  async function startTotpEnrollment() { return authClient.auth.startTotpEnrollment(); }
+  async function finishTotpEnrollment(code) { return authClient.auth.finishTotpEnrollment(code); }
+  function cancelTotpEnrollment() { authClient.auth.cancelTotpEnrollment?.(); }
+  async function startEmailVerification() { return authClient.auth.startEmailVerification(); }
+  async function finishEmailVerification(code) { return authClient.auth.finishEmailVerification(code); }
 
   async function register(email, password, nombre) {
-    const { error, confirmacionRequerida } = await supabase.auth.signUp({
+    const { error, confirmacionRequerida } = await authClient.auth.signUp({
       email,
       password,
       options: { data: { nombre } },
@@ -116,27 +116,25 @@ export function AccountProvider({ children }) {
   }
 
   async function confirmRegistration(email, code) {
-    const { error } = await supabase.auth.confirmRegistration(email, code);
+    const { error } = await authClient.auth.confirmRegistration(email, code);
     if (error) throw error;
   }
 
   async function resendRegistration(email) {
-    const { error } = await supabase.auth.resendRegistration(email);
+    const { error } = await authClient.auth.resendRegistration(email);
     if (error) throw error;
   }
 
   async function leave() {
-    await supabase.auth.signOut();
+    await authClient.auth.signOut();
     versionPerfil.current++;
     setProfile(null);
     setSession(null);
   }
 
   async function switchPlan(newPlan) {
-    // Llama a la función SQL cambiar_plan_demo (botón simulado de demo)
-    const { error } = await supabase.rpc("cambiar_plan_demo", { nuevo_plan: newPlan });
+    const { error } = await authClient.rpc("cambiar_plan_demo", { nuevo_plan: newPlan });
     if (error) throw error;
-    // Refrescar perfil para ver el cambio
     if (session) await fetchProfile(session.access_token);
   }
 
