@@ -188,7 +188,7 @@ export function Landing() {
         </section>
 
         {/* ---------------------------------------------------- Mercado hoy */}
-        <section className="bk-section bk-container" aria-labelledby="mercado-hoy">
+        <section data-tour="mercado-hoy" className="bk-section bk-container" aria-labelledby="mercado-hoy">
           <div className="bk-market-head">
             <div>
               <span className="bk-eyebrow">Resumen del mercado</span>
@@ -309,7 +309,7 @@ export function Landing() {
         </section>
 
         {/* ----------------------------------------------------- Seguridad */}
-        <section className="bk-section bk-container" aria-labelledby="seguridad">
+        <section data-tour="seguridad" className="bk-section bk-container" aria-labelledby="seguridad">
           <div className="bk-security">
             <div>
               <span className="bk-eyebrow" style={{ color: "#5fd0dc" }}>Seguridad y transparencia</span>

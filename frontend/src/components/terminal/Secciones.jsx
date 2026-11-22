@@ -112,12 +112,18 @@ export function Resumen({ ctx }) {
           </p>
         </div>
         <div className="tm-welcome-actions">
-          <button type="button" className="bk-btn bk-btn-primary bk-btn-sm" onClick={() => irA("senales")}>
-            Ver señales de {emisora} <ArrowRight size={15} />
-          </button>
-          {import.meta.env.VITE_REQUIRE_REAL_API !== "true" && <button type="button" className="bk-btn bk-btn-light bk-btn-sm" onClick={() => startTour("terminal")}>
+          {import.meta.env.VITE_REQUIRE_REAL_API !== "true" || import.meta.env.VITE_GOLD_EVALUACION === "true" ? (
+            <button type="button" className="bk-btn bk-btn-primary bk-btn-sm" onClick={() => irA("senales")}>
+              Ver señales de {emisora} <ArrowRight size={15} />
+            </button>
+          ) : (
+            <button type="button" className="bk-btn bk-btn-primary bk-btn-sm" onClick={() => irA("estadistica")}>
+              Ver estadística de {emisora} <ArrowRight size={15} />
+            </button>
+          )}
+          <button type="button" className="bk-btn bk-btn-light bk-btn-sm" onClick={() => startTour("terminal")}>
             <MapIcon size={15} /> Recorrido guiado
-          </button>}
+          </button>
         </div>
       </section>
 
@@ -305,7 +311,7 @@ export function Mercado({ ctx }) {
       >
         <div className="tm-filters" style={{ padding: "4px 6px 14px", flexWrap: "wrap", gap: 8 }}>
           {setUniversoMercado && (
-            <div role="group" aria-label="Universo de mercado" style={{ display: "inline-flex", gap: 6 }}>
+            <div data-tour="universo-ipc35" role="group" aria-label="Universo de mercado" style={{ display: "inline-flex", gap: 6 }}>
               <button
                 type="button"
                 className={`bk-btn bk-btn-sm ${!esIpc35 ? "bk-btn-primary" : "bk-btn-outline"}`}

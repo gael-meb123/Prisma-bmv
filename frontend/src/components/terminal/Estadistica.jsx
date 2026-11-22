@@ -87,7 +87,7 @@ export function Estadistica({ ctx }) {
   const validacion = desde && hasta && desde > hasta;
 
   return <>
-    <div className="bk-card bk-card-pad estadistica-filtros">
+    <div data-tour="estadistica" className="bk-card bk-card-pad estadistica-filtros">
       <div><span className="bk-eyebrow">{esIpc35 ? "IPC PROVISIONAL (35)" : "DATOS HISTÓRICOS"} · {emisoraActiva}</span>
         <h3>Estadística descriptiva</h3><p>Explora la distribución, calidad y relaciones de los datos disponibles para esta emisora.</p></div>
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", marginBottom: 10 }}>
