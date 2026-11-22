@@ -493,6 +493,11 @@ export function Senales({ ctx }) {
 
   return (
     <>
+      {senal.aviso_evaluacion && (
+        <div className="bk-alert bk-alert-info" role="status" style={{ fontSize: 13 }}>
+          <strong>Evaluación histórica Gold:</strong> {senal.aviso_evaluacion}
+        </div>
+      )}
       <div className="tm-kpis">
         <div className="bk-card tm-kpi">
           <span className="tm-kpi-icon"><BrainCircuit size={18} /></span>
@@ -590,6 +595,11 @@ export function Seguimiento({ ctx }) {
         <div className="bk-card"><Estado loading={datos.seguimiento.loading} titulo="Seguimiento no disponible" texto={datos.seguimiento.error?.message || "No hay información disponible para este corte."} /></div>
       ) : (
         <>
+          {seg.aviso_evaluacion && (
+            <div className="bk-alert bk-alert-info" role="status" style={{ fontSize: 13 }}>
+              <strong>Evaluación histórica Gold:</strong> {seg.aviso_evaluacion}
+            </div>
+          )}
           <div className="tm-kpis">
             <div className="bk-card tm-kpi">
               <span className="tm-kpi-icon"><Timer size={18} /></span>
@@ -736,15 +746,22 @@ function filasDe(m) {
 export function Calidad({ ctx }) {
   const { emisora, datos, senalesTicker, irA, onOpenReport } = ctx;
   const m = datos.metricas.data;
-  // La auditoría heredada mezcla datos del backend con cifras de demostración.
-  // No debe mostrarse en modo de datos reales hasta eliminar esa mezcla.
-  if (import.meta.env.VITE_REQUIRE_REAL_API === "true") {
+  const goldEval = import.meta.env.VITE_GOLD_EVALUACION === "true";
+  if (import.meta.env.VITE_REQUIRE_REAL_API === "true" && !goldEval) {
     return <Estado titulo="Auditoría no disponible" texto="Esta sección está temporalmente deshabilitada mientras se verifica la procedencia de todas sus métricas." />;
+  }
+  if (!m) {
+    return <div className="bk-card"><Estado loading={datos.metricas.loading} titulo="Métricas no disponibles" texto={datos.metricas.error?.message || "Cargando métricas institucionales desde S3."} /></div>;
   }
   const bins = binsDe(m);
   const campeon = nombreModelo(m?.decision_arquitectura?.campeon_oficial || "G2_V4_ADJ");
   return (
     <>
+      {m.aviso_evaluacion && (
+        <div className="bk-alert bk-alert-info" role="status" style={{ fontSize: 13 }}>
+          <strong>Evaluación histórica Gold:</strong> {m.aviso_evaluacion}
+        </div>
+      )}
       <div className="tm-row tm-row-main">
         <ChartCard
           title={`Calibración del modelo campeón (${campeon})`}

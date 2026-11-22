@@ -66,6 +66,11 @@ export function ConsensoModelos({ ctx }) {
   const filas = [...datos.emisoras].sort((a, b) => orden[a.estado] - orden[b.estado] || a.emisora.localeCompare(b.emisora));
 
   return <>
+    {datos.aviso_evaluacion && (
+      <div className="bk-alert bk-alert-info" role="status" style={{ fontSize: 13 }}>
+        <strong>Evaluación histórica Gold:</strong> {datos.aviso_evaluacion}
+      </div>
+    )}
     <section className="bk-card bk-card-pad consenso-intro">
       <div><span className="bk-eyebrow">SEÑALES G2 · {datos.fecha_sesion}</span>
         <h3>Coincidencia entre modelos</h3>

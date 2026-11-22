@@ -397,6 +397,107 @@ class MercadoTest(unittest.TestCase):
             ev_p["body"] = json.dumps({"pregunta": "   "})
             self.assertEqual(api.ejecutar(ev_p, perfil_exp, s3)["statusCode"], 422)
 
+    def test_gold_evaluacion_habilitada_y_bloqueada_por_flag(self):
+        csv_g2 = (
+            "id_senal_g2,fecha_senal,muestra_evaluacion,fecha_objetivo_h5,emisora,serie,sector_economico,"
+            "modelo_g2,ppp_base_t,ret_10,ret_10_rel_panel,volatilidad_20,probabilidad_subida,prediccion_clase,"
+            "prediccion_etiqueta,estado_consenso_g2,estado_resolucion,sesiones_transcurridas,fecha_parcial_reciente,"
+            "retorno_parcial_pct,acierto_parcial_en_curso,acierto_direccional_t5,brier_observado_t5,sha256_boletin_base\n"
+            + "\n".join(
+                f"G2_20261110_WALMEX_{m},2026-11-10,OUT_OF_SAMPLE_PRE_REGISTRADO,2026-11-18,WALMEX,*,Comercio,"
+                f"{m},50.0,0.02,-0.03,0.015,0.58,1,SUBIDA,CONSENSO_PANEL_G2_SUBIDA,PENDIENTE_T+5,0,,,,,,{'a'*64}"
+                for m in (
+                    "G2_V1_POOLED_REL3_CALIBRADO",
+                    "G2_V2_POOLED_REL3_ZONA_NEUTRAL",
+                    "G2_V3_POOLED_REL3_ALTA_DISC_EXPANDIDO",
+                    "G2_V4_POOLED_DM5_REL_CORTO_PLAZO",
+                    "G2_V5_ADAPTATIVO_REGIMEN_SECTORIAL",
+                )
+            )
+            + "\n"
+        )
+        precios_csv = (
+            "fecha,emisora,serie,estado_captura,ppp_bmv_mxn,anterior_bmv_mxn,variacion_ppp_vs_anterior_pct\n"
+            "2026-11-10,WALMEX,*,PPP_PUBLICADO_VERIFICADO,50.0,49.5,1.0\n"
+            "2026-11-11,WALMEX,*,PPP_PUBLICADO_VERIFICADO,51.0,50.0,2.0\n"
+            "2026-11-18,WALMEX,*,PPP_PUBLICADO_VERIFICADO,52.0,51.0,1.96\n"
+        )
+        reg_json = json.dumps({
+            "G2_V1_POOLED_REL3_CALIBRADO": {
+                "variables": ["ret_10", "ret_10_rel_panel", "volatilidad_20"],
+                "beta": [0.1, 0.2, -0.3, 0.05],
+                "scalers_por_emisora": {"WALMEX": {"mean": [0.0, 0.0, 0.01], "scale": [0.02, 0.02, 0.01]}},
+            }
+        })
+        met_json = json.dumps({"fecha_congelamiento_oficial": "2026-11-06", "modelos_test": []})
+
+        class ErrorNoSuchKey(Exception):
+            def __init__(self):
+                self.response = {"Error": {"Code": "NoSuchKey"}}
+
+        class S3Gold:
+            def __init__(self):
+                self.objs = {
+                    "k": precios_csv.encode(),
+                    "gold/senales_g2/registro_senales_prospectivas_panel_g2.csv": csv_g2.encode(),
+                    "evidencias/modelos_evaluacion/registro_modelos_g2_oficial.json": reg_json.encode(),
+                    "evidencias/modelos_evaluacion/metricas_institucionales_v1.json": met_json.encode(),
+                }
+
+            def get_object(self, Bucket, Key):
+                if Key not in self.objs:
+                    raise ErrorNoSuchKey()
+                raw = self.objs[Key]
+                return {"Body": io.BytesIO(raw), "ContentLength": len(raw), "LastModified": "2026-11-21"}
+
+        s3 = S3Gold()
+        perfil_exp = Tabla({"rol": "user", "plan": "explorer", "email": "e@example.org", "nombre": "E"})
+
+        # Con bandera en false -> sigue bloqueado (503)
+        with patch.dict("os.environ", {"MERCADO_BUCKET": "b", "MERCADO_KEY": "k", "GOLD_EVALUACION_HABILITADA": "false"}):
+            self.assertEqual(api.ejecutar({"routeKey": "GET /api/metricas/modelos"}, Tabla(), s3)["statusCode"], 503)
+
+        # Con bandera en true -> sirve consenso, senal (con cascada), seguimiento t+5, marcador y metricas
+        with patch.dict("os.environ", {"MERCADO_BUCKET": "b", "MERCADO_KEY": "k", "GOLD_EVALUACION_HABILITADA": "true"}):
+            r_met = api.ejecutar({"routeKey": "GET /api/metricas/modelos"}, Tabla(), s3)
+            self.assertEqual(r_met["statusCode"], 200)
+            self.assertTrue(json.loads(r_met["body"])["modo_evaluacion_gold"])
+
+            ev_c = evento({"sub": "u", "token_use": "access"})
+            ev_c["routeKey"] = "GET /api/terminal/consenso"
+            r_c = api.ejecutar(ev_c, perfil_exp, s3)
+            self.assertEqual(r_c["statusCode"], 200)
+            bc = json.loads(r_c["body"])
+            self.assertEqual(bc["emisoras"][0]["estado"], "subida")
+
+            ev_s = evento({"sub": "u", "token_use": "access"})
+            ev_s["routeKey"] = "GET /api/terminal/senal"
+            ev_s["queryStringParameters"] = {"emisora": "WALMEX"}
+            r_s = api.ejecutar(ev_s, perfil_exp, s3)
+            self.assertEqual(r_s["statusCode"], 200)
+            bs = json.loads(r_s["body"])
+            self.assertEqual(bs["consensos"]["G2"], "CONSENSO_ALTO_SUBIDA")
+            self.assertIn("ret_10_rel_panel", bs["factor"]["contribuciones"])
+
+            # Explorer bloqueado en GMEXICO (403)
+            ev_s["queryStringParameters"] = {"emisora": "GMEXICO"}
+            self.assertEqual(api.ejecutar(ev_s, perfil_exp, s3)["statusCode"], 403)
+
+            ev_seg = evento({"sub": "u", "token_use": "access"})
+            ev_seg["routeKey"] = "GET /api/terminal/seguimiento"
+            ev_seg["queryStringParameters"] = {"emisora": "WALMEX"}
+            r_seg = api.ejecutar(ev_seg, perfil_exp, s3)
+            self.assertEqual(r_seg["statusCode"], 200)
+            bseg = json.loads(r_seg["body"])
+            self.assertEqual(bseg["resumen"]["estado"], "RESUELTA_T+5")
+            self.assertTrue(bseg["modelos"][0]["acierto_t5"])
+
+            ev_m = evento({"sub": "u", "token_use": "access"})
+            ev_m["routeKey"] = "GET /api/terminal/marcador"
+            r_m = api.ejecutar(ev_m, perfil_exp, s3)
+            self.assertEqual(r_m["statusCode"], 200)
+            self.assertEqual(len(json.loads(r_m["body"])["modelos"]), 5)
+
 
 if __name__ == "__main__":
     unittest.main()

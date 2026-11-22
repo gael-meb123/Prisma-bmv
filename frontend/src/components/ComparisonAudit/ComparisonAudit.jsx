@@ -124,7 +124,9 @@ export function ComparisonAudit({ ticker = "WALMEX", senales = [], metricas = nu
   return (
     <div className="comparison-panel" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
       <div className="bk-alert bk-alert-info" role="status">
-        Vista de demostración: puede contener cifras simuladas o valores de ejemplo; no representa datos verificados.
+        {metricas?.modo_evaluacion_gold
+          ? "Evaluación histórica fuera de muestra (TEST): métricas reales cargadas desde el archivo S3 Gold; la emisión productiva continua sigue sujeta a la compuerta 21/21."
+          : "Vista de demostración: puede contener cifras simuladas o valores de ejemplo; no representa datos verificados."}
       </div>
       {/* Botón Volver y Título */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "10px", flexWrap: "wrap" }}>

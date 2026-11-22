@@ -35,6 +35,10 @@ Parameters:
     Type: String
     Default: 'false'
     AllowedValues: ['true', 'false']
+  GoldEvaluacionHabilitada:
+    Type: String
+    Default: 'false'
+    AllowedValues: ['true', 'false']
   AnthropicApiKey:
     Type: String
     Default: ''
@@ -77,6 +81,7 @@ Resources:
           MERCADO_KEY: !Ref MercadoKey
           CAPTURAS_SEGURAS_HABILITADAS: !Ref CapturasSegurasHabilitadas
           YAHOO_OBSERVACIONES_HABILITADAS: !Ref YahooObservacionesHabilitadas
+          GOLD_EVALUACION_HABILITADA: !Ref GoldEvaluacionHabilitada
           ANTHROPIC_API_KEY: !Ref AnthropicApiKey
       Code:
         S3Bucket: !Ref ArtifactBucket
@@ -125,6 +130,12 @@ Resources:
     Properties:
       ApiId: !Ref Api
       RouteKey: 'GET /api/terminal/gobernanza'
+      Target: !Join ['/', [integrations, !Ref Integracion]]
+  MetricasModelos:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref Api
+      RouteKey: 'GET /api/metricas/modelos'
       Target: !Join ['/', [integrations, !Ref Integracion]]
   PrismiTerminal:
     Type: AWS::ApiGatewayV2::Route
@@ -260,7 +271,7 @@ Resources:
       SourceArn: !Sub 'arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${Api}/*/POST/api/terminal/prismi'
   Stage:
     Type: AWS::ApiGatewayV2::Stage
-    DependsOn: [Salud, Perfil, FechasMercado, ResumenMercado, SectoresTerminal, GobernanzaTerminal, PrismiTerminal, SerieTerminal, SerieWalmex, EstadisticaTerminal, AdminListar, AdminActualizar, AdminCrear, SenalesPanel, SenalTerminal, SeguimientoTerminal, ConsensoTerminal, MarcadorTerminal, YahooObservacion]
+    DependsOn: [Salud, Perfil, FechasMercado, ResumenMercado, SectoresTerminal, GobernanzaTerminal, MetricasModelos, PrismiTerminal, SerieTerminal, SerieWalmex, EstadisticaTerminal, AdminListar, AdminActualizar, AdminCrear, SenalesPanel, SenalTerminal, SeguimientoTerminal, ConsensoTerminal, MarcadorTerminal, YahooObservacion]
     Properties:
       ApiId: !Ref Api
       StageName: '$default'

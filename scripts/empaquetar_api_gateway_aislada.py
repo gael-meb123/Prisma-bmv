@@ -22,7 +22,9 @@ def main():
                 "prisma/data/yahoo_secundario.py": (raiz / "prisma/data/yahoo_secundario.py").read_bytes(),
                 "prisma/data/captura_ampliada.py": (raiz / "prisma/data/captura_ampliada.py").read_bytes(),
                 "prisma/data/ipc35_almacen.py": (raiz / "prisma/data/ipc35_almacen.py").read_bytes(),
+                "prisma/data/gold_evaluacion.py": (raiz / "prisma/data/gold_evaluacion.py").read_bytes(),
                 "prisma/domain/__init__.py": b"",
+                "prisma/domain/calendario_bmv.py": (raiz / "prisma/domain/calendario_bmv.py").read_bytes(),
                 "prisma/domain/catalogo_ipc.py": (raiz / "prisma/domain/catalogo_ipc.py").read_bytes(),
                 "prisma/domain/catalogos/naftrac_2026-11-17_v1.json": (
                     raiz / "prisma/domain/catalogos/naftrac_2026-11-17_v1.json"

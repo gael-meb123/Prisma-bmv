@@ -54,6 +54,8 @@ function saludo() {
 
 export function Terminal({ route, seccion, setSeccion, selectedTicker, setSelectedTicker, senalesTicker, onOpenReport }) {
   const real = import.meta.env.VITE_REQUIRE_REAL_API === "true";
+  const goldEval = import.meta.env.VITE_GOLD_EVALUACION === "true";
+  const verModelos = !real || goldEval;
   const account = useAccount();
   const [menuOpen, setMenuOpen] = useState(false);
   const [fecha, setFecha] = useState(null); // null = última sesión
@@ -183,7 +185,7 @@ export function Terminal({ route, seccion, setSeccion, selectedTicker, setSelect
         </nav>
 
         <div className="tm-side-foot tm-nav">
-          {!real && <button type="button" onClick={onOpenReport}><FileText size={17} /> Ficha ejecutiva</button>}
+          {verModelos && <button type="button" onClick={onOpenReport}><FileText size={17} /> Ficha ejecutiva</button>}
           <a href="#/planes"><Tag size={17} /> Planes</a>
           {account.userRole === "admin" && <a href="#/admin"><Users size={17} /> Administración</a>}
           {real && <a href="#/seguridad"><ShieldCheck size={17} /> Seguridad de la cuenta</a>}
@@ -237,16 +239,22 @@ export function Terminal({ route, seccion, setSeccion, selectedTicker, setSelect
         </header>
 
         <main id="main-content" className="tm-content">
-          {real && <p role="status">Ingesta diaria BMV automatizada activa (ventana limpia hacia 21/21) · Observación secundaria Yahoo separada del PPP BMV · Señales G2 y panel ajustado bloqueados hasta concluir validaciones.</p>}
+          {real && (
+            <p role="status">
+              {goldEval
+                ? "Entorno de evaluación histórica Gold (archivo S3 hasta 2026-11-19): habilita Consenso G2, Señales, Seguimiento t+5 y Calidad en modo de solo lectura. La emisión productiva continua sigue sujeta a la compuerta 21/21."
+                : "Ingesta diaria BMV automatizada activa (ventana limpia hacia 21/21) · Observación secundaria Yahoo separada del PPP BMV · Señales G2 y panel ajustado bloqueados hasta concluir validaciones."}
+            </p>
+          )}
           {seccion === "resumen" && <Resumen ctx={ctx} />}
           {seccion === "mercado" && <Mercado ctx={ctx} />}
-          {real && ["consenso", "senales", "seguimiento", "calidad"].includes(seccion) &&
+          {!verModelos && ["consenso", "senales", "seguimiento", "calidad"].includes(seccion) &&
             <div className="bk-card bk-card-pad"><h2>Sección no disponible</h2>
               <p>Las señales G2, el consenso y el seguimiento t+5 permanecen bloqueados hasta completar la ventana limpia 21/21, conciliar eventos corporativos y cerrar la auditoría sin fuga.</p></div>}
-          {!real && seccion === "consenso" && <ConsensoModelos ctx={ctx} />}
-          {!real && seccion === "senales" && <Senales ctx={ctx} />}
-          {!real && seccion === "seguimiento" && <Seguimiento ctx={ctx} />}
-          {!real && seccion === "calidad" && <Calidad ctx={ctx} />}
+          {verModelos && seccion === "consenso" && <ConsensoModelos ctx={ctx} />}
+          {verModelos && seccion === "senales" && <Senales ctx={ctx} />}
+          {verModelos && seccion === "seguimiento" && <Seguimiento ctx={ctx} />}
+          {verModelos && seccion === "calidad" && <Calidad ctx={ctx} />}
           {(estadisticaVisitada || seccion === "estadistica") && (
             <div className="estadistica-contenido" hidden={seccion !== "estadistica"}>
               <Estadistica ctx={ctx} />

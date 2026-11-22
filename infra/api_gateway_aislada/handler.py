@@ -14,6 +14,7 @@ from collections import Counter
 from datetime import date, datetime, timezone
 from infra.capturas_seguras import manifiesto, captura, pagina, pagina_global
 from prisma.data.captura_ampliada import extraer as extraer_boletin_ipc
+from prisma.data import gold_evaluacion
 from prisma.data.ipc35_almacen import (
     SECTORES_IPC35_PROVISIONAL,
     SIMBOLOS_YAHOO_IPC35,
@@ -954,15 +955,48 @@ def _admin_crear(evento, ddb, cognito, actor):
                            "detail": "Cognito aceptó el envío; la entrega y verificación del correo están pendientes."})
 
 
-def _senales_bloqueadas(evento, permitidas):
-    """No exponer Gold sin validar series, hashes y ventanas completas."""
+def _senales_bloqueadas(evento, permitidas, s3=None):
+    """No exponer Gold salvo que GOLD_EVALUACION_HABILITADA=true (entorno de evaluación)."""
     ruta = evento["routeKey"]
-    emisora = (evento.get("queryStringParameters") or {}).get("emisora")
+    q = evento.get("queryStringParameters") or {}
+    emisora = q.get("emisora")
     if ruta in ("GET /api/terminal/senal", "GET /api/terminal/seguimiento") and not emisora:
         return respuesta(422, {"detail": "Indica la emisora."})
     if emisora and emisora not in permitidas:
         return respuesta(403, {"detail": "La emisora no está incluida en tu plan."})
-    return respuesta(503, {"detail": "Señales y seguimiento no disponibles: procedencia y ventanas pendientes de validación."})
+    if os.environ.get("GOLD_EVALUACION_HABILITADA") != "true":
+        return respuesta(503, {"detail": "Señales y seguimiento no disponibles: procedencia y ventanas pendientes de validación."})
+    bucket = os.environ.get("MERCADO_BUCKET", "")
+    if not bucket or s3 is None:
+        return respuesta(503, {"detail": "Archivo Gold en S3 no configurado."})
+    try:
+        if ruta == "GET /api/senales/panel":
+            return respuesta(200, gold_evaluacion.senales_panel(s3, bucket, permitidas, fecha=q.get("fecha"), emisora=emisora))
+        if ruta == "GET /api/terminal/consenso":
+            return respuesta(200, gold_evaluacion.consenso_g2(s3, bucket, permitidas, fecha=q.get("fecha")))
+        if ruta == "GET /api/terminal/senal":
+            return respuesta(200, gold_evaluacion.senal_emisora(s3, bucket, emisora, fecha=q.get("fecha")))
+        _, precios_filas, _ = _leer_mercado(s3)
+        if ruta == "GET /api/terminal/seguimiento":
+            return respuesta(200, gold_evaluacion.seguimiento_emisora(s3, bucket, precios_filas, emisora, fecha_senal=q.get("fecha_senal")))
+        if ruta == "GET /api/terminal/marcador":
+            return respuesta(200, gold_evaluacion.marcador_modelos(s3, bucket, precios_filas, permitidas))
+    except Exception as exc:
+        logger.warning("gold_evaluacion_fallida tipo=%s", type(exc).__name__)
+        return respuesta(503, {"detail": "Archivo histórico Gold temporalmente no disponible."})
+    return respuesta(404, {"detail": "Ruta de señales no disponible."})
+
+
+def _metricas_modelos(s3):
+    if os.environ.get("GOLD_EVALUACION_HABILITADA") != "true":
+        return respuesta(503, {"detail": "Métricas de modelos deshabilitadas hasta concluir validaciones."})
+    bucket = os.environ.get("MERCADO_BUCKET", "")
+    if not bucket or s3 is None:
+        return respuesta(503, {"detail": "Métricas en S3 no configuradas."})
+    data = gold_evaluacion.cargar_metricas_modelos(s3, bucket)
+    if not data:
+        return respuesta(503, {"detail": "Archivo de métricas institucionales no disponible en S3."})
+    return respuesta(200, data)
 
 
 def _yahoo(evento, s3, permitidas):
@@ -1195,11 +1229,18 @@ def _contexto_prismi_s3(s3, permitidas):
     except Exception:
         pass
     ventana = avance.get("ventana_limpia") or {}
+    gold_resumen = (
+        gold_evaluacion.resumen_prismi_gold(s3, bucket, permitidas)
+        if os.environ.get("GOLD_EVALUACION_HABILITADA") == "true" and bucket and s3 is not None
+        else {}
+    )
     return {
         "ultima_fecha": ultima_fecha or avance.get("ultima_fecha_capturada"),
         "verificadas": verificadas,
         "ausentes": ausentes,
         "por_emisora": por_emisora,
+        "gold_por_emisora": gold_resumen,
+        "gold_habilitado": os.environ.get("GOLD_EVALUACION_HABILITADA") == "true",
         "ventana": ventana,
         "capturas_totales": avance.get("capturas_seguras_totales"),
         "sha_bronze": avance.get("sha256_bronze"),
@@ -1223,6 +1264,13 @@ def _responder_prismi_local(pregunta, ctx, plan, permitidas):
             d = ctx["por_emisora"].get(em)
             if d and d["ppp"] is not None:
                 var_txt = f" ({d['var']:+.2f}% vs. sesión anterior)" if d["var"] is not None else ""
+                gold_txt = (ctx.get("gold_por_emisora") or {}).get(em)
+                if gold_txt:
+                    return (
+                        f"En la última sesión registrada ({ctx['ultima_fecha']}), {em} {d['serie']} registró un PPP "
+                        f"oficial verificado de ${d['ppp']:,.2f} MXN{var_txt}. {gold_txt} "
+                        f"La emisión productiva continua sigue sujeta a la compuerta 21/21. {aviso}"
+                    )
                 return (
                     f"En la última sesión registrada ({ctx['ultima_fecha']}), {em} {d['serie']} registró un PPP "
                     f"oficial verificado de ${d['ppp']:,.2f} MXN{var_txt}. Las señales G2 permanecen bloqueadas "
@@ -1405,6 +1453,8 @@ def ejecutar(evento, tabla, s3=None, ddb=None, cognito=None):
         return _sectores(evento, s3)
     if ruta == "GET /api/terminal/gobernanza":
         return _gobernanza(s3)
+    if ruta == "GET /api/metricas/modelos":
+        return _metricas_modelos(s3)
     admin_rutas = ("GET /api/admin/usuarios", "PATCH /api/admin/usuarios/{uid}", "POST /api/admin/usuarios")
     senal_rutas = ("GET /api/senales/panel", "GET /api/terminal/senal", "GET /api/terminal/seguimiento",
                    "GET /api/terminal/consenso", "GET /api/terminal/marcador")
@@ -1435,7 +1485,7 @@ def ejecutar(evento, tabla, s3=None, ddb=None, cognito=None):
             return _admin_crear(evento, ddb, cognito, sub)
         return _admin_actualizar(evento, tabla, ddb, sub)
     if ruta in senal_rutas:
-        return _senales_bloqueadas(evento, PLANES[plan])
+        return _senales_bloqueadas(evento, PLANES[plan], s3=s3)
     if ruta == "POST /api/terminal/prismi":
         return _prismi(evento, s3, plan, PLANES[plan])
     if ruta == "GET /api/observaciones/yahoo":

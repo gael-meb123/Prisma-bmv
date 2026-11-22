@@ -26,16 +26,18 @@ function useRecurso(cargar, deps, activo = true) {
 
 export function useTerminalData({ emisora, fecha, fechaSenal, permitido, conSesion, seccion, universoMercado = "base_15" }) {
   const real = import.meta.env.VITE_REQUIRE_REAL_API === "true";
+  const goldEval = import.meta.env.VITE_GOLD_EVALUACION === "true";
+  const verModelos = !real || goldEval;
   const es = (...secciones) => secciones.includes(seccion);
   const universoActivo = seccion === "mercado" && universoMercado === "ipc35_provisional" ? "ipc35_provisional" : null;
   const fechas = useRecurso((s) => api.getFechas(s), []);
   const mercado = useRecurso((s) => api.getMercado(fecha, s, universoActivo), [fecha, universoActivo], es("resumen", "mercado"));
   const sectores = useRecurso((s) => api.terminal.sectores(fecha, s), [fecha], es("resumen", "mercado"));
   const gobernanza = useRecurso((s) => api.terminal.gobernanza(s), [], es("gobernanza"));
-  const metricas = useRecurso((s) => api.getMetricasModelos(s), [], es("senales", "calidad") && !real);
+  const metricas = useRecurso((s) => api.getMetricasModelos(s), [], es("senales", "calidad") && verModelos);
   const serie = useRecurso((s) => api.terminal.serie(emisora, s), [emisora], es("resumen") && permitido && conSesion);
-  const senal = useRecurso((s) => api.terminal.senal(emisora, fecha, s), [emisora, fecha], es("senales") && permitido && conSesion);
-  const seguimiento = useRecurso((s) => api.terminal.seguimiento(emisora, fechaSenal, s), [emisora, fechaSenal], es("seguimiento") && permitido && conSesion);
-  const marcador = useRecurso((s) => api.terminal.marcador(s), [], es("seguimiento") && conSesion);
+  const senal = useRecurso((s) => api.terminal.senal(emisora, fecha, s), [emisora, fecha], (es("senales") || (goldEval && es("resumen"))) && verModelos && permitido && conSesion);
+  const seguimiento = useRecurso((s) => api.terminal.seguimiento(emisora, fechaSenal, s), [emisora, fechaSenal], es("seguimiento") && verModelos && permitido && conSesion);
+  const marcador = useRecurso((s) => api.terminal.marcador(s), [], es("seguimiento") && verModelos && conSesion);
   return { fechas, mercado, sectores, gobernanza, metricas, serie, senal, seguimiento, marcador };
 }
