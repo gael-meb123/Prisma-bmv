@@ -25,6 +25,7 @@ from pydantic import BaseModel, Field
 
 from core.supabase_auth import Usuario, exigir_emisora, usuario_actual
 from prisma.data import analytics as an
+from prisma.data.estadistica_descriptiva import generar_reporte
 from prisma.data.repository import RepositorioLocal
 from prisma.services import prismi as motor_prismi
 from prisma.settings import get_settings
@@ -134,6 +135,82 @@ def gobernanza() -> dict[str, Any]:
 # ------------------------------------------------------------------------------
 # Serie, señales y seguimiento (requieren sesión y respetan el plan)
 # ------------------------------------------------------------------------------
+_CONSENSO_G2_MODELOS = (
+    "G2_V1_POOLED_REL3_CALIBRADO",
+    "G2_V2_POOLED_REL3_ZONA_NEUTRAL",
+    "G2_V3_POOLED_REL3_ALTA_DISC_EXPANDIDO",
+    "G2_V4_POOLED_DM5_REL_CORTO_PLAZO",
+    "G2_V5_ADAPTATIVO_REGIMEN_SECTORIAL",
+)
+
+
+@router.get("/consenso")
+def consenso(fecha: date | None = None, u: Usuario = Depends(usuario_actual)) -> dict[str, Any]:
+    """Coincidencia de los cinco modelos G2 en una misma sesión, sin extrapolar."""
+    d = _datos()
+    corte = str(fecha) if fecha else _fecha_corte(d["precios"], None)
+    g2 = d["g2"]
+    esperados = set(_CONSENSO_G2_MODELOS)
+    filas = []
+    for emisora in u.emisoras:
+        sub = g2[(g2["emisora"] == emisora) & (g2["fecha_senal"] == corte)
+                 & (g2["modelo_g2"].isin(esperados))]
+        modelos = []
+        duplicados = bool(sub["modelo_g2"].duplicated().any())
+        objetivos = set(sub["fecha_objetivo_h5"].dropna().astype(str))
+        try:
+            objetivo_valido = (len(objetivos) == 1 and sub["fecha_objetivo_h5"].notna().all()
+                               and date.fromisoformat(next(iter(objetivos))) > date.fromisoformat(corte))
+        except ValueError:
+            objetivo_valido = False
+        for _, r in sub.iterrows():
+            clase = _num(r.get("prediccion_clase"))
+            probabilidad = _num(r.get("probabilidad_subida"))
+            if clase not in (0, 1) or probabilidad is None or not 0 <= probabilidad <= 1:
+                continue
+            modelos.append({
+                "id": str(r["modelo_g2"]), "nombre": _nombre(str(r["modelo_g2"])),
+                "clase": int(clase), "probabilidad": probabilidad,
+            })
+        completos = (len(sub) == len(esperados) and not duplicados and objetivo_valido
+                     and {m["id"] for m in modelos} == esperados and len(modelos) == len(esperados))
+        clases = [m["clase"] for m in modelos]
+        estado = ("sin_datos" if sub.empty else "incompleto" if not completos else
+                  "subida" if all(c == 1 for c in clases) else
+                  "no_subida" if all(c == 0 for c in clases) else "divergencia")
+        filas.append({
+            "emisora": emisora, "fecha_senal": corte if not sub.empty else None,
+            "fecha_objetivo": next(iter(objetivos)) if objetivo_valido else None,
+            "estado": estado, "modelos": modelos,
+            "modelos_validos": len({m["id"] for m in modelos}),
+            "modelos_esperados": len(esperados),
+            "razon_incompleto": ("Faltan modelos o hay señales duplicadas, inválidas o con objetivos inconsistentes."
+                                 if estado == "incompleto" else None),
+        })
+    return {"fecha_sesion": corte, "generacion": "G2", "horizonte": "5 sesiones",
+            "modelos_esperados": [{"id": m, "nombre": _nombre(m)} for m in _CONSENSO_G2_MODELOS],
+            "emisoras": filas}
+
+
+@router.get("/estadistica")
+def estadistica(emisora: str, desde: date | None = None, hasta: date | None = None,
+                u: Usuario = Depends(usuario_actual)) -> dict[str, Any]:
+    """Descriptivos históricos únicamente para la emisora autorizada."""
+    exigir_emisora(u, emisora)
+    if desde and hasta and desde > hasta:
+        raise HTTPException(status_code=422, detail="La fecha inicial debe ser anterior o igual a la final.")
+    try:
+        historico = pd.read_csv(RAIZ / "serie_ppp_historica_15_emisoras_bmv.csv", low_memory=False)
+        panel = pd.read_csv(RAIZ / "dataset_panel_15_emisoras_features_ajustado_fase1.csv", low_memory=False)
+        # Reducir antes de calcular evita incluir información de otras emisoras.
+        historico = historico[historico["emisora"] == emisora]
+        panel = panel[panel["emisora"] == emisora]
+        return generar_reporte(historico, panel, str(desde) if desde else None,
+                               str(hasta) if hasta else None, emisora=emisora)
+    except (OSError, KeyError, ValueError) as exc:
+        raise HTTPException(status_code=503, detail="No se pudo generar el análisis estadístico.") from exc
+
+
 @router.get("/serie")
 def serie(emisora: str, u: Usuario = Depends(usuario_actual)) -> dict[str, Any]:
     """PPP oficial sesión por sesión. Las sesiones sin PPP verificado van con ppp=null (no se rellenan)."""
@@ -275,6 +352,7 @@ def marcador(u: Usuario = Depends(usuario_actual)) -> dict[str, Any]:
     tabla = an.marcador_modelos(seg) if not seg.empty else pd.DataFrame()
     filas = [{
         "generacion": str(r["generacion"]),
+        "id_modelo": str(r["id_modelo"]),
         "modelo": str(r["modelo"]),
         "nombre": _nombre(str(r["modelo"])),
         "senales": int(r["senales"]),

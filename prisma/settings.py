@@ -32,6 +32,7 @@ class Settings:
 
     aws_region: str = "us-east-1"
     s3_bucket: str = ""
+    s3_modelos_key: str = "gold/modelos/registro_modelos_g2_oficial.json"
     athena_database: str = "prisma_bmv"
     athena_workgroup: str = "primary"
     athena_output: str = ""
@@ -64,6 +65,7 @@ def get_settings() -> Settings:
         sembrar_demo=_bool("PRISMA_SEED_DEMO", entorno != "production"),
         aws_region=os.environ.get("AWS_REGION", os.environ.get("AWS_DEFAULT_REGION", "us-east-1")),
         s3_bucket=os.environ.get("PRISMA_S3_BUCKET", "").strip(),
+        s3_modelos_key=os.environ.get("PRISMA_S3_MODELOS_KEY", "gold/modelos/registro_modelos_g2_oficial.json").strip(),
         athena_database=os.environ.get("PRISMA_ATHENA_DATABASE", "prisma_bmv"),
         athena_workgroup=os.environ.get("PRISMA_ATHENA_WORKGROUP", "primary"),
         athena_output=os.environ.get("PRISMA_ATHENA_OUTPUT", "").strip(),

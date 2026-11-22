@@ -26,6 +26,7 @@ from core.data_provider import (
     obtener_metricas_institucionales_modelos,
 )
 from core.terminal_api import router as terminal_router
+from core.macro_provider import obtener_desde_s3, obtener_indicadores
 from core.supabase_auth import (
     Usuario,
     actualizar_usuario,
@@ -55,6 +56,17 @@ app.add_middleware(
 
 # Gráficas de la terminal web (sector, serie, señales, seguimiento, marcador, gobernanza).
 app.include_router(terminal_router)
+
+@app.get("/api/macro/indicadores")
+def get_indicadores_macro() -> dict[str, Any]:
+    """Últimas observaciones oficiales disponibles; no son señales del modelo."""
+    bucket = os.environ.get("MACRO_S3_BUCKET", "").strip()
+    if bucket:
+        try:
+            return obtener_desde_s3(bucket, os.environ.get("MACRO_S3_KEY", "macro/indicadores.json"))
+        except Exception:
+            raise HTTPException(status_code=503, detail="No se pudo consultar la instantánea macroeconómica.") from None
+    return obtener_indicadores()
 
 
 # ==============================================================================

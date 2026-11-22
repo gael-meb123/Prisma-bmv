@@ -243,6 +243,7 @@ def marcador_modelos(seg: pd.DataFrame) -> pd.DataFrame:
         resueltas = g[g["estado_resolucion"] == "RESUELTA_T+5"]
         filas.append({
             "generacion": gen,
+            "id_modelo": mod,
             "modelo": NOMBRES_MODELO.get(mod, mod),
             "senales": len(g),
             "en_seguimiento": len(parcial),

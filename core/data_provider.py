@@ -71,7 +71,7 @@ def cargar_serie_walmex() -> pd.DataFrame:
 def obtener_fechas_mercado() -> list[str]:
     df = cargar_monitoreo_en_vivo()
     if df.empty or "fecha" not in df.columns:
-        return ["2026-10-30", "2026-10-29", "2026-10-28"]
+        return []
     fechas = sorted(df["fecha"].dropna().unique().tolist(), reverse=True)
     return fechas
 

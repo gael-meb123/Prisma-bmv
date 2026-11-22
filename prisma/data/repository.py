@@ -151,12 +151,15 @@ class RepositorioLocal(RepositorioDatos):
 class RepositorioS3(RepositorioDatos):
     nombre_fuente = "Amazon S3 (capas Silver y Gold)"
 
-    def __init__(self, bucket: str, region: str):
+    def __init__(self, bucket: str, region: str, modelos_key: str = KEY_MODELOS):
         import boto3
 
         if not bucket:
             raise ValueError("Configure PRISMA_S3_BUCKET para usar la fuente S3.")
+        if not modelos_key or modelos_key.startswith("/"):
+            raise ValueError("Configure una clave S3 de modelos explícita y válida.")
         self.bucket = bucket
+        self.modelos_key = modelos_key
         self._s3 = boto3.client("s3", region_name=region)
 
     def _leer(self, key: str) -> bytes | None:
@@ -179,7 +182,7 @@ class RepositorioS3(RepositorioDatos):
         return self._csv(KEY_G1)
 
     def modelos_g2(self) -> dict[str, Any]:
-        cuerpo = self._leer(KEY_MODELOS)
+        cuerpo = self._leer(self.modelos_key)
         return json.loads(cuerpo) if cuerpo else {}
 
     def bronze(self, fecha_yyyymmdd: str) -> tuple[bytes | None, str | None]:
@@ -196,22 +199,27 @@ class RepositorioAthena(RepositorioS3):
     def __init__(self, settings: Settings):
         from prisma.data.athena import ClienteAthena
 
-        super().__init__(settings.s3_bucket, settings.aws_region)
+        super().__init__(settings.s3_bucket, settings.aws_region, settings.s3_modelos_key)
         self._athena = ClienteAthena(
             settings.athena_database, settings.athena_workgroup, settings.salida_athena,
             settings.aws_region, settings.athena_timeout_s,
         )
+        import boto3
+        self._glue = boto3.client("glue", region_name=settings.aws_region)
+        self._database = settings.athena_database
+        self._particiones_silver: frozenset[str] | None = None
 
     @property
     def cliente_athena(self):
         return self._athena
 
     def _precios_crudos(self) -> pd.DataFrame:
-        sql = (
-            "SELECT * FROM bmv_silver_ppp "
-            "WHERE anio >= year(current_date) - 1 "
-            "AND fecha >= date_format(date_add('day', -120, current_date), '%Y-%m-%d')"
-        )
+        if self._particiones_silver is None:
+            tabla = self._glue.get_table(DatabaseName=self._database, Name="bmv_silver_ppp")["Table"]
+            self._particiones_silver = frozenset(p["Name"].lower() for p in tabla.get("PartitionKeys", []))
+        filtro_fecha = "fecha >= date_format(date_add('day', -120, current_date), '%Y-%m-%d')"
+        filtro_anio = "anio >= year(current_date) - 1 AND " if "anio" in self._particiones_silver else ""
+        sql = f"SELECT * FROM bmv_silver_ppp WHERE {filtro_anio}{filtro_fecha}"
         return self._athena.ejecutar(sql).datos
 
     def _g2_crudo(self) -> pd.DataFrame:
@@ -223,7 +231,7 @@ class RepositorioAthena(RepositorioS3):
 
 def crear_repositorio(settings: Settings) -> RepositorioDatos:
     if settings.fuente_datos == "s3":
-        return RepositorioS3(settings.s3_bucket, settings.aws_region)
+        return RepositorioS3(settings.s3_bucket, settings.aws_region, settings.s3_modelos_key)
     if settings.fuente_datos == "athena":
         return RepositorioAthena(settings)
     return RepositorioLocal(settings.dir_datos)

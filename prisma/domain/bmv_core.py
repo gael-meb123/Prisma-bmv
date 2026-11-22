@@ -24,6 +24,10 @@ from typing import Any, Iterable
 
 import numpy as np
 import pandas as pd
+try:
+    from prisma.domain.calendario_bmv import FERIADOS_BMV, calendario_verificado, es_sesion_bmv, ultimas_sesiones
+except ModuleNotFoundError:
+    from calendario_bmv import FERIADOS_BMV, calendario_verificado, es_sesion_bmv, ultimas_sesiones
 
 # ---------------------------------------------------------------------------
 # Contratos de datos
@@ -81,43 +85,6 @@ HORIZONTE_SESIONES = 5
 # Calendario BMV
 # ---------------------------------------------------------------------------
 # Fuente: https://www.bmv.com.mx/es/grupo-bmv/calendario-de-dias-festivos
-FERIADOS_BMV: dict[int, frozenset[str]] = {
-    2026: frozenset(
-        {
-            "2026-01-01", "2026-02-02", "2026-03-16", "2026-04-02", "2026-04-03",
-            "2026-05-01", "2026-09-16", "2026-11-02", "2026-11-16", "2026-12-12",
-            "2026-12-25",
-        }
-    ),
-}
-
-
-def _feriados_extra() -> dict[int, set[str]]:
-    """Permite cargar calendarios oficiales de años posteriores sin redeploy.
-
-    Variable de entorno FERIADOS_BMV_EXTRA="2027-01-01,2027-02-01,..."; un año solo se
-    considera verificado si aparece en FERIADOS_BMV o en esta variable.
-    """
-    extra: dict[int, set[str]] = {}
-    raw = os.environ.get("FERIADOS_BMV_EXTRA", "").strip()
-    for item in filter(None, (x.strip() for x in raw.split(","))):
-        d = date.fromisoformat(item)
-        extra.setdefault(d.year, set()).add(d.isoformat())
-    return extra
-
-
-def calendario_verificado(anio: int) -> bool:
-    return anio in FERIADOS_BMV or anio in _feriados_extra()
-
-
-def es_sesion_bmv(d: date) -> bool:
-    """Día hábil BMV: lunes a viernes que no sea feriado oficial publicado."""
-    if d.weekday() >= 5:
-        return False
-    feriados = set(FERIADOS_BMV.get(d.year, frozenset())) | _feriados_extra().get(d.year, set())
-    return d.isoformat() not in feriados
-
-
 def sesiones_entre(inicio: str | date, fin: str | date) -> list[str]:
     """Sesiones hábiles en el intervalo cerrado [inicio, fin], en ISO."""
     cur = date.fromisoformat(str(inicio)) if not isinstance(inicio, date) else inicio
@@ -139,17 +106,6 @@ def sumar_sesiones(fecha: str, n: int) -> str:
         if es_sesion_bmv(d):
             agregadas += 1
     return d.isoformat()
-
-
-def ultimas_sesiones(fecha_corte: str, n: int) -> list[str]:
-    """Las `n` sesiones hábiles que terminan exactamente en `fecha_corte` (inclusive)."""
-    d = date.fromisoformat(fecha_corte)
-    out: list[str] = []
-    while len(out) < n:
-        if es_sesion_bmv(d):
-            out.append(d.isoformat())
-        d -= timedelta(days=1)
-    return list(reversed(out))
 
 
 def calendario_objetivo(fecha_senal: str, fecha_objetivo: str) -> str:
