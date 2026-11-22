@@ -21,7 +21,7 @@ export function ObservacionSecundaria({ emisora, universo = null, habilitada = t
       });
     return () => ctrl.abort();
   }, [consulta, habilitada]);
-  return <section className="bk-card bk-card-pad" aria-label="Observación secundaria Yahoo Finance">
+  return <section data-tour="yahoo-secundaria" className="bk-card bk-card-pad" aria-label="Observación secundaria Yahoo Finance">
     <h3>Yahoo · observación secundaria ({emisora})</h3>
     <p>Cierre diario reportado, no PPP oficial BMV. No participa en las estadísticas anteriores ni en predicciones.</p>
     {!habilitada ? (

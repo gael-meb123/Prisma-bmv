@@ -7,8 +7,8 @@ export function guideMoment({ route, phase, selectedTicker, busy = false, error 
   if (busy) {
     return {
       expression: "thinking",
-      message: "Procesando boletín regulatorio de la BMV e inferencia IRLS de panel…",
-      prompt: "Calculando modelos…"
+      message: "Consultando datos verificados del Data Lakehouse en AWS…",
+      prompt: "Procesando consulta…"
     };
   }
 
@@ -25,8 +25,8 @@ export function guideMoment({ route, phase, selectedTicker, busy = false, error 
       expression: "happy",
       prompt: route === "/registro" ? "Crear tu cuenta es gratis" : "¡Bienvenido de vuelta!",
       message: route === "/registro"
-        ? "Empiezas con el plan Explorer: monitor de las 15 emisoras y análisis completo de WALMEX."
-        : "Escribe tu correo y contraseña. ¿No tienes cuenta? Usa la pestaña «Abrir cuenta»."
+        ? "Empiezas con el plan Explorer ($0 MXN): monitor BMV de 35 componentes provisionales y análisis completo de WALMEX."
+        : "Escribe tu correo y contraseña de Cognito. ¿No tienes cuenta? Usa la pestaña «Abrir cuenta»."
     };
   }
 
@@ -34,7 +34,7 @@ export function guideMoment({ route, phase, selectedTicker, busy = false, error 
     return {
       expression: "unsure",
       prompt: "La terminal necesita sesión",
-      message: "Inicia sesión o crea tu cuenta gratis para ver las señales, la serie histórica y la auditoría."
+      message: "Inicia sesión o crea tu cuenta gratis para explorar la serie histórica, estadística, observaciones secundarias y gobernanza."
     };
   }
 
@@ -43,20 +43,20 @@ export function guideMoment({ route, phase, selectedTicker, busy = false, error 
       ? {
           expression: "happy",
           prompt: `¡Hola${nombre ? `, ${nombre}` : ""}!`,
-          message: "Tu sesión está activa. Usa «Mi terminal» para ir directo a tu resumen."
+          message: "Tu sesión está activa. Usa «Entrar a mi terminal» o pídelo en el icono del mapa para repetir el recorrido guiado."
         }
       : {
           expression: "happy",
           prompt: "¡Hola! ¿Quieres conocer la terminal?",
-          message: "Descubre por qué el PPP oficial de la BMV es superior al precio de cierre. Para entrar a la terminal, inicia sesión."
+          message: "Descubre por qué el PPP oficial de la BMV es superior al precio de cierre y cómo opera el lakehouse en AWS."
         };
   }
 
   if (route === "/metodologia") {
     return {
       expression: "idle",
-      prompt: "¿Quieres entender los 3 modelos G2?",
-      message: "Aquí explicamos el algoritmo Newton-Raphson IRLS y el factor de reversión relativa."
+      prompt: "¿Quieres entender los modelos G2?",
+      message: "Aquí explicamos la regresión logística agrupada (IRLS), el factor relativo del panel y la política ¼-Kelly."
     };
   }
 
@@ -64,7 +64,7 @@ export function guideMoment({ route, phase, selectedTicker, busy = false, error 
     return {
       expression: "idle",
       prompt: "¿Quieres verificar la procedencia oficial?",
-      message: "Todos los datos se auditan con hash SHA-256 contra el boletín regulatorio de la BMV."
+      message: "Todos los boletines BMV se auditan con hash SHA-256 inmutable en S3 y las observaciones Yahoo se mantienen separadas."
     };
   }
 
@@ -72,19 +72,21 @@ export function guideMoment({ route, phase, selectedTicker, busy = false, error 
     return {
       expression: "happy",
       prompt: "¿Dudas sobre qué plan elegir?",
-      message: "Explorer es gratuito para WALMEX; Professional desbloquea las 15 emisoras del IPC."
+      message: "Explorer ($0 MXN) incluye WALMEX y monitor IPC-35; Professional ($399 MXN) y Enterprise ($3,490 MXN) amplían el panel completo."
     };
   }
 
   if (route.startsWith("/sistema")) {
     const em = selectedTicker || "WALMEX";
     const porSeccion = {
-      resumen: ["¿Por dónde empezar?", `Este es tu resumen. Pulsa «Explicar» en la gráfica de ${em} y te cuento qué muestra.`, "happy"],
-      mercado: ["El monitor de mercado", "Cada fila es una emisora con su PPP oficial. Haz clic en una para analizarla.", "idle"],
-      senales: [`¿Analizando ${em}?`, "Cada barra es la probabilidad de un modelo. Pídeme que te explique por qué da ese número.", "thinking"],
-      seguimiento: ["La prueba de fuego", "Aquí ves si la señal va acertando. Solo cuenta el resultado en t+5.", "surprised"],
-      calidad: ["¿Qué tan confiables son?", "La calibración compara lo que el modelo dice con lo que pasó.", "thinking"],
-      gobernanza: ["¿De dónde salen los datos?", "Te explico el camino del boletín de la BMV hasta esta pantalla.", "happy"],
+      resumen: ["¿Por dónde empezar?", `Este es tu resumen. Pulsa «Explicar» en la gráfica de ${em} o inicia el recorrido guiado.`, "happy"],
+      mercado: ["Monitor base (15) e IPC-35", "Alterna entre el panel base y los 35 componentes provisionales con sectores BMV y cero imputación.", "idle"],
+      consenso: ["Consenso G2 (V1–V5)", "Compara de un vistazo si los cinco modelos coinciden o divergen en el archivo histórico Gold.", "thinking"],
+      senales: [`¿Analizando ${em}?`, "Cada barra es la probabilidad estadística de un modelo. Pídeme que te explique la cascada de factores.", "thinking"],
+      seguimiento: ["La prueba de fuego", "Aquí sigues la trayectoria real sesión por sesión hasta t+5 sin interpolar huecos.", "surprised"],
+      calidad: ["¿Qué tan confiables son?", "La calibración compara la probabilidad predicha contra la frecuencia observada fuera de muestra.", "thinking"],
+      estadistica: ["Estadística y Yahoo (.MX)", "Explora medidas descriptivas del panel base o IPC-35 y consulta cierres secundarios Yahoo separados del PPP.", "thinking"],
+      gobernanza: ["Gobernanza viva en AWS", "Revisa DisparadorDiarioBMV, el avance de la ventana limpia 21/21, hashes SHA-256 y compuertas activas.", "happy"],
     };
     const [prompt, message, expression] = porSeccion[phase] || porSeccion.resumen;
     return { expression, prompt, message };
@@ -93,6 +95,6 @@ export function guideMoment({ route, phase, selectedTicker, busy = false, error 
   return {
     expression: "idle",
     prompt: "¡Hola! Soy Prismi, tu asistente.",
-    message: "Puedo resolver cualquier consulta sobre los modelos econométricos o cotizaciones BMV."
+    message: "Puedo ayudarte con el PPP oficial BMV, el universo IPC-35, la gobernanza en AWS y tus planes."
   };
 }

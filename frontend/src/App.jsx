@@ -133,9 +133,9 @@ function AppInner() {
         {content}
       </Suspense>
 
-      {/* Prismi: asistente cuantitativo en AWS con guardrails y contexto real */}
+      {/* Prismi: asistente cuantitativo en AWS + recorrido guiado animado */}
       <Guide route={route} phase={seccion} selectedTicker={selectedTicker} />
-      {!real && <Tour route={route} />}
+      <Tour route={route} />
       {!real && <MacroTicker />}
     </>
   );

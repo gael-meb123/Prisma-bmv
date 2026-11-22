@@ -85,6 +85,7 @@ export function ConsensoModelos({ ctx }) {
       </details>
     </section>
     <ChartCard title="Emisoras y señales" subtitle="Modelos G2 operativos · la probabilidad mostrada es de subida para cada modelo"
+      tour="consenso"
       explicar={() => explicarConsenso(datos)}>
       <div className="consenso-lista">
         {filas.map((fila) => {
