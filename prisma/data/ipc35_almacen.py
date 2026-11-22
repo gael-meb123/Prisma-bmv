@@ -48,7 +48,7 @@ SIMBOLOS_YAHOO_IPC35 = {
     "FEMSA": "FEMSAUBD.MX",
     "CEMEX": "CEMEXCPO.MX",
     "GAP": "GAPB.MX",
-    "PE&OLES": "PENOLES.MX",
+    "PE&OLES": "PE&OLES.MX",
     "AC": "AC.MX",
     "ASUR": "ASURB.MX",
     "BIMBO": "BIMBOA.MX",
@@ -77,6 +77,31 @@ SIMBOLOS_YAHOO_IPC35 = {
     "LACOMER": "LACOMERUBC.MX",
     "VOLAR": "VOLARA.MX",
     "LAB": "LABB.MX",
+}
+
+# Clasificación sectorial BMV provisional para los 20 candidatos NAFTRAC (2026-11-17).
+# Se etiqueta explícitamente como provisional hasta validar composición y catálogo oficial S&P/BMV.
+SECTORES_IPC35_PROVISIONAL = {
+    "KOF": "Productos de consumo frecuente · Bebidas (provisional)",
+    "SIGMAF": "Productos de consumo frecuente · Alimentos (provisional)",
+    "OMA": "Industrial · Aeropuertos (provisional)",
+    "PINFRA": "Industrial · Infraestructura (provisional)",
+    "KIMBER": "Productos de consumo frecuente (provisional)",
+    "BBAJIO": "Servicios financieros · Banca (provisional)",
+    "Q": "Servicios financieros · Seguros (provisional)",
+    "GENTERA": "Servicios financieros · Microfinanzas (provisional)",
+    "CHDRAUI": "Productos de consumo frecuente · Autoservicios (provisional)",
+    "GCARSO": "Industrial · Conglomerado (provisional)",
+    "ALSEA": "Consumo no básico · Restaurantes (provisional)",
+    "ALPEK": "Materiales · Petroquímica (provisional)",
+    "MEGA": "Servicios de telecomunicaciones (provisional)",
+    "GCC": "Materiales · Cemento y construcción (provisional)",
+    "R": "Servicios financieros · Banca (provisional)",
+    "ORBIA": "Materiales · Polímeros e infraestructura (provisional)",
+    "BOLSA": "Servicios financieros · Infraestructura de mercado (provisional)",
+    "LACOMER": "Productos de consumo frecuente · Autoservicios (provisional)",
+    "VOLAR": "Industrial · Aerolíneas (provisional)",
+    "LAB": "Salud · Farmacéutica y cuidado personal (provisional)",
 }
 
 

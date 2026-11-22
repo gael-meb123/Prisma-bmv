@@ -293,6 +293,66 @@ class VentanaCalendarioYahooTest(unittest.TestCase):
         self.assertIn("evidencias/operacion/avance_ventana_limpia.json", s3.objetos)
         self.assertEqual(av["emision"], "NO_HABILITADA")
 
+    def test_archivar_yahoo_y_parseo_avisos_bmv(self):
+        from scripts.archivar_observaciones_yahoo_s3 import archivar_observaciones_s3
+        from scripts.descargar_avisos_corporativos_bmv_s3 import (
+            cruzar_ola1_con_catalogo_bmv,
+            listar_avisos_derechos_html,
+            parsear_aviso_derechos_texto,
+        )
+
+        s3 = S3()
+        rep = archivar_observaciones_s3(
+            s3,
+            BUCKET_PRODUCTIVO,
+            ["2026-11-19"],
+            emisoras=["PE&OLES", "VOLAR"],
+            descargador=lambda sym, rango="10d": yahoo_payload(symbol=sym),
+            guardar_reporte=False,
+        )
+        self.assertEqual(rep["total_archivadas"], 2)
+        self.assertIn("observaciones/yahoo/PE&OLES.MX/2026-11-19.json", s3.objetos)
+        self.assertIn("observaciones/yahoo/VOLARA.MX/2026-11-19.json", s3.objetos)
+        self.assertFalse(any(k.startswith("silver/") for k in s3.objetos))
+
+        html_av = (
+            "<h2>AVISOS DE DERECHOS</h2><table><tr><th>Fecha</th><th>Asunto</th><th>Archivo</th></tr>"
+            "<tr><td>24-06-2026 14:49</td><td>Aviso a los accionistas</td>"
+            "<td><a href='/docs-pub/derechos/derechos_1570025_1.pdf'>Descargar</a></td></tr>"
+            "<tr><td>01-05-2023 10:00</td><td>Aviso antiguo</td>"
+            "<td><a href='/docs-pub/derechos/derechos_1000001_1.pdf'>Descargar</a></td></tr></table>"
+        )
+        avisos = listar_avisos_derechos_html(html_av, anios={2024, 2025, 2026})
+        self.assertEqual(len(avisos), 1)
+        self.assertEqual(avisos[0]["archivo"], "derechos_1570025_1.pdf")
+
+        texto_pdf = (
+            "CLAVE DE COTIZACIÓN AMX\nTIPO DE DERECHO\nDIVIDENDO EN EFECTIVO\n"
+            "FECHA DE PAGO\n15/07/2026\nPROPORCIÓN\n"
+            "SERIE(S) 'B' CUPON VIGENTE 67 CUPON PAGO 66 A MXN $ 0.27\nLUGAR DE PAGO\nCDMX\n"
+        )
+        p = parsear_aviso_derechos_texto(texto_pdf, "B")
+        self.assertEqual(p["fecha_pago"], "2026-07-15")
+        self.assertEqual(p["monto_mxn"], 0.27)
+        p_dec = parsear_aviso_derechos_texto(texto_pdf.replace("0.27", ".80"), "B")
+        self.assertEqual(p_dec["monto_mxn"], 0.80)
+
+        cola = {"ola": "TEST", "eventos": [{
+            "evento_id": "AMX_2026-07-14_DIVIDENDO", "emisora": "AMX", "fecha_ex_yahoo": "2026-07-14",
+            "tipo": "DIVIDENDO", "monto_mxn_yahoo": 0.27, "factor_yahoo": 0.988, "ppp_bmv_previo": 22.5,
+            "estado_verificacion": "PENDIENTE",
+        }]}
+        cat = [{
+            "emisora": "AMX", "archivo": "derechos_1570025_1.pdf",
+            "evidencia_s3_key": "evidencias/eventos_corporativos/v1/documentos/AMX/derechos_1570025_1.pdf",
+            "sha256_evidencia": "c" * 64, "parseo": p,
+        }]
+        cruzada = cruzar_ola1_con_catalogo_bmv(cola, cat)
+        self.assertEqual(cruzada["eventos_con_evidencia_bmv"], 1)
+        self.assertEqual(cruzada["eventos"][0]["monto_oficial_mxn"], 0.27)
+        self.assertEqual(cruzada["eventos"][0]["fecha_ex_oficial"], "2026-07-14")
+        self.assertFalse(cruzada["panel_ajustado_habilitado"])
+
 
 if __name__ == "__main__":
     unittest.main()

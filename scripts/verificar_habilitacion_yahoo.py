@@ -29,8 +29,19 @@ def evaluar_habilitacion_yahoo(s3, bucket: str) -> dict:
     permiso = leer_json(s3, bucket, "evidencias/observaciones_yahoo/estado_permiso.json", opcional=True)
     ok_permiso, errores = verificar_permiso_yahoo(permiso)
 
-    page = s3.list_objects_v2(Bucket=bucket, Prefix="observaciones/yahoo/", MaxKeys=50)
-    claves = [x["Key"] for x in page.get("Contents", []) if x["Key"].endswith(".json")]
+    claves = []
+    token = None
+    for _ in range(20):
+        args_ls = {"Bucket": bucket, "Prefix": "observaciones/yahoo/", "MaxKeys": 100}
+        if token:
+            args_ls["ContinuationToken"] = token
+        page = s3.list_objects_v2(**args_ls)
+        claves.extend(x["Key"] for x in page.get("Contents", []) if x["Key"].endswith(".json"))
+        if not page.get("IsTruncated"):
+            break
+        token = page.get("NextContinuationToken")
+        if not token:
+            break
     validas = []
     invalidas = []
     for key in claves:

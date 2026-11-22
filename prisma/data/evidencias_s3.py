@@ -14,6 +14,7 @@ BUCKET_PRODUCTIVO = "prisma-bmv-datalake-tunombre-2026"
 PREFIJO_EVIDENCIAS = "evidencias/"
 PREFIJOS_ADMITIDOS = (
     "evidencias/",
+    "observaciones/yahoo/",
     "bronze/",
     "silver/recolector_seguro/precios_ppp/",
     "silver/capturas_seguras/",
